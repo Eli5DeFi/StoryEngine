@@ -26,12 +26,6 @@ importers:
 
   apps/web:
     dependencies:
-      '@narrative-forge/contracts':
-        specifier: workspace:*
-        version: link:../../packages/contracts
-      '@narrative-forge/database':
-        specifier: workspace:*
-        version: link:../../packages/database
       '@radix-ui/react-dialog':
         specifier: ^1.0.5
         version: 1.1.15(@types/react-dom@18.3.7)(@types/react@18.3.28)(react-dom@18.3.1)(react@18.3.1)
@@ -47,6 +41,12 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.90.20
         version: 5.90.20(react@18.3.1)
+      '@voidborne/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@voidborne/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.1
