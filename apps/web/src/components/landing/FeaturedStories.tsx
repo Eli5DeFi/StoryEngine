@@ -3,8 +3,19 @@
 import Link from 'next/link'
 import { BookOpen, Users, Coins, TrendingUp } from 'lucide-react'
 
-// Mock data - will be replaced with real API calls
+// Featured stories - mix of live and coming soon
 const featuredStories = [
+  {
+    id: 'story-voidborne',
+    title: 'VOIDBORNE: The Silent Throne',
+    description: 'Heir to House Valdris, you must navigate deadly succession politics as someone learns to Stitch new Threads—an art thought impossible. Five perspectives. Five agendas. One choice that could shatter reality.',
+    genre: 'Space Political Sci-Fi',
+    currentChapter: 1,
+    totalBets: '$0',
+    activeBettors: 0,
+    winRate: 0,
+    coverGradient: 'from-gold/20 to-void-900',
+  },
   {
     id: '1',
     title: 'The Last Archive',
@@ -15,17 +26,6 @@ const featuredStories = [
     activeBettors: 892,
     winRate: 91,
     coverGradient: 'from-drift-teal/20 to-drift-purple/20',
-  },
-  {
-    id: '2',
-    title: 'Dune Protocols',
-    description: 'Three houses compete for control of the Spice—a resource that grants prescient AI the ability to see all possible futures.',
-    genre: 'Space Opera',
-    currentChapter: 4,
-    totalBets: '$38,950',
-    activeBettors: 654,
-    winRate: 87,
-    coverGradient: 'from-gold/20 to-drift-teal/20',
   },
   {
     id: '3',
