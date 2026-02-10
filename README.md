@@ -13,26 +13,55 @@ Navigate deadly succession politics. Bet on which path shapes the narrative. Fiv
 
 ## 🚀 Quick Start
 
+### Option 1: Automated Supabase Setup (Recommended)
+
 ```bash
 # 1. Clone the repository
 git clone https://github.com/eli5-claw/StoryEngine.git
 cd StoryEngine
 
-# 2. Copy environment variables
-cp .env.example .env
-# Edit .env and add your DATABASE_URL and BANKR_API_KEY
+# 2. Set up Supabase database (5 minutes)
+./scripts/setup-supabase.sh
+# Script will guide you through:
+# - Creating Supabase project
+# - Configuring connection
+# - Running migrations
+# - Seeding data
 
-# 3. Run quick start script
-./scripts/quick-start.sh
-
-# 4. Start development server
+# 3. Start development server
 cd apps/web
 pnpm dev
 
-# 5. Open http://localhost:3000
+# 4. Open http://localhost:3000
 ```
 
-**Or deploy to production in 15 minutes:** See [DEPLOYMENT.md](./DEPLOYMENT.md)
+### Option 2: Manual Setup
+
+```bash
+# 1. Clone
+git clone https://github.com/eli5-claw/StoryEngine.git
+cd StoryEngine
+
+# 2. Set up Supabase (see SUPABASE_SETUP.md)
+# - Create project at https://supabase.com
+# - Get connection string
+
+# 3. Configure environment
+cp .env.example .env
+# Add your DATABASE_URL to .env
+
+# 4. Install & migrate
+pnpm install
+cd packages/database
+pnpm prisma migrate deploy
+pnpm prisma db seed
+
+# 5. Start dev server
+cd ../../apps/web
+pnpm dev
+```
+
+**Deploy to production:** See [DEPLOY_NOW.md](./DEPLOY_NOW.md) (15 minutes)
 
 ---
 

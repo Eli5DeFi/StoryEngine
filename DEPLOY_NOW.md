@@ -63,44 +63,51 @@ ANTHROPIC_API_KEY=sk-ant-...
 3. Click "Save"
 4. Trigger a redeploy (Settings → Deployments → "Redeploy")
 
-## Step 4: Set Up Production Database (Optional)
+## Step 4: Set Up Production Database (5 minutes)
 
-### Quick Option: Vercel Postgres (Built-in)
+### Recommended: Supabase (Free tier)
 
-1. Go to your Vercel project
-2. Click "Storage" → "Create Database" → "Postgres"
-3. Copy connection string
-4. Add as `DATABASE_URL` env var
-5. Run migrations:
+**Why Supabase:**
+- ✅ Free tier (500MB database, 5GB bandwidth/month)
+- ✅ 5-minute setup
+- ✅ GUI for browsing data
+- ✅ Automatic backups
+- ✅ SQL editor built-in
 
+**Quick Setup:**
+
+1. **Go to:** https://supabase.com → Sign up with GitHub
+2. **Create project:** Name it "voidborne", generate password
+3. **Get connection string:** Settings → Database → "Connection pooling" → "Transaction mode"
+4. **Copy this format:**
+   ```
+   postgresql://postgres.xxxx:[PASSWORD]@aws-0-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true
+   ```
+5. **Add to Vercel:** Project → Settings → Environment Variables → Add `DATABASE_URL`
+
+**Then run migrations:**
 ```bash
-# In Vercel project settings → Functions → Add Function
-# Or use Vercel CLI:
-vercel env pull
 cd packages/database
 pnpm prisma migrate deploy
 pnpm prisma db seed
 ```
 
-### Alternative: External Database
+**Full guide:** See `SUPABASE_SETUP.md`
+
+### Alternative Options
+
+**Vercel Postgres ($20/month):**
+- Built into Vercel dashboard
+- One-click setup
+- Convenient but paid
 
 **Railway ($5/month):**
-- Go to: https://railway.app
-- Create Postgres database
-- Copy connection string
-- Add to Vercel env vars
-
-**Supabase (Free tier available):**
-- Go to: https://supabase.com
-- Create project → Database
-- Copy connection string
-- Add to Vercel env vars
+- Simple setup at https://railway.app
+- Good for production
 
 **Neon (Generous free tier):**
-- Go to: https://neon.tech
-- Create project
-- Copy connection string
-- Add to Vercel env vars
+- Serverless Postgres at https://neon.tech
+- Great performance
 
 ## Step 5: Verify Deployment ✅
 
