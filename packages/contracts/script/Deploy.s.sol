@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.23;
 
 import "forge-std/Script.sol";
 import "../src/ChapterBettingPool.sol";
@@ -77,7 +77,7 @@ contract DeployScript is Script {
         console.log("NEXT_PUBLIC_USDC_ADDRESS=%s", USDC_BASE_MAINNET);
         console.log("NEXT_PUBLIC_BETTING_POOL_ADDRESS=%s", address(bettingPool));
         
-        console.log("\n⚠️  IMPORTANT: Verify contract on Basescan!");
+        console.log("\nWARNING:  IMPORTANT: Verify contract on Basescan!");
         console.log("forge verify-contract %s ChapterBettingPool --chain-id 8453", address(bettingPool));
     }
 }
