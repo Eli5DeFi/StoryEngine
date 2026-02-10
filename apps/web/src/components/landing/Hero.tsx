@@ -78,18 +78,6 @@ export function Hero() {
             gradient="drift-purple"
           />
         </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 opacity-0 ambient-fade stagger-5">
-          <div className="flex flex-col items-center gap-3">
-            <span className="text-sm text-void-400 font-ui uppercase tracking-wider">
-              Scroll to Explore
-            </span>
-            <div className="w-6 h-10 rounded-full border-2 border-void-400 flex items-start justify-center p-2">
-              <div className="w-1 h-3 bg-gold rounded-full animate-bounce" />
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Bottom Fade */}
