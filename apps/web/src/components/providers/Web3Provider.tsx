@@ -9,7 +9,7 @@ import '@rainbow-me/rainbowkit/styles.css'
 
 // Create config outside component to avoid re-creating on every render
 const config = getDefaultConfig({
-  appName: 'NarrativeForge',
+  appName: 'Voidborne',
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'a3c3e8f5e8f3a7c5e8f3a7c5e8f3a7c5',
   chains: [baseSepolia],
   transports: {
