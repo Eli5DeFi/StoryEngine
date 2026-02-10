@@ -11,7 +11,7 @@ import { useUSDCBalance } from '@/hooks/useUSDCBalance'
 
 interface BettingInterfaceProps {
   poolId: string
-  contractAddress: string
+  contractAddress: `0x${string}`
   pool: BettingPool & { _count: { bets: number } }
   choices: (Choice & { _count: { bets: number } })[]
   onBetPlaced: () => void

@@ -102,8 +102,10 @@ export default function StoryPage() {
           {/* Sidebar - Betting Interface */}
           <div className="lg:col-span-1">
             <div className="sticky top-8">
-              {currentChapter.bettingPool && (
+              {currentChapter.bettingPool && currentChapter.bettingPool.contractAddress && (
                 <BettingInterface
+                  poolId={currentChapter.bettingPool.id}
+                  contractAddress={currentChapter.bettingPool.contractAddress as `0x${string}`}
                   pool={currentChapter.bettingPool}
                   choices={currentChapter.choices}
                   onBetPlaced={fetchStory}
