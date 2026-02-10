@@ -6,7 +6,7 @@ import { Menu, X, Scroll } from 'lucide-react'
 import { ConnectWallet } from '@/components/wallet/ConnectWallet'
 
 const navLinks = [
-  { label: 'Stories', href: '#stories' },
+  { label: 'The Story', href: '/story/1' },
   { label: 'How It Works', href: '#how-it-works' },
   { label: 'About', href: '#about' },
   { label: 'Docs', href: '/docs' },
@@ -43,10 +43,10 @@ export function Navbar() {
               </div>
               <div>
                 <div className="text-xl font-display font-bold text-gold">
-                  NarrativeForge
+                  Voidborne
                 </div>
                 <div className="text-xs text-void-400 font-ui uppercase tracking-wider">
-                  Ruins of the Future
+                  The Silent Throne
                 </div>
               </div>
             </Link>

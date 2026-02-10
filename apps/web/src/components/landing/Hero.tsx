@@ -26,7 +26,7 @@ export function Hero() {
         {/* Ceremonial Header */}
         <div className="mb-8 opacity-0 ambient-fade">
           <div className="text-ceremonial mb-4">
-            Chronicle of Destinies
+            The Grand Conclave
           </div>
           <div className="w-24 h-px mx-auto ceremonial-divider" />
         </div>
@@ -34,27 +34,27 @@ export function Hero() {
         {/* Main Headline */}
         <h1 className="text-5xl sm:text-6xl lg:text-7xl font-display font-bold tracking-tight mb-8 opacity-0 ambient-fade stagger-1">
           <span className="block text-gold gold-glow-strong">
-            Bet on the Future
+            VOIDBORNE
           </span>
           <span className="block text-foreground mt-4">
-            That Hasn&apos;t Been Written
+            The Silent Throne
           </span>
         </h1>
 
         {/* Subtitle */}
         <p className="text-xl sm:text-2xl text-void-300 max-w-3xl mx-auto mb-12 leading-relaxed opacity-0 ambient-fade stagger-2">
-          AI-generated stories meet prediction markets. <br />
-          <span className="text-drift-teal">Bet on which path the AI will choose.</span> <br />
-          <span className="text-gold">Shape the narrative. Claim your reward.</span>
+          Navigate deadly succession politics. <br />
+          <span className="text-drift-teal">Bet on which path shapes the narrative.</span> <br />
+          <span className="text-gold">Five houses. Five agendas. One choice.</span>
         </p>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16 opacity-0 ambient-fade stagger-3">
           <Link 
-            href="#stories"
+            href="/story/1"
             className="btn-primary text-lg px-10 py-4 inline-block"
           >
-            Explore Stories
+            Enter the Conclave
           </Link>
           
           <ConnectWallet />

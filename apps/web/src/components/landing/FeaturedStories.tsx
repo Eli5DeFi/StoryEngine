@@ -3,10 +3,10 @@
 import Link from 'next/link'
 import { BookOpen, Users, Coins, TrendingUp } from 'lucide-react'
 
-// Featured stories - mix of live and coming soon
+// The Voidborne story - only featured story
 const featuredStories = [
   {
-    id: 'story-voidborne',
+    id: '1',
     title: 'VOIDBORNE: The Silent Throne',
     description: 'Heir to House Valdris, you must navigate deadly succession politics as someone learns to Stitch new Threads—an art thought impossible. Five perspectives. Five agendas. One choice that could shatter reality.',
     genre: 'Space Political Sci-Fi',
@@ -14,29 +14,7 @@ const featuredStories = [
     totalBets: '$0',
     activeBettors: 0,
     winRate: 0,
-    coverGradient: 'from-gold/20 to-void-900',
-  },
-  {
-    id: '1',
-    title: 'The Last Archive',
-    description: 'In the ruins of a fallen civilization, an AI awakens to find fragments of human memory scattered across a dead network.',
-    genre: 'Post-Apocalyptic Sci-Fi',
-    currentChapter: 7,
-    totalBets: '$47,320',
-    activeBettors: 892,
-    winRate: 91,
-    coverGradient: 'from-drift-teal/20 to-drift-purple/20',
-  },
-  {
-    id: '3',
-    title: 'The Singing Sands',
-    description: 'An exiled prophet discovers that the desert itself is alive—and it has been waiting millennia to speak.',
-    genre: 'Mythological Fantasy',
-    currentChapter: 9,
-    totalBets: '$52,180',
-    activeBettors: 1043,
-    winRate: 93,
-    coverGradient: 'from-drift-purple/20 to-gold/20',
+    coverGradient: 'from-gold/20 via-drift-teal/10 to-void-900',
   },
 ]
 
@@ -47,28 +25,21 @@ export function FeaturedStories() {
         {/* Section Header */}
         <div className="text-center mb-20">
           <div className="text-ceremonial mb-4">
-            Active Chronicles
+            The Chronicle
           </div>
           <h2 className="text-4xl sm:text-5xl font-display font-bold text-gold gold-glow mb-6">
-            Featured Stories
+            VOIDBORNE: The Silent Throne
           </h2>
           <p className="text-xl text-void-300 max-w-2xl mx-auto">
-            Join thousands of readers betting on AI-generated narratives
+            Navigate deadly succession politics. Bet on which path shapes the narrative.
           </p>
         </div>
 
-        {/* Story Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        {/* Story Card - Centered */}
+        <div className="max-w-2xl mx-auto">
           {featuredStories.map((story, index) => (
             <StoryCard key={story.id} story={story} index={index} />
           ))}
-        </div>
-
-        {/* View All CTA */}
-        <div className="text-center">
-          <Link href="/stories" className="btn-secondary text-lg">
-            View All Stories
-          </Link>
         </div>
       </div>
     </section>

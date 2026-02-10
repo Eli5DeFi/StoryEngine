@@ -1,8 +1,8 @@
 {
-  "name": "@narrative-forge/contracts",
+  "name": "@voidborne/contracts",
   "version": "0.1.0",
   "private": true,
-  "description": "Smart contracts for NarrativeForge (Foundry)",
+  "description": "Smart contracts for Voidborne: The Silent Throne (Foundry)",
   "scripts": {
     "build": "forge build",
     "test": "forge test -vvv",

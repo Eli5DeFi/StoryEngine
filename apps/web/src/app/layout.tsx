@@ -25,20 +25,20 @@ const rajdhani = Rajdhani({
 })
 
 export const metadata: Metadata = {
-  title: 'NarrativeForge - Ruins of the Future',
-  description: 'Prediction market meets interactive fiction. Bet USDC on AI story choices. Shape narratives. Win rewards.',
-  keywords: ['AI stories', 'prediction market', 'betting', 'interactive fiction', 'web3', 'USDC', 'Base', 'parimutuel'],
-  authors: [{ name: 'NarrativeForge' }],
+  title: 'Voidborne: The Silent Throne',
+  description: 'Navigate deadly succession politics. Bet USDC on which path shapes the narrative. Five houses. Five agendas. One choice.',
+  keywords: ['AI stories', 'prediction market', 'betting', 'interactive fiction', 'web3', 'USDC', 'Base', 'space opera', 'political intrigue'],
+  authors: [{ name: 'Voidborne' }],
   openGraph: {
-    title: 'NarrativeForge - Ruins of the Future',
-    description: 'Bet on AI-generated narratives. Shape the story. Claim your share of the pot.',
+    title: 'Voidborne: The Silent Throne',
+    description: 'Bet on AI-generated narratives in a space political saga. Shape the story. Claim your share of the pot.',
     type: 'website',
-    url: 'https://narrativeforge.ai',
+    url: 'https://voidborne.ai',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'NarrativeForge',
-    description: 'Bet on AI Story Choices',
+    title: 'Voidborne',
+    description: 'The Silent Throne',
   },
 }
 

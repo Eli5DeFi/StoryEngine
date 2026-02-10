@@ -1,8 +1,8 @@
-# NarrativeForge 🎭
+# Voidborne: The Silent Throne 🎭
 
-**AI-Generated Interactive Fiction × Blockchain Betting Platform**
+**Space Political Saga × Blockchain Prediction Market**
 
-Bet on which story branch the AI will choose next. Win big. Fund stories. Shape the future of interactive fiction.
+Navigate deadly succession politics. Bet on which path shapes the narrative. Five houses. Five agendas. One choice that could shatter reality.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
@@ -36,14 +36,18 @@ pnpm dev
 
 ---
 
-## 🎯 What is NarrativeForge?
+## 🎯 What is Voidborne?
 
-A blockchain-integrated platform where:
-- 🤖 **AI generates** interactive fiction (GPT-4, Claude, DALL-E)
-- 🎲 **Readers bet** on which story branch the AI will choose
+An immersive space political narrative where:
+- 🎭 **AI-powered story** unfolds based on reader choices
+- 🎲 **Bet on outcomes** using USDC (stablecoin betting)
 - 💰 **Winners earn** 85% of the betting pool (parimutuel)
-- 🪙 **$FORGE token** trading fees fund AI compute (self-sustaining)
-- 📈 **Community shapes** narratives through collective betting
+- 🪙 **$FORGE token** trading fees fund future chapters (self-sustaining)
+- 📈 **Shape the narrative** through strategic betting
+
+### The Story
+
+You are the heir to House Valdris, holder of the Silent Throne. Someone is Stitching new Threads—an art thought impossible. The five houses of the Grand Conclave demand answers. Your choices will determine the fate of reality itself.
 
 ### How It Works
 

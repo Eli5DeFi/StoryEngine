@@ -1,8 +1,8 @@
 {
-  "name": "@narrative-forge/database",
+  "name": "@voidborne/database",
   "version": "0.1.0",
   "private": true,
-  "description": "Database schema and Prisma client for NarrativeForge",
+  "description": "Database schema and Prisma client for Voidborne: The Silent Throne",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {

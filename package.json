@@ -1,8 +1,8 @@
 {
-  "name": "narrativeforge",
+  "name": "voidborne",
   "version": "0.1.0",
   "private": true,
-  "description": "AI Visual Novel × Prediction Market Platform",
+  "description": "Voidborne: The Silent Throne - Space Political Saga × Blockchain Prediction Market",
   "repository": {
     "type": "git",
     "url": "https://github.com/eli5-claw/StoryEngine.git"

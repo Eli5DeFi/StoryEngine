@@ -5,7 +5,7 @@ import { Scroll, Twitter, Github, MessageCircle } from 'lucide-react'
 
 const footerLinks = {
   product: [
-    { label: 'Stories', href: '/stories' },
+    { label: 'The Story', href: '/story/1' },
     { label: 'How It Works', href: '#how-it-works' },
     { label: 'Roadmap', href: '/roadmap' },
     { label: 'Tokenomics', href: '/tokenomics' },
@@ -17,9 +17,9 @@ const footerLinks = {
     { label: 'GitHub', href: 'https://github.com/eli5-claw/StoryEngine' },
   ],
   community: [
-    { label: 'Twitter', href: 'https://twitter.com/narrativeforge' },
-    { label: 'Discord', href: 'https://discord.gg/narrativeforge' },
-    { label: 'Telegram', href: 'https://t.me/narrativeforge' },
+    { label: 'Twitter', href: 'https://twitter.com/voidborne' },
+    { label: 'Discord', href: 'https://discord.gg/voidborne' },
+    { label: 'Telegram', href: 'https://t.me/voidborne' },
     { label: 'Blog', href: '/blog' },
   ],
   legal: [
@@ -30,9 +30,9 @@ const footerLinks = {
 }
 
 const socialLinks = [
-  { icon: Twitter, href: 'https://twitter.com/narrativeforge', label: 'Twitter' },
+  { icon: Twitter, href: 'https://twitter.com/voidborne', label: 'Twitter' },
   { icon: Github, href: 'https://github.com/eli5-claw/StoryEngine', label: 'GitHub' },
-  { icon: MessageCircle, href: 'https://discord.gg/narrativeforge', label: 'Discord' },
+  { icon: MessageCircle, href: 'https://discord.gg/voidborne', label: 'Discord' },
 ]
 
 export function Footer() {
@@ -52,16 +52,16 @@ export function Footer() {
               </div>
               <div>
                 <div className="text-xl font-display font-bold text-gold">
-                  NarrativeForge
+                  Voidborne
                 </div>
                 <div className="text-xs text-void-400 font-ui uppercase tracking-wider">
-                  Ruins of the Future
+                  The Silent Throne
                 </div>
               </div>
             </Link>
             <p className="text-void-400 leading-relaxed mb-6 max-w-md">
-              Prediction markets meet interactive fiction. Bet on AI-generated narratives,
-              shape the story, and claim your share of the pot.
+              Navigate deadly succession politics in a space opera where your bets shape the narrative.
+              Five houses. Five agendas. One choice that could shatter reality.
             </p>
             {/* Social Links */}
             <div className="flex items-center gap-4">
@@ -94,7 +94,7 @@ export function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             {/* Copyright */}
             <div className="text-sm text-void-500 font-ui">
-              © {new Date().getFullYear()} NarrativeForge. Built on{' '}
+              © {new Date().getFullYear()} Voidborne. Built on{' '}
               <a
                 href="https://base.org"
                 target="_blank"
