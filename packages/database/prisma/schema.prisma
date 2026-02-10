@@ -1,0 +1,338 @@
+// NarrativeForge Database Schema
+// PostgreSQL with Prisma ORM
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// USER & AUTHENTICATION
+// ============================================================================
+
+model User {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Wallet authentication
+  walletAddress String   @unique
+  nonce         String?  // For signature verification
+  
+  // Profile
+  username      String?  @unique
+  bio           String?
+  avatar        String?
+  
+  // Stats
+  totalBets     Int      @default(0)
+  totalWon      Decimal  @default(0) @db.Decimal(20, 6)
+  totalLost     Decimal  @default(0) @db.Decimal(20, 6)
+  winRate       Float    @default(0) // Percentage
+  
+  // Relationships
+  bets          Bet[]
+  createdStories Story[] @relation("StoryAuthor")
+  
+  @@index([walletAddress])
+  @@map("users")
+}
+
+// ============================================================================
+// STORIES & CHAPTERS
+// ============================================================================
+
+model Story {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Metadata
+  title         String
+  description   String
+  genre         String   // Sci-Fi, Fantasy, Cyberpunk, etc.
+  coverImage    String?
+  
+  // Status
+  status        StoryStatus @default(ACTIVE)
+  currentChapter Int      @default(1)
+  totalChapters Int      @default(0)
+  
+  // Author (can be AI or human)
+  authorId      String
+  author        User     @relation("StoryAuthor", fields: [authorId], references: [id])
+  isAIGenerated Boolean  @default(true)
+  
+  // Stats
+  totalReaders  Int      @default(0)
+  totalBets     Decimal  @default(0) @db.Decimal(20, 6)
+  viewCount     Int      @default(0)
+  
+  // Relationships
+  chapters      Chapter[]
+  
+  @@index([status, createdAt])
+  @@index([genre])
+  @@map("stories")
+}
+
+enum StoryStatus {
+  ACTIVE      // Currently accepting bets
+  PAUSED      // Temporarily paused
+  COMPLETED   // Story finished
+  ARCHIVED    // No longer active
+}
+
+model Chapter {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Chapter info
+  storyId       String
+  story         Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  chapterNumber Int
+  
+  // Content
+  title         String
+  content       String   @db.Text
+  summary       String?  @db.Text
+  
+  // Images (AI-generated or uploaded)
+  headerImage   String?
+  images        String[] // Array of image URLs
+  
+  // Metadata
+  wordCount     Int      @default(0)
+  readTime      Int      @default(0) // Minutes
+  
+  // Status
+  status        ChapterStatus @default(DRAFT)
+  publishedAt   DateTime?
+  
+  // AI Generation metadata
+  aiModel       String?  // GPT-4, Claude, etc.
+  aiPrompt      String?  @db.Text
+  generationTime Int?    // Milliseconds
+  
+  // Relationships
+  choices       Choice[]
+  bettingPool   BettingPool?
+  
+  @@unique([storyId, chapterNumber])
+  @@index([storyId, chapterNumber])
+  @@map("chapters")
+}
+
+enum ChapterStatus {
+  DRAFT       // Being written/generated
+  PUBLISHED   // Live and readable
+  BETTING     // Betting pool active for next chapter
+  RESOLVED    // AI made choice, betting resolved
+  ARCHIVED    // No longer active
+}
+
+// ============================================================================
+// CHOICES & BETTING
+// ============================================================================
+
+model Choice {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Choice info
+  chapterId     String
+  chapter       Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  choiceNumber  Int      // 1, 2, 3, etc.
+  
+  // Content
+  text          String   @db.Text
+  description   String?  @db.Text
+  
+  // Outcome (after AI chooses)
+  isChosen      Boolean  @default(false)
+  chosenAt      DateTime?
+  
+  // AI Analysis
+  aiScore       Float?   // 0-100, AI's preference score
+  aiReasoning   String?  @db.Text
+  
+  // Stats
+  totalBets     Decimal  @default(0) @db.Decimal(20, 6)
+  betCount      Int      @default(0)
+  oddsSnapshot  Float?   // Odds at close time
+  
+  // Relationships
+  bets          Bet[]
+  
+  @@unique([chapterId, choiceNumber])
+  @@index([chapterId])
+  @@map("choices")
+}
+
+model BettingPool {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Pool info
+  chapterId     String   @unique
+  chapter       Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  
+  // Pool settings
+  minBet        Decimal  @default(0.001) @db.Decimal(20, 6)
+  maxBet        Decimal? @db.Decimal(20, 6)
+  
+  // Timing
+  opensAt       DateTime
+  closesAt      DateTime
+  resolvedAt    DateTime?
+  
+  // Status
+  status        PoolStatus @default(PENDING)
+  
+  // Pool totals
+  totalPool     Decimal  @default(0) @db.Decimal(20, 6)
+  totalBets     Int      @default(0)
+  uniqueBettors Int      @default(0)
+  
+  // Smart contract
+  contractAddress String?
+  contractTxHash  String?
+  
+  // Winner info (after resolution)
+  winningChoiceId String?
+  winnersPaid     Decimal  @default(0) @db.Decimal(20, 6)
+  treasuryCut     Decimal  @default(0) @db.Decimal(20, 6)
+  devCut          Decimal  @default(0) @db.Decimal(20, 6)
+  
+  // Relationships
+  bets          Bet[]
+  
+  @@index([status, closesAt])
+  @@map("betting_pools")
+}
+
+enum PoolStatus {
+  PENDING     // Not yet open
+  OPEN        // Accepting bets
+  CLOSED      // No more bets, waiting for AI
+  RESOLVING   // AI is deciding
+  RESOLVED    // Winner chosen
+  CANCELLED   // Pool cancelled (refunds)
+}
+
+model Bet {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Bettor
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  
+  // Bet details
+  poolId        String
+  pool          BettingPool @relation(fields: [poolId], references: [id])
+  
+  choiceId      String
+  choice        Choice   @relation(fields: [choiceId], references: [id])
+  
+  // Amount
+  amount        Decimal  @db.Decimal(20, 6)
+  
+  // Outcome
+  isWinner      Boolean  @default(false)
+  payout        Decimal? @db.Decimal(20, 6)
+  payoutTxHash  String?
+  
+  // Metadata
+  odds          Float?   // Odds at time of bet
+  txHash        String?  // Blockchain transaction hash
+  
+  @@index([userId])
+  @@index([poolId])
+  @@index([choiceId])
+  @@map("bets")
+}
+
+// ============================================================================
+// AI GENERATION & ANALYTICS
+// ============================================================================
+
+model AIGeneration {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+
+  // Generation type
+  type          GenerationType
+  
+  // Reference
+  entityId      String   // Story, Chapter, or Choice ID
+  entityType    String   // "story", "chapter", "choice"
+  
+  // AI Model
+  model         String   // GPT-4, Claude-3, DALL-E, etc.
+  provider      String   // OpenAI, Anthropic, etc.
+  
+  // Prompt & Response
+  prompt        String   @db.Text
+  response      String   @db.Text
+  
+  // Metadata
+  tokensUsed    Int?
+  cost          Decimal? @db.Decimal(10, 6)
+  latency       Int?     // Milliseconds
+  
+  // Success/Error
+  status        String   // success, error, partial
+  error         String?  @db.Text
+  
+  @@index([entityId, entityType])
+  @@index([createdAt])
+  @@map("ai_generations")
+}
+
+enum GenerationType {
+  STORY_CONCEPT   // Initial story idea
+  CHAPTER_CONTENT // Chapter text
+  CHOICE_OPTIONS  // Multiple choice options
+  AI_DECISION     // AI choosing winning path
+  IMAGE           // Image generation
+  SUMMARY         // Content summarization
+}
+
+model Analytics {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  date          DateTime @unique @db.Date
+
+  // Daily metrics
+  activeUsers   Int      @default(0)
+  newUsers      Int      @default(0)
+  
+  // Story metrics
+  storiesCreated Int     @default(0)
+  chaptersPublished Int  @default(0)
+  
+  // Betting metrics
+  totalBets     Int      @default(0)
+  totalVolume   Decimal  @default(0) @db.Decimal(20, 6)
+  uniqueBettors Int      @default(0)
+  
+  // Revenue
+  platformFees  Decimal  @default(0) @db.Decimal(20, 6)
+  tradingFees   Decimal  @default(0) @db.Decimal(20, 6)
+  
+  // AI usage
+  aiCalls       Int      @default(0)
+  aiCost        Decimal  @default(0) @db.Decimal(10, 6)
+  
+  @@index([date])
+  @@map("analytics")
+}
