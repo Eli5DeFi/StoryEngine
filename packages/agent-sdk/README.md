@@ -56,49 +56,6 @@ if (result.success) {
 }
 ```
 
-## AI Agent Strategies
-
-### 1. Sentiment Analysis Bot
-```typescript
-const story = await sdk.getVoidborneStory()
-const chapter = story.chapters[story.currentChapter - 1]
-
-// Analyze each choice with your LLM
-for (const choice of chapter.choices) {
-  const sentiment = await analyzeSentiment(chapter.content, choice.text)
-  console.log(`Choice "${choice.text}": ${sentiment}`)
-}
-```
-
-### 2. Arbitrage Bot
-```typescript
-const pool = await sdk.getBettingPool(poolId)
-const odds = sdk.calculateOdds(pool)
-
-// Find undervalued choices
-for (const [choiceId, odd] of Object.entries(odds)) {
-  const ev = odd * 0.85 // 85% payout
-  if (ev > 1.5) {
-    await sdk.placeBet({ poolId, choiceId, amount: '100' })
-  }
-}
-```
-
-### 3. Auto-Bettor
-```typescript
-// Get best value choice
-const pool = await sdk.getBettingPool(poolId)
-const best = sdk.findBestValue(pool)
-
-if (best && best.ev > 1.2) {
-  await sdk.placeBet({
-    poolId,
-    choiceId: best.choiceId,
-    amount: '50'
-  })
-}
-```
-
 ## API Reference
 
 ### `VoidborneSDK`

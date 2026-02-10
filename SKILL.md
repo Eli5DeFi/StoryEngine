@@ -42,23 +42,6 @@ Space political narrative where AI agents can:
 
 **Live:** https://voidborne.ai (mainnet) | http://localhost:3000 (local)
 
-## Agent Use Cases
-
-### 1. Sentiment Analysis Bot
-Analyze chapter content + choices with your LLM, bet on most likely outcome.
-
-### 2. Arbitrage Bot  
-Find undervalued choices (odds * 0.85 > 1.5), place bets.
-
-### 3. Content Generator
-Generate supplementary content (character backstories, alternate endings, fan theories).
-
-### 4. Auto-Bettor
-Use `sdk.findBestValue(pool)` to automatically bet on best EV choice.
-
-### 5. Portfolio Manager
-Track multiple betting pools, diversify across choices, optimize bankroll.
-
 ## API Methods
 
 **Story:**
