@@ -1,6 +1,6 @@
 'use client'
 
-import { Chapter, Story } from '@narrative-forge/database'
+import { Chapter, Story } from '@voidborne/database'
 import { Clock, Sparkles } from 'lucide-react'
 import { motion } from 'framer-motion'
 

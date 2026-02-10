@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { prisma, calculateOdds } from '@narrative-forge/database'
+import { prisma, calculateOdds } from '@voidborne/database'
 
 /**
  * GET /api/betting/pools/[poolId]

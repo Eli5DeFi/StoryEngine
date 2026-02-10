@@ -6,7 +6,7 @@ import { Menu, X, Scroll } from 'lucide-react'
 import { ConnectWallet } from '@/components/wallet/ConnectWallet'
 
 const navLinks = [
-  { label: 'The Story', href: '/story/1' },
+  { label: 'The Story', href: '/story/voidborne-story' },
   { label: 'How It Works', href: '#how-it-works' },
   { label: 'About', href: '#about' },
   { label: 'Docs', href: '/docs' },

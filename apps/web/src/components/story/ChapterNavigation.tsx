@@ -1,6 +1,6 @@
 'use client'
 
-import { Chapter } from '@narrative-forge/database'
+import { Chapter } from '@voidborne/database'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 

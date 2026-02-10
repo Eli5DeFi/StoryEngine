@@ -1,6 +1,6 @@
 'use client'
 
-import { Story } from '@narrative-forge/database'
+import { Story } from '@voidborne/database'
 import { ArrowLeft, Eye, TrendingUp } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 

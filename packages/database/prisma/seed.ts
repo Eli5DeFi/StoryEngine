@@ -41,9 +41,12 @@ async function main() {
 
   console.log('✅ Created users')
 
-  // Create VOIDBORNE story
-  const voidborne = await prisma.story.create({
-    data: {
+  // Create VOIDBORNE story (with fixed ID for consistency)
+  const voidborne = await prisma.story.upsert({
+    where: { id: 'voidborne-story' },
+    update: {},
+    create: {
+      id: 'voidborne-story',
       title: 'VOIDBORNE: The Silent Throne',
       description: 'Heir to House Valdris, you must navigate deadly succession politics as someone learns to Stitch new Threads—an art thought impossible. Five perspectives. Five agendas. One choice that could shatter reality.',
       genre: 'Space Political Sci-Fi',

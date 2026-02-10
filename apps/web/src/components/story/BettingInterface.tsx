@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { BettingPool, Choice } from '@narrative-forge/database'
+import { BettingPool, Choice } from '@voidborne/database'
 import { TrendingUp, Users, Clock, Trophy, AlertCircle, DollarSign } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'

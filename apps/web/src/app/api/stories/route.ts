@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@narrative-forge/database'
+import { prisma } from '@voidborne/database'
 
 /**
  * GET /api/stories

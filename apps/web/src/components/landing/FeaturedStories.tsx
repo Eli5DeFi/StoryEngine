@@ -6,7 +6,7 @@ import { BookOpen, Users, Coins, TrendingUp } from 'lucide-react'
 // The Voidborne story - only featured story
 const featuredStories = [
   {
-    id: '1',
+    id: 'voidborne-story',
     title: 'VOIDBORNE: The Silent Throne',
     description: 'Heir to House Valdris, you must navigate deadly succession politics as someone learns to Stitch new Threads—an art thought impossible. Five perspectives. Five agendas. One choice that could shatter reality.',
     genre: 'Space Political Sci-Fi',

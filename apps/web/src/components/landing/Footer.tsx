@@ -5,7 +5,7 @@ import { Scroll, Twitter, Github, MessageCircle } from 'lucide-react'
 
 const footerLinks = {
   product: [
-    { label: 'The Story', href: '/story/1' },
+    { label: 'The Story', href: '/story/voidborne-story' },
     { label: 'How It Works', href: '#how-it-works' },
     { label: 'Roadmap', href: '/roadmap' },
     { label: 'Tokenomics', href: '/tokenomics' },

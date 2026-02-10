@@ -51,7 +51,7 @@ export function Hero() {
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16 opacity-0 ambient-fade stagger-3">
           <Link 
-            href="/story/1"
+            href="/story/voidborne-story"
             className="btn-primary text-lg px-10 py-4 inline-block"
           >
             Enter the Conclave

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { Story, Chapter, BettingPool, Choice } from '@narrative-forge/database'
+import { Story, Chapter, BettingPool, Choice } from '@voidborne/database'
 import { StoryHeader } from '@/components/story/StoryHeader'
 import { ChapterReader } from '@/components/story/ChapterReader'
 import { BettingInterface } from '@/components/story/BettingInterface'
