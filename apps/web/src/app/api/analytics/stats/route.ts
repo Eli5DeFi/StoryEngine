@@ -42,20 +42,34 @@ export async function GET(request: Request) {
       }),
 
       // Betting stats
-      prisma.$queryRaw<Array<{
-        totalBets: bigint
-        totalWagered: string
-        totalPaidOut: string
-        avgBetSize: string
-      }>>`
-        SELECT 
-          COUNT(*)::bigint as "totalBets",
-          COALESCE(SUM(amount), 0)::text as "totalWagered",
-          COALESCE(SUM(CASE WHEN won = true THEN payout ELSE 0 END), 0)::text as "totalPaidOut",
-          COALESCE(AVG(amount), 0)::text as "avgBetSize"
-        FROM bets
-        ${timeframeFilter ? `WHERE "createdAt" >= '${timeframeFilter.gte.toISOString()}'` : ''}
-      `,
+      timeframeFilter
+        ? prisma.$queryRaw<Array<{
+            totalBets: bigint
+            totalWagered: string
+            totalPaidOut: string
+            avgBetSize: string
+          }>>`
+            SELECT 
+              COUNT(*)::bigint as "totalBets",
+              COALESCE(SUM(amount), 0)::text as "totalWagered",
+              COALESCE(SUM(CASE WHEN won = true THEN payout ELSE 0 END), 0)::text as "totalPaidOut",
+              COALESCE(AVG(amount), 0)::text as "avgBetSize"
+            FROM bets
+            WHERE "createdAt" >= ${timeframeFilter.gte.toISOString()}::timestamp
+          `
+        : prisma.$queryRaw<Array<{
+            totalBets: bigint
+            totalWagered: string
+            totalPaidOut: string
+            avgBetSize: string
+          }>>`
+            SELECT 
+              COUNT(*)::bigint as "totalBets",
+              COALESCE(SUM(amount), 0)::text as "totalWagered",
+              COALESCE(SUM(CASE WHEN won = true THEN payout ELSE 0 END), 0)::text as "totalPaidOut",
+              COALESCE(AVG(amount), 0)::text as "avgBetSize"
+            FROM bets
+          `,
 
       // Users count and engagement
       prisma.user.count({

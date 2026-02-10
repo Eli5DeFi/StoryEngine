@@ -25,18 +25,15 @@ export async function GET(request: Request) {
     // Calculate timeframe cutoff
     const timeframeCutoff = getTimeframeCutoff(timeframe)
 
-    // Get user stats with aggregations
-    const userStats = await prisma.$queryRaw<Array<{
-      userId: string
-      walletAddress: string | null
-      username: string | null
-      totalBets: bigint
-      totalWagered: string
-      totalWon: string
-      winningBets: bigint
-      winRate: string
-      profit: string
-    }>>`
+    // Build query based on filters
+    const orderByClause =
+      sortBy === 'wagered'
+        ? 'SUM(b.amount)'
+        : sortBy === 'winRate'
+        ? 'COUNT(CASE WHEN b.won = true THEN 1 END)::float / COUNT(b.id)::float'
+        : 'COALESCE(SUM(CASE WHEN b.won = true THEN b.payout ELSE 0 END), 0) - COALESCE(SUM(b.amount), 0)'
+
+    const baseQuery = `
       SELECT 
         u.id as "userId",
         u."walletAddress",
@@ -56,16 +53,25 @@ export async function GET(request: Request) {
         )::text as profit
       FROM users u
       LEFT JOIN bets b ON u.id = b."userId"
-      ${timeframeCutoff ? `WHERE b."createdAt" >= ${timeframeCutoff}` : ''}
+      ${timeframeCutoff ? `WHERE b."createdAt" >= '${timeframeCutoff}'` : ''}
       GROUP BY u.id, u."walletAddress", u.username
       HAVING COUNT(b.id) > 0
-      ORDER BY 
-        ${sortBy === 'wagered' ? 'SUM(b.amount)' : ''}
-        ${sortBy === 'winRate' ? 'COUNT(CASE WHEN b.won = true THEN 1 END)::float / COUNT(b.id)::float' : ''}
-        ${sortBy === 'profit' ? 'COALESCE(SUM(CASE WHEN b.won = true THEN b.payout ELSE 0 END), 0) - COALESCE(SUM(b.amount), 0)' : ''}
-        DESC NULLS LAST
+      ORDER BY ${orderByClause} DESC NULLS LAST
       LIMIT ${limit}
     `
+
+    // Get user stats with aggregations
+    const userStats = await prisma.$queryRawUnsafe<Array<{
+      userId: string
+      walletAddress: string | null
+      username: string | null
+      totalBets: bigint
+      totalWagered: string
+      totalWon: string
+      winningBets: bigint
+      winRate: string
+      profit: string
+    }>>(baseQuery)
 
     // Convert BigInt to Number and Decimal strings to Numbers
     const leaderboard = userStats.map((user, index) => ({
