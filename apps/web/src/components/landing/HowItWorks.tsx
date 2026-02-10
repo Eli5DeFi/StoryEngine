@@ -1,149 +1,135 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { BookOpen, Vote, Sparkles, Trophy } from 'lucide-react'
+import { Brain, Coins, TrendingUp, Trophy } from 'lucide-react'
+
+const steps = [
+  {
+    icon: Brain,
+    title: 'AI Generates Story Branches',
+    description: 'At each chapter, our AI creates multiple possible narrative paths. Each branch offers a unique continuation of the story.',
+    color: 'drift-purple',
+  },
+  {
+    icon: Coins,
+    title: 'Place Your Bet',
+    description: 'Bet USDC on which branch you think the AI will choose. Your prediction shapes the parimutuel pool.',
+    color: 'gold',
+  },
+  {
+    icon: TrendingUp,
+    title: 'AI Makes the Choice',
+    description: 'The AI evaluates all branches using narrative coherence, reader engagement, and story momentum to select the winning path.',
+    color: 'drift-teal',
+  },
+  {
+    icon: Trophy,
+    title: 'Winners Share the Pot',
+    description: '85% of the pool goes to winners. 12.5% funds the treasury. 2.5% supports platform development.',
+    color: 'gold',
+  },
+]
 
 export function HowItWorks() {
-  const steps = [
-    {
-      icon: BookOpen,
-      title: 'Read the Story',
-      description: 'Dive into AI-generated interactive fiction. Each chapter ends with a critical choice.',
-      color: 'from-blue-500 to-cyan-500',
-    },
-    {
-      icon: Vote,
-      title: 'Bet on Choices',
-      description: 'Predict which branch the AI will choose. Place your $FORGE bet in the parimutuel pool.',
-      color: 'from-purple-500 to-pink-500',
-    },
-    {
-      icon: Sparkles,
-      title: 'AI Decides',
-      description: 'Our AI analyzes story coherence, reader preferences, and narrative quality to pick the best path.',
-      color: 'from-orange-500 to-red-500',
-    },
-    {
-      icon: Trophy,
-      title: 'Win Rewards',
-      description: 'Correct bets win 85% of the pool. Platform earns 12.5% treasury, 2.5% dev fees.',
-      color: 'from-green-500 to-emerald-500',
-    },
-  ]
-
   return (
-    <section id="how-it-works" className="py-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            How It <span className="text-gradient">Works</span>
+    <section id="how-it-works" className="relative py-32 bg-gradient-to-b from-background via-void-950 to-background">
+      {/* Decorative Background */}
+      <div className="absolute inset-0 starfield-bg opacity-30" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        {/* Section Header */}
+        <div className="text-center mb-20">
+          <div className="text-ceremonial mb-4">
+            The Protocol
+          </div>
+          <h2 className="text-4xl sm:text-5xl font-display font-bold text-gold gold-glow mb-6">
+            How It Works
           </h2>
-          <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-            Four simple steps to start betting on AI story choices and winning $FORGE tokens
+          <p className="text-xl text-void-300 max-w-2xl mx-auto">
+            Four steps from spectator to storyteller
           </p>
-        </motion.div>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* Steps */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {steps.map((step, index) => (
-            <motion.div
-              key={step.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative"
-            >
-              {/* Connection line (desktop only) */}
-              {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-primary/50 to-transparent" />
-              )}
-
-              <div className="relative bg-card border border-border rounded-xl p-6 card-hover h-full">
-                {/* Step number */}
-                <div className="absolute -top-4 -left-4 w-8 h-8 bg-primary rounded-full flex items-center justify-center text-sm font-bold">
-                  {index + 1}
-                </div>
-
-                {/* Icon */}
-                <div className={`inline-flex p-4 rounded-xl bg-gradient-to-br ${step.color} mb-4`}>
-                  <step.icon className="w-8 h-8 text-white" />
-                </div>
-
-                {/* Content */}
-                <h3 className="text-xl font-bold mb-3">{step.title}</h3>
-                <p className="text-foreground/70">{step.description}</p>
-              </div>
-            </motion.div>
+            <StepCard
+              key={index}
+              step={step}
+              index={index}
+            />
           ))}
         </div>
 
-        {/* Example flow */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-16 bg-card border border-border rounded-xl p-8"
-        >
-          <h3 className="text-2xl font-bold mb-6 text-center">Example Pool</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">1,000 $FORGE</div>
-              <div className="text-sm text-foreground/60 mb-4">Total Pool</div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-foreground/70">Choice A:</span>
-                  <span className="font-medium">400 $FORGE (40%)</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-foreground/70">Choice B:</span>
-                  <span className="font-medium">600 $FORGE (60%)</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <div className="text-4xl font-bold text-green-500 mb-2">Choice A</div>
-              <div className="text-sm text-foreground/60 mb-4">AI Picks This!</div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-foreground/70">Winners share:</span>
-                  <span className="font-medium text-green-500">850 $FORGE</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-foreground/70">Treasury:</span>
-                  <span className="font-medium">125 $FORGE</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-foreground/70">Dev fee:</span>
-                  <span className="font-medium">25 $FORGE</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <div className="text-4xl font-bold text-purple-500 mb-2">2.125x</div>
-              <div className="text-sm text-foreground/60 mb-4">Payout Multiplier</div>
-              <div className="space-y-2 text-sm">
-                <div className="text-foreground/70 mb-2">Your bet:</div>
-                <div className="flex justify-between">
-                  <span className="text-foreground/70">100 $FORGE →</span>
-                  <span className="font-medium text-green-500">212.5 $FORGE</span>
-                </div>
-                <div className="text-xs text-green-500 mt-2">
-                  +112.5 $FORGE profit! 🎉
-                </div>
-              </div>
-            </div>
+        {/* Bottom CTA */}
+        <div className="mt-20 text-center">
+          <div className="glass-card inline-block p-8 rounded-2xl">
+            <p className="text-lg text-void-300 mb-6 max-w-2xl">
+              <span className="text-gold font-semibold">Self-sustaining economy:</span> All trading fees from <span className="text-gold">$FORGE</span> token
+              fund AI compute. Zero ongoing costs. Infinite scalability.
+            </p>
+            <a
+              href="#stories"
+              className="btn-primary inline-block"
+            >
+              Start Reading & Betting
+            </a>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
+  )
+}
+
+interface StepCardProps {
+  step: typeof steps[0]
+  index: number
+}
+
+function StepCard({ step, index }: StepCardProps) {
+  const Icon = step.icon
+
+  const colorClasses = {
+    'gold': {
+      iconBg: 'bg-gold/10',
+      iconText: 'text-gold',
+      border: 'border-gold/30',
+    },
+    'drift-teal': {
+      iconBg: 'bg-drift-teal/10',
+      iconText: 'text-drift-teal',
+      border: 'border-drift-teal/30',
+    },
+    'drift-purple': {
+      iconBg: 'bg-drift-purple/10',
+      iconText: 'text-drift-purple',
+      border: 'border-drift-purple/30',
+    },
+  }
+
+  const colors = colorClasses[step.color as keyof typeof colorClasses]
+
+  return (
+    <div className={`glass-card p-8 rounded-2xl relative overflow-hidden group opacity-0 ambient-fade stagger-${index + 1}`}>
+      {/* Step Number */}
+      <div className="absolute top-4 right-4 text-6xl font-display font-bold text-void-900 opacity-20">
+        {String(index + 1).padStart(2, '0')}
+      </div>
+
+      {/* Icon */}
+      <div className={`${colors.iconBg} ${colors.iconText} w-16 h-16 rounded-xl flex items-center justify-center mb-6 relative z-10`}>
+        <Icon className="w-8 h-8" />
+      </div>
+
+      {/* Content */}
+      <h3 className="text-2xl font-display font-bold text-foreground mb-4 relative z-10">
+        {step.title}
+      </h3>
+      <p className="text-void-300 leading-relaxed relative z-10">
+        {step.description}
+      </p>
+
+      {/* Hover Glow */}
+      <div className={`absolute inset-0 ${colors.border} border opacity-0 group-hover:opacity-100 transition-opacity duration-600 rounded-2xl pointer-events-none`} />
+    </div>
   )
 }

@@ -1,88 +1,118 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { Menu, X, Scroll } from 'lucide-react'
 import { ConnectWallet } from '@/components/wallet/ConnectWallet'
 
+const navLinks = [
+  { label: 'Stories', href: '#stories' },
+  { label: 'How It Works', href: '#how-it-works' },
+  { label: 'About', href: '#about' },
+  { label: 'Docs', href: '/docs' },
+]
+
 export function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 80)
+      setIsScrolled(window.scrollY > 20)
     }
+
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-400"
-      style={{
-        background: scrolled ? 'rgba(5, 6, 11, 0.85)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(20px)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(212, 168, 83, 0.1)' : 'none',
-        padding: scrolled ? '10px 0' : '16px 0',
-      }}
-    >
-      <div className="container-custom">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <a href="/" className="flex items-center gap-2">
-            <span
-              className="text-2xl"
-              style={{
-                color: 'var(--gold)',
-                animation: 'glyphPulse 3s infinite',
-              }}
-            >
-              ⬡
-            </span>
-            <span
-              className="text-lg uppercase tracking-wider font-semibold hidden sm:block"
-              style={{ fontFamily: 'var(--font-display)', color: 'var(--gold)' }}
-            >
-              NarrativeForge
-            </span>
-          </a>
+    <>
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-600 ${
+          isScrolled
+            ? 'bg-background/80 backdrop-blur-xl border-b border-void-800 shadow-lg'
+            : 'bg-transparent'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="flex items-center justify-between h-20">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="bg-gold/10 p-2 rounded-lg group-hover:bg-gold/20 transition-colors duration-600">
+                <Scroll className="w-6 h-6 text-gold" />
+              </div>
+              <div>
+                <div className="text-xl font-display font-bold text-gold">
+                  NarrativeForge
+                </div>
+                <div className="text-xs text-void-400 font-ui uppercase tracking-wider">
+                  Ruins of the Future
+                </div>
+              </div>
+            </Link>
 
-          {/* Links */}
-          <div className="hidden md:flex items-center gap-8">
-            <a
-              href="#story"
-              className="text-sm uppercase tracking-wider transition-colors duration-300"
-              style={{
-                fontFamily: 'var(--font-ui)',
-                color: 'var(--text-secondary)',
-              }}
+            {/* Desktop Nav */}
+            <div className="hidden lg:flex items-center gap-8">
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-ui text-void-300 hover:text-gold transition-colors duration-600 uppercase tracking-wider"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+
+            {/* Desktop CTA */}
+            <div className="hidden lg:block">
+              <ConnectWallet />
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden text-foreground hover:text-gold transition-colors duration-600"
+              aria-label="Toggle menu"
             >
-              Features
-            </a>
-            <a
-              href="#mechanics"
-              className="text-sm uppercase tracking-wider transition-colors duration-300"
-              style={{
-                fontFamily: 'var(--font-ui)',
-                color: 'var(--text-secondary)',
-              }}
-            >
-              How It Works
-            </a>
-            <a
-              href="/stories"
-              className="text-sm uppercase tracking-wider transition-colors duration-300"
-              style={{
-                fontFamily: 'var(--font-ui)',
-                color: 'var(--text-secondary)',
-              }}
-            >
-              Stories
-            </a>
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
           </div>
-
-          {/* CTA */}
-          <ConnectWallet />
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-40 lg:hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-background/95 backdrop-blur-xl"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+
+          {/* Menu Content */}
+          <div className="relative h-full flex flex-col items-center justify-center gap-8 px-6">
+            {navLinks.map((link, index) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`text-2xl font-display text-foreground hover:text-gold transition-colors duration-600 opacity-0 ambient-fade stagger-${index + 1}`}
+              >
+                {link.label}
+              </a>
+            ))}
+
+            <div className="mt-8 opacity-0 ambient-fade stagger-5">
+              <ConnectWallet />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }

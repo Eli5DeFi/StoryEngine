@@ -1,137 +1,145 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { ArrowRight, TrendingUp, Users, Clock } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { BookOpen, Users, Coins, TrendingUp } from 'lucide-react'
+
+// Mock data - will be replaced with real API calls
+const featuredStories = [
+  {
+    id: '1',
+    title: 'The Last Archive',
+    description: 'In the ruins of a fallen civilization, an AI awakens to find fragments of human memory scattered across a dead network.',
+    genre: 'Post-Apocalyptic Sci-Fi',
+    currentChapter: 7,
+    totalBets: '$47,320',
+    activeBettors: 892,
+    winRate: 91,
+    coverGradient: 'from-drift-teal/20 to-drift-purple/20',
+  },
+  {
+    id: '2',
+    title: 'Dune Protocols',
+    description: 'Three houses compete for control of the Spice—a resource that grants prescient AI the ability to see all possible futures.',
+    genre: 'Space Opera',
+    currentChapter: 4,
+    totalBets: '$38,950',
+    activeBettors: 654,
+    winRate: 87,
+    coverGradient: 'from-gold/20 to-drift-teal/20',
+  },
+  {
+    id: '3',
+    title: 'The Singing Sands',
+    description: 'An exiled prophet discovers that the desert itself is alive—and it has been waiting millennia to speak.',
+    genre: 'Mythological Fantasy',
+    currentChapter: 9,
+    totalBets: '$52,180',
+    activeBettors: 1043,
+    winRate: 93,
+    coverGradient: 'from-drift-purple/20 to-gold/20',
+  },
+]
 
 export function FeaturedStories() {
-  const stories = [
-    {
-      id: 1,
-      title: 'The Last Starforge',
-      genre: 'Sci-Fi',
-      description: 'A derelict space station holds the secret to humanity\'s survival. But which path will the AI choose?',
-      poolSize: '142.5K',
-      bettors: 847,
-      timeLeft: '4h 23m',
-      image: 'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800&q=80',
-      gradient: 'from-blue-500 to-cyan-500',
-    },
-    {
-      id: 2,
-      title: 'Echoes of the Void',
-      genre: 'Fantasy',
-      description: 'Ancient magic awakens in a world of forgotten gods. The AI faces an impossible choice.',
-      poolSize: '98.3K',
-      bettors: 623,
-      timeLeft: '2h 15m',
-      image: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80',
-      gradient: 'from-purple-500 to-pink-500',
-    },
-    {
-      id: 3,
-      title: 'Neon Prophecy',
-      genre: 'Cyberpunk',
-      description: 'In a dystopian megacity, a hacker discovers a conspiracy. What will the AI decide?',
-      poolSize: '76.8K',
-      bettors: 512,
-      timeLeft: '6h 42m',
-      image: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80',
-      gradient: 'from-orange-500 to-red-500',
-    },
-  ]
-
   return (
-    <section id="stories" className="py-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Featured <span className="text-gradient">Stories</span>
+    <section id="stories" className="relative py-32 bg-gradient-to-b from-background to-void-950">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+        {/* Section Header */}
+        <div className="text-center mb-20">
+          <div className="text-ceremonial mb-4">
+            Active Chronicles
+          </div>
+          <h2 className="text-4xl sm:text-5xl font-display font-bold text-gold gold-glow mb-6">
+            Featured Stories
           </h2>
-          <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-            Active betting pools with the highest engagement. Join thousands of readers shaping these narratives.
+          <p className="text-xl text-void-300 max-w-2xl mx-auto">
+            Join thousands of readers betting on AI-generated narratives
           </p>
-        </motion.div>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {stories.map((story, index) => (
-            <motion.div
-              key={story.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group bg-card border border-border rounded-xl overflow-hidden card-hover"
-            >
-              {/* Image header with gradient overlay */}
-              <div className="relative h-48 overflow-hidden">
-                <div className={`absolute inset-0 bg-gradient-to-br ${story.gradient} opacity-60 group-hover:opacity-80 transition-opacity`} />
-                <div className="absolute top-4 left-4 px-3 py-1 bg-background/80 backdrop-blur rounded-full text-xs font-medium">
-                  {story.genre}
-                </div>
-                <div className="absolute bottom-4 right-4 px-3 py-1 bg-red-500/80 backdrop-blur rounded-full text-xs font-medium flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  {story.timeLeft}
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-6">
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">
-                  {story.title}
-                </h3>
-                <p className="text-foreground/70 mb-4 text-sm leading-relaxed">
-                  {story.description}
-                </p>
-
-                {/* Stats */}
-                <div className="flex items-center justify-between mb-4 pb-4 border-b border-border">
-                  <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1 text-foreground/60">
-                      <TrendingUp className="w-4 h-4 text-primary" />
-                      <span className="font-medium text-foreground">{story.poolSize} $FORGE</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-foreground/60">
-                      <Users className="w-4 h-4 text-purple-500" />
-                      <span className="font-medium text-foreground">{story.bettors}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* CTA */}
-                <Button className="w-full bg-primary hover:bg-primary/90 group-hover:glow transition-all">
-                  Place Bet
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </div>
-            </motion.div>
+        {/* Story Cards Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+          {featuredStories.map((story, index) => (
+            <StoryCard key={story.id} story={story} index={index} />
           ))}
         </div>
 
-        {/* View all button */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-center mt-12"
-        >
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-primary/50 hover:bg-primary/10"
-          >
+        {/* View All CTA */}
+        <div className="text-center">
+          <Link href="/stories" className="btn-secondary text-lg">
             View All Stories
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
-        </motion.div>
+          </Link>
+        </div>
       </div>
     </section>
+  )
+}
+
+interface StoryCardProps {
+  story: typeof featuredStories[0]
+  index: number
+}
+
+function StoryCard({ story, index }: StoryCardProps) {
+  return (
+    <Link href={`/story/${story.id}`}>
+      <div className={`glass-card p-6 rounded-2xl h-full flex flex-col opacity-0 ambient-fade stagger-${index + 1} group cursor-pointer`}>
+        {/* Cover */}
+        <div className={`relative h-48 rounded-xl mb-6 bg-gradient-to-br ${story.coverGradient} flex items-center justify-center overflow-hidden`}>
+          <div className="absolute inset-0 starfield-bg opacity-50" />
+          <BookOpen className="w-16 h-16 text-gold opacity-50 relative z-10 group-hover:scale-110 transition-transform duration-600" />
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 flex flex-col">
+          {/* Genre Badge */}
+          <div className="text-xs font-ui uppercase tracking-wider text-gold mb-3">
+            {story.genre}
+          </div>
+
+          {/* Title */}
+          <h3 className="text-2xl font-display font-bold text-foreground mb-3 group-hover:text-gold transition-colors duration-600">
+            {story.title}
+          </h3>
+
+          {/* Description */}
+          <p className="text-void-300 text-sm leading-relaxed mb-6 flex-1">
+            {story.description}
+          </p>
+
+          {/* Stats */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2 text-void-400">
+                <BookOpen className="w-4 h-4" />
+                <span>Chapter {story.currentChapter}</span>
+              </div>
+              <div className="flex items-center gap-2 text-drift-teal">
+                <TrendingUp className="w-4 h-4" />
+                <span>{story.winRate}% win rate</span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2 text-void-400">
+                <Coins className="w-4 h-4" />
+                <span className="font-ui tabular-nums">{story.totalBets}</span>
+              </div>
+              <div className="flex items-center gap-2 text-void-400">
+                <Users className="w-4 h-4" />
+                <span className="font-ui tabular-nums">{story.activeBettors}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="mt-6 pt-6 border-t border-void-800">
+            <div className="text-gold font-ui text-sm uppercase tracking-wider group-hover:translate-x-2 transition-transform duration-600">
+              Read & Bet →
+            </div>
+          </div>
+        </div>
+      </div>
+    </Link>
   )
 }

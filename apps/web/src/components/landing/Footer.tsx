@@ -1,185 +1,155 @@
 'use client'
 
-import { Twitter, Github, MessageCircle } from 'lucide-react'
+import Link from 'next/link'
+import { Scroll, Twitter, Github, MessageCircle } from 'lucide-react'
+
+const footerLinks = {
+  product: [
+    { label: 'Stories', href: '/stories' },
+    { label: 'How It Works', href: '#how-it-works' },
+    { label: 'Roadmap', href: '/roadmap' },
+    { label: 'Tokenomics', href: '/tokenomics' },
+  ],
+  resources: [
+    { label: 'Documentation', href: '/docs' },
+    { label: 'API', href: '/api' },
+    { label: 'Smart Contracts', href: 'https://github.com/eli5-claw/StoryEngine/tree/main/packages/contracts' },
+    { label: 'GitHub', href: 'https://github.com/eli5-claw/StoryEngine' },
+  ],
+  community: [
+    { label: 'Twitter', href: 'https://twitter.com/narrativeforge' },
+    { label: 'Discord', href: 'https://discord.gg/narrativeforge' },
+    { label: 'Telegram', href: 'https://t.me/narrativeforge' },
+    { label: 'Blog', href: '/blog' },
+  ],
+  legal: [
+    { label: 'Terms of Service', href: '/terms' },
+    { label: 'Privacy Policy', href: '/privacy' },
+    { label: 'Disclaimer', href: '/disclaimer' },
+  ],
+}
+
+const socialLinks = [
+  { icon: Twitter, href: 'https://twitter.com/narrativeforge', label: 'Twitter' },
+  { icon: Github, href: 'https://github.com/eli5-claw/StoryEngine', label: 'GitHub' },
+  { icon: MessageCircle, href: 'https://discord.gg/narrativeforge', label: 'Discord' },
+]
 
 export function Footer() {
-  const links = {
-    product: [
-      { label: 'How It Works', href: '#mechanics' },
-      { label: 'Stories', href: '/stories' },
-      { label: 'About', href: '/about' },
-    ],
-    resources: [
-      { label: 'Documentation', href: '/docs' },
-      { label: 'API', href: '/api-docs' },
-      { label: 'Smart Contracts', href: '/contracts' },
-    ],
-    community: [
-      { label: 'Discord', href: 'https://discord.gg/narrativeforge' },
-      { label: 'Twitter', href: 'https://twitter.com/narrativeforge' },
-      { label: 'GitHub', href: 'https://github.com/narrativeforge' },
-    ],
-  }
-
   return (
-    <footer className="relative border-t border-[--border] py-16">
-      <div className="container-custom">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+    <footer className="relative bg-void-950 border-t border-void-800">
+      {/* Background */}
+      <div className="absolute inset-0 starfield-bg opacity-20" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <div className="flex items-center gap-2 mb-4">
-              <span
-                className="text-2xl"
-                style={{
-                  color: 'var(--gold)',
-                  animation: 'glyphPulse 3s infinite',
-                }}
-              >
-                ⬡
-              </span>
-              <span
-                className="text-xl uppercase tracking-wider font-semibold"
-                style={{ fontFamily: 'var(--font-display)', color: 'var(--gold)' }}
-              >
-                NarrativeForge
-              </span>
-            </div>
-            
-            <p
-              className="text-sm leading-relaxed mb-6 max-w-sm"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              Prediction market meets interactive fiction. Bet on AI story choices using USDC. 
-              Shape narratives. Win rewards.
+            <Link href="/" className="flex items-center gap-3 mb-6">
+              <div className="bg-gold/10 p-2 rounded-lg">
+                <Scroll className="w-6 h-6 text-gold" />
+              </div>
+              <div>
+                <div className="text-xl font-display font-bold text-gold">
+                  NarrativeForge
+                </div>
+                <div className="text-xs text-void-400 font-ui uppercase tracking-wider">
+                  Ruins of the Future
+                </div>
+              </div>
+            </Link>
+            <p className="text-void-400 leading-relaxed mb-6 max-w-md">
+              Prediction markets meet interactive fiction. Bet on AI-generated narratives,
+              shape the story, and claim your share of the pot.
             </p>
-
-            <div className="flex gap-3">
-              <a
-                href="https://twitter.com/narrativeforge"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded flex items-center justify-center transition-all duration-300"
-                style={{ 
-                  background: 'rgba(212, 168, 83, 0.05)', 
-                  border: '1px solid rgba(212, 168, 83, 0.1)' 
-                }}
-              >
-                <Twitter className="w-4 h-4" style={{ color: 'var(--gold)' }} />
-              </a>
-              <a
-                href="https://github.com/narrativeforge"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded flex items-center justify-center transition-all duration-300"
-                style={{ 
-                  background: 'rgba(212, 168, 83, 0.05)', 
-                  border: '1px solid rgba(212, 168, 83, 0.1)' 
-                }}
-              >
-                <Github className="w-4 h-4" style={{ color: 'var(--gold)' }} />
-              </a>
-              <a
-                href="https://discord.gg/narrativeforge"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded flex items-center justify-center transition-all duration-300"
-                style={{ 
-                  background: 'rgba(212, 168, 83, 0.05)', 
-                  border: '1px solid rgba(212, 168, 83, 0.1)' 
-                }}
-              >
-                <MessageCircle className="w-4 h-4" style={{ color: 'var(--gold)' }} />
-              </a>
+            {/* Social Links */}
+            <div className="flex items-center gap-4">
+              {socialLinks.map((social) => {
+                const Icon = social.icon
+                return (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="glass-card p-3 rounded-lg hover:bg-gold/10 transition-colors duration-600 group"
+                    aria-label={social.label}
+                  >
+                    <Icon className="w-5 h-5 text-void-400 group-hover:text-gold transition-colors duration-600" />
+                  </a>
+                )
+              })}
             </div>
           </div>
 
           {/* Links */}
-          <div>
-            <h4
-              className="text-sm font-semibold uppercase tracking-wider mb-4"
-              style={{ fontFamily: 'var(--font-ui)', color: 'var(--text-primary)' }}
-            >
-              Product
-            </h4>
-            <ul className="space-y-2">
-              {links.product.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm transition-colors duration-300"
-                    style={{ color: 'var(--text-secondary)' }}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4
-              className="text-sm font-semibold uppercase tracking-wider mb-4"
-              style={{ fontFamily: 'var(--font-ui)', color: 'var(--text-primary)' }}
-            >
-              Resources
-            </h4>
-            <ul className="space-y-2">
-              {links.resources.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm transition-colors duration-300"
-                    style={{ color: 'var(--text-secondary)' }}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4
-              className="text-sm font-semibold uppercase tracking-wider mb-4"
-              style={{ fontFamily: 'var(--font-ui)', color: 'var(--text-primary)' }}
-            >
-              Community
-            </h4>
-            <ul className="space-y-2">
-              {links.community.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm transition-colors duration-300"
-                    style={{ color: 'var(--text-secondary)' }}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <FooterSection title="Product" links={footerLinks.product} />
+          <FooterSection title="Resources" links={footerLinks.resources} />
+          <FooterSection title="Community" links={footerLinks.community} />
         </div>
 
-        {/* Bottom bar */}
-        <div
-          className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm"
-          style={{ 
-            borderTop: '1px solid rgba(212, 168, 83, 0.05)',
-            color: 'var(--text-muted)' 
-          }}
-        >
-          <div>© 2026 NarrativeForge. All rights reserved.</div>
-          <div
-            className="italic"
-            style={{ fontFamily: 'var(--font-display)', color: 'var(--gold-dim)' }}
-          >
-            "Every prediction shapes the story."
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-void-800">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            {/* Copyright */}
+            <div className="text-sm text-void-500 font-ui">
+              © {new Date().getFullYear()} NarrativeForge. Built on{' '}
+              <a
+                href="https://base.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-drift-teal hover:underline"
+              >
+                Base
+              </a>
+              .
+            </div>
+
+            {/* Legal Links */}
+            <div className="flex items-center gap-6">
+              {footerLinks.legal.map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className="text-sm text-void-500 hover:text-gold transition-colors duration-600 font-ui"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>
     </footer>
+  )
+}
+
+interface FooterSectionProps {
+  title: string
+  links: Array<{ label: string; href: string }>
+}
+
+function FooterSection({ title, links }: FooterSectionProps) {
+  return (
+    <div>
+      <h3 className="text-sm font-ui uppercase tracking-wider text-gold mb-4">
+        {title}
+      </h3>
+      <ul className="space-y-3">
+        {links.map((link) => (
+          <li key={link.label}>
+            <Link
+              href={link.href}
+              className="text-sm text-void-400 hover:text-foreground transition-colors duration-600"
+              target={link.href.startsWith('http') ? '_blank' : undefined}
+              rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+            >
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }

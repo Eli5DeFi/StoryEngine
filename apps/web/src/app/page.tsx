@@ -1,30 +1,17 @@
 import { Navbar } from '@/components/landing/Navbar'
 import { Hero } from '@/components/landing/Hero'
-import { Story } from '@/components/landing/Story'
-import { Mechanics } from '@/components/landing/Mechanics'
-import { CTA } from '@/components/landing/CTA'
+import { HowItWorks } from '@/components/landing/HowItWorks'
+import { FeaturedStories } from '@/components/landing/FeaturedStories'
 import { Footer } from '@/components/landing/Footer'
-import { Starfield } from '@/components/effects/Starfield'
-import { DustParticles } from '@/components/effects/DustParticles'
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <>
-      {/* Ambient effects */}
-      <Starfield />
-      <DustParticles />
-      
-      {/* Navigation */}
+    <main className="min-h-screen bg-background">
       <Navbar />
-      
-      {/* Main content */}
-      <main className="relative z-10">
-        <Hero />
-        <Story />
-        <Mechanics />
-        <CTA />
-        <Footer />
-      </main>
-    </>
+      <Hero />
+      <FeaturedStories />
+      <HowItWorks />
+      <Footer />
+    </main>
   )
 }
