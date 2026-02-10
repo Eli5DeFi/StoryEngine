@@ -134,7 +134,7 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
             <span className="text-xs font-ui uppercase tracking-wider">Total Pool</span>
           </div>
           <div className="text-3xl font-display font-bold text-drift-teal tabular-nums">
-            ${pool.totalPool.toFixed(2)}
+            ${Number(pool.totalPool).toFixed(2)}
           </div>
           <div className="text-xs text-void-500 mt-1">USDC</div>
         </div>
@@ -238,18 +238,18 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
               type="number"
               value={betAmount}
               onChange={(e) => setBetAmount(e.target.value)}
-              placeholder={`Min: $${pool.minBet.toFixed(2)}`}
-              min={pool.minBet.toNumber()}
-              max={pool.maxBet?.toNumber()}
+              placeholder={`Min: $${Number(pool.minBet).toFixed(2)}`}
+              min={Number(pool.minBet)}
+              max={pool.maxBet ? Number(pool.maxBet) : undefined}
               step="1"
               className="w-full px-6 py-4 pl-12 glass-card rounded-xl border border-void-800 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/50 transition-all duration-500 font-ui text-lg tabular-nums"
             />
             <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-drift-teal" />
           </div>
           <div className="flex justify-between mt-3 text-xs text-void-500 font-ui">
-            <span>Min: ${pool.minBet.toFixed(2)}</span>
+            <span>Min: ${Number(pool.minBet).toFixed(2)}</span>
             <span>Balance: ${balance}</span>
-            {pool.maxBet && <span>Max: ${pool.maxBet.toFixed(2)}</span>}
+            {pool.maxBet && <span>Max: ${Number(pool.maxBet).toFixed(2)}</span>}
           </div>
         </div>
       )}
