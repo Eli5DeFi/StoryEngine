@@ -73,10 +73,10 @@ export function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="glass-card p-3 rounded-lg hover:bg-gold/10 transition-colors duration-600 group"
+                    className="glass-card p-3 rounded-lg hover:bg-gold/10 transition-colors duration-500 group"
                     aria-label={social.label}
                   >
-                    <Icon className="w-5 h-5 text-void-400 group-hover:text-gold transition-colors duration-600" />
+                    <Icon className="w-5 h-5 text-void-400 group-hover:text-gold transition-colors duration-500" />
                   </a>
                 )
               })}
@@ -112,7 +112,7 @@ export function Footer() {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="text-sm text-void-500 hover:text-gold transition-colors duration-600 font-ui"
+                  className="text-sm text-void-500 hover:text-gold transition-colors duration-500 font-ui"
                 >
                   {link.label}
                 </Link>
@@ -141,7 +141,7 @@ function FooterSection({ title, links }: FooterSectionProps) {
           <li key={link.label}>
             <Link
               href={link.href}
-              className="text-sm text-void-400 hover:text-foreground transition-colors duration-600"
+              className="text-sm text-void-400 hover:text-foreground transition-colors duration-500"
               target={link.href.startsWith('http') ? '_blank' : undefined}
               rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
             >

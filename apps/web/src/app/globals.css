@@ -128,7 +128,7 @@
 /* Button Styles */
 .btn-primary {
   @apply bg-gold hover:bg-gold-light text-background font-ui font-semibold px-6 py-3 rounded-lg;
-  @apply transition-all duration-600 ease-out;
+  @apply transition-all duration-500 ease-out;
   @apply shadow-lg hover:shadow-xl;
   box-shadow: 0 4px 12px rgba(212, 168, 83, 0.3);
 }
@@ -140,13 +140,13 @@
 
 .btn-secondary {
   @apply border-2 border-drift-teal text-drift-teal font-ui font-semibold px-6 py-3 rounded-lg;
-  @apply transition-all duration-600 ease-out;
+  @apply transition-all duration-500 ease-out;
   @apply hover:bg-drift-teal hover:text-background;
 }
 
 .btn-ghost {
   @apply text-foreground font-ui font-medium px-4 py-2 rounded-lg;
-  @apply transition-all duration-600 ease-out;
+  @apply transition-all duration-500 ease-out;
   @apply hover:bg-white/5;
 }
 

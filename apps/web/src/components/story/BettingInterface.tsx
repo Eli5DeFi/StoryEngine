@@ -183,7 +183,7 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
               disabled={!isOpen || !isConnected}
               whileHover={isOpen && isConnected ? { scale: 1.01 } : {}}
               whileTap={isOpen && isConnected ? { scale: 0.99 } : {}}
-              className={`w-full glass-card p-6 rounded-xl transition-all duration-600 ${
+              className={`w-full glass-card p-6 rounded-xl transition-all duration-500 ${
                 isSelected
                   ? 'border-2 border-gold bg-gold/10'
                   : 'border border-void-800 hover:border-gold/50'
@@ -191,7 +191,7 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-start gap-4 flex-1 text-left">
-                  <div className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors duration-600 ${
+                  <div className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors duration-500 ${
                     isSelected ? 'border-gold bg-gold' : 'border-void-600'
                   }`}>
                     {isSelected && <div className="w-3 h-3 bg-background rounded-full" />}
@@ -214,7 +214,7 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
               {/* Progress bar */}
               <div className="w-full h-2 bg-void-900 rounded-full overflow-hidden mb-2">
                 <div
-                  className="h-full bg-gradient-to-r from-gold to-gold-light transition-all duration-600"
+                  className="h-full bg-gradient-to-r from-gold to-gold-light transition-all duration-500"
                   style={{ width: `${percentage}%` }}
                 />
               </div>
@@ -242,7 +242,7 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
               min={pool.minBet.toNumber()}
               max={pool.maxBet?.toNumber()}
               step="1"
-              className="w-full px-6 py-4 pl-12 glass-card rounded-xl border border-void-800 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/50 transition-all duration-600 font-ui text-lg tabular-nums"
+              className="w-full px-6 py-4 pl-12 glass-card rounded-xl border border-void-800 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/50 transition-all duration-500 font-ui text-lg tabular-nums"
             />
             <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-drift-teal" />
           </div>

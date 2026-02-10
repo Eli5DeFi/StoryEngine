@@ -87,7 +87,7 @@ function StoryCard({ story, index }: StoryCardProps) {
         {/* Cover */}
         <div className={`relative h-48 rounded-xl mb-6 bg-gradient-to-br ${story.coverGradient} flex items-center justify-center overflow-hidden`}>
           <div className="absolute inset-0 starfield-bg opacity-50" />
-          <BookOpen className="w-16 h-16 text-gold opacity-50 relative z-10 group-hover:scale-110 transition-transform duration-600" />
+          <BookOpen className="w-16 h-16 text-gold opacity-50 relative z-10 group-hover:scale-110 transition-transform duration-500" />
         </div>
 
         {/* Content */}
@@ -98,7 +98,7 @@ function StoryCard({ story, index }: StoryCardProps) {
           </div>
 
           {/* Title */}
-          <h3 className="text-2xl font-display font-bold text-foreground mb-3 group-hover:text-gold transition-colors duration-600">
+          <h3 className="text-2xl font-display font-bold text-foreground mb-3 group-hover:text-gold transition-colors duration-500">
             {story.title}
           </h3>
 
@@ -134,7 +134,7 @@ function StoryCard({ story, index }: StoryCardProps) {
 
           {/* CTA */}
           <div className="mt-6 pt-6 border-t border-void-800">
-            <div className="text-gold font-ui text-sm uppercase tracking-wider group-hover:translate-x-2 transition-transform duration-600">
+            <div className="text-gold font-ui text-sm uppercase tracking-wider group-hover:translate-x-2 transition-transform duration-500">
               Read & Bet →
             </div>
           </div>

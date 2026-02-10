@@ -1,0 +1,12 @@
+{
+  "name": "@narrative-forge/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Smart contracts for NarrativeForge (Foundry)",
+  "scripts": {
+    "build": "forge build",
+    "test": "forge test -vvv",
+    "deploy:testnet": "forge script script/DeployTestnet.s.sol:DeployTestnetScript --rpc-url $BASE_TESTNET_RPC_URL --broadcast",
+    "deploy:mainnet": "forge script script/Deploy.s.sol:DeployScript --rpc-url $BASE_RPC_URL --broadcast --verify"
+  }
+}

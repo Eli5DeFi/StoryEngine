@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Cinzel, Space_Grotesk, Rajdhani } from 'next/font/google'
+import { Web3Provider } from '@/components/providers/Web3Provider'
 import './globals.css'
 
 const cinzel = Cinzel({
@@ -49,7 +50,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${cinzel.variable} ${spaceGrotesk.variable} ${rajdhani.variable}`}>
       <body className="bg-background text-foreground antialiased">
-        {children}
+        <Web3Provider>
+          {children}
+        </Web3Provider>
       </body>
     </html>
   )

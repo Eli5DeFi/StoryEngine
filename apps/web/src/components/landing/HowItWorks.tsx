@@ -129,7 +129,7 @@ function StepCard({ step, index }: StepCardProps) {
       </p>
 
       {/* Hover Glow */}
-      <div className={`absolute inset-0 ${colors.border} border opacity-0 group-hover:opacity-100 transition-opacity duration-600 rounded-2xl pointer-events-none`} />
+      <div className={`absolute inset-0 ${colors.border} border opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none`} />
     </div>
   )
 }

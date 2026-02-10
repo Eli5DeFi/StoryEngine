@@ -28,7 +28,7 @@ export function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-600 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isScrolled
             ? 'bg-background/80 backdrop-blur-xl border-b border-void-800 shadow-lg'
             : 'bg-transparent'
@@ -38,7 +38,7 @@ export function Navbar() {
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="bg-gold/10 p-2 rounded-lg group-hover:bg-gold/20 transition-colors duration-600">
+              <div className="bg-gold/10 p-2 rounded-lg group-hover:bg-gold/20 transition-colors duration-500">
                 <Scroll className="w-6 h-6 text-gold" />
               </div>
               <div>
@@ -57,7 +57,7 @@ export function Navbar() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-ui text-void-300 hover:text-gold transition-colors duration-600 uppercase tracking-wider"
+                  className="text-sm font-ui text-void-300 hover:text-gold transition-colors duration-500 uppercase tracking-wider"
                 >
                   {link.label}
                 </a>
@@ -72,7 +72,7 @@ export function Navbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden text-foreground hover:text-gold transition-colors duration-600"
+              className="lg:hidden text-foreground hover:text-gold transition-colors duration-500"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
@@ -101,7 +101,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`text-2xl font-display text-foreground hover:text-gold transition-colors duration-600 opacity-0 ambient-fade stagger-${index + 1}`}
+                className={`text-2xl font-display text-foreground hover:text-gold transition-colors duration-500 opacity-0 ambient-fade stagger-${index + 1}`}
               >
                 {link.label}
               </a>
