@@ -2,28 +2,78 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===================================================================
+   NARRATIVEFORGE DESIGN SYSTEM
+   Aesthetic: "Ruins of the Future" - Post-apocalyptic sci-fi betting
+   =================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
 @layer base {
   :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-    --radius: 0.5rem;
+    /* ── Backgrounds (darkest to lightest) ── */
+    --bg-deep:       #05060b;
+    --bg-space:      #0a0c16;
+    --bg-card:       #0f1220;
+    --bg-card-hover: #151a2e;
+    --bg-elevated:   #1a1f35;
+
+    /* ── Primary Accents ── */
+    --gold:          #d4a853;
+    --gold-bright:   #f0c96e;
+    --gold-dim:      #8a6c2f;
+    --amber:         #e8923a;
+
+    /* ── Exotic / Drift Energy ── */
+    --drift-teal:      #00e5c8;
+    --drift-teal-dim:  #007a6b;
+    --drift-purple:    #a855f7;
+    --drift-purple-dim:#6b21a8;
+
+    /* ── Danger / Crimson ── */
+    --crimson:       #ef4444;
+    --crimson-dim:   #991b1b;
+
+    /* ── Text Hierarchy ── */
+    --text-primary:   #e8e2d6;
+    --text-secondary: #a09888;
+    --text-muted:     #6b6050;
+    --text-glow:      #f0c96e;
+
+    /* ── Typography ── */
+    --font-display: 'Cinzel', serif;
+    --font-body:    'Space Grotesk', sans-serif;
+    --font-ui:      'Rajdhani', sans-serif;
+
+    /* ── Spacing ── */
+    --section-pad: clamp(80px, 12vh, 160px);
+    --container-max: 1280px;
+
+    /* ── Easing ── */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* Shadcn compatibility */
+    --background: #05060b;
+    --foreground: #e8e2d6;
+    --card: #0f1220;
+    --card-foreground: #e8e2d6;
+    --popover: #1a1f35;
+    --popover-foreground: #e8e2d6;
+    --primary: #d4a853;
+    --primary-foreground: #05060b;
+    --secondary: #0a0c16;
+    --secondary-foreground: #e8e2d6;
+    --muted: #0f1220;
+    --muted-foreground: #6b6050;
+    --accent: #00e5c8;
+    --accent-foreground: #05060b;
+    --destructive: #ef4444;
+    --destructive-foreground: #e8e2d6;
+    --border: rgba(212, 168, 83, 0.1);
+    --input: rgba(212, 168, 83, 0.1);
+    --ring: #d4a853;
+    --radius: 12px;
   }
 }
 
@@ -31,64 +81,395 @@
   * {
     @apply border-border;
   }
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#05060b] text-[#e8e2d6];
+    font-family: var(--font-body);
     font-feature-settings: "rlig" 1, "calt" 1;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  h1 {
+    font-size: clamp(42px, 7vw, 88px);
+    font-weight: 900;
+    line-height: 1.1;
+  }
+
+  h2 {
+    font-size: clamp(32px, 5vw, 56px);
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: 600;
   }
 }
+
+/* ===================================================================
+   GRADIENT TEXT UTILITIES
+   =================================================================== */
 
 @layer utilities {
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-pink-500;
+  .text-gradient-gold {
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold), var(--amber));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   
-  .glow {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  .text-gradient-drift {
+    background: linear-gradient(135deg, var(--drift-teal), var(--drift-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-  
-  .card-hover {
-    @apply transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/20;
+
+  .text-glow-teal {
+    color: var(--drift-teal);
+    text-shadow: 0 0 10px rgba(0, 229, 200, 0.3);
+  }
+
+  .text-glow-gold {
+    color: var(--gold-bright);
+    text-shadow: 0 0 12px rgba(240, 201, 110, 0.4);
+  }
+
+  /* Section label style */
+  .section-label {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--drift-teal);
+  }
+
+  /* Card glass effect */
+  .card-glass {
+    background: rgba(15, 18, 32, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 168, 83, 0.1);
+    border-radius: 12px;
+    transition: all 0.4s var(--ease-out);
+  }
+
+  .card-glass:hover {
+    border-color: rgba(212, 168, 83, 0.25);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Container utility */
+  .container-custom {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 clamp(20px, 4vw, 60px);
   }
 }
 
-/* Custom scrollbar */
+/* ===================================================================
+   STARFIELD BACKGROUND
+   =================================================================== */
+
+.starfield {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ===================================================================
+   DUST PARTICLES
+   =================================================================== */
+
+.dust-particle {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes dustFloat {
+  0% {
+    transform: translate(0, 100vh);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate(var(--dust-x), -100px);
+    opacity: 0;
+  }
+}
+
+/* ===================================================================
+   ANIMATIONS
+   =================================================================== */
+
+@keyframes glyphPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px rgba(212, 168, 83, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(212, 168, 83, 0.8));
+  }
+}
+
+@keyframes orbPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes barFill {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--target-width);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeLeft {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeRight {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scrollBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+/* ===================================================================
+   COMPONENT STYLES
+   =================================================================== */
+
+/* Button styles */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.125em;
+  text-transform: uppercase;
+  padding: 16px 36px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--gold), var(--amber));
+  color: var(--bg-deep);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s var(--ease-out);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(212, 168, 83, 0.4);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid rgba(212, 168, 83, 0.3);
+}
+
+.btn-secondary:hover {
+  color: var(--gold-bright);
+  border-color: rgba(212, 168, 83, 0.6);
+  background: rgba(212, 168, 83, 0.05);
+  box-shadow: 0 8px 30px rgba(212, 168, 83, 0.2);
+}
+
+/* Section header */
+.section-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.section-title {
+  margin-bottom: 16px;
+}
+
+.section-subtitle {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin-top: 16px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Stat counter */
+.stat {
+  text-align: center;
+}
+
+.stat-value {
+  font-family: var(--font-ui);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.125em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Badge */
+.badge {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.badge-teal {
+  background: var(--drift-teal);
+  color: var(--bg-deep);
+  border: none;
+  font-weight: 700;
+  letter-spacing: 0.125em;
+}
+
+.badge-gold {
+  background: var(--gold);
+  color: var(--bg-deep);
+  border: none;
+  font-weight: 700;
+  letter-spacing: 0.125em;
+}
+
+/* Pool distribution bar */
+.pool-bar {
+  display: flex;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.pool-winners {
+  background: linear-gradient(135deg, var(--gold), var(--amber));
+}
+
+.pool-treasury {
+  background: linear-gradient(135deg, var(--drift-teal-dim), var(--drift-teal));
+}
+
+.pool-ops {
+  background: linear-gradient(135deg, var(--drift-purple-dim), var(--drift-purple));
+}
+
+/* ===================================================================
+   SCROLLBAR
+   =================================================================== */
+
 ::-webkit-scrollbar {
   width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-background;
+  background: var(--bg-deep);
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary/30 rounded-full;
+  background: rgba(212, 168, 83, 0.3);
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary/50;
+  background: rgba(212, 168, 83, 0.5);
 }
 
-/* Animated background */
-.animated-bg {
-  background: linear-gradient(
-    45deg,
-    hsl(var(--background)),
-    hsl(var(--primary) / 0.1),
-    hsl(var(--background)),
-    hsl(var(--secondary) / 0.1)
-  );
-  background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
-}
+/* ===================================================================
+   RESPONSIVE
+   =================================================================== */
 
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
+@media (max-width: 768px) {
+  :root {
+    --section-pad: clamp(40px, 8vh, 80px);
   }
-  50% {
-    background-position: 100% 50%;
+
+  h1 {
+    font-size: clamp(32px, 10vw, 48px);
   }
-  100% {
-    background-position: 0% 50%;
+
+  h2 {
+    font-size: clamp(24px, 8vw, 36px);
+  }
+
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    max-width: 300px;
   }
 }
