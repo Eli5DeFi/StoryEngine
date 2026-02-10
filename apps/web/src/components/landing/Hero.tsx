@@ -1,136 +1,111 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ArrowRight, Sparkles, Trophy, TrendingUp } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { ArrowDown } from 'lucide-react'
+import { ConnectWallet } from '@/components/wallet/ConnectWallet'
 
 export function Hero() {
   return (
-    <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Background glow effects */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse-glow" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse-glow" />
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Gradient overlay */}
+      <div className="absolute inset-0" style={{
+        background: `
+          radial-gradient(ellipse at 50% 80%, rgba(212, 168, 83, 0.06) 0%, transparent 60%),
+          radial-gradient(ellipse at 20% 50%, rgba(0, 229, 200, 0.03) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 30%, rgba(168, 85, 247, 0.03) 0%, transparent 50%),
+          linear-gradient(180deg, transparent 0%, rgba(5, 6, 11, 0.4) 100%)
+        `
+      }} />
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="text-center">
-          {/* Badge */}
+      <div className="container-custom relative z-10">
+        <div className="text-center max-w-5xl mx-auto">
+          {/* Section label */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-8"
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">
-              Powered by Bankr · $FORGE Token Live on Base
-            </span>
+            <span className="section-label">◈ NARRATIVEFORGE ◈</span>
           </motion.div>
 
-          {/* Main heading */}
+          {/* Main title */}
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-8 mb-6"
           >
-            Bet on{' '}
-            <span className="text-gradient">AI Story Choices</span>
+            Wager on <span className="text-gradient-gold">AI Fate</span>
           </motion.h1>
 
+          {/* Subtitle */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-xl md:text-2xl text-foreground/70 mb-12 max-w-3xl mx-auto"
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="text-xl md:text-2xl text-[--text-secondary] mb-12 leading-relaxed max-w-3xl mx-auto"
+            style={{ fontFamily: 'var(--font-body)' }}
           >
-            The blockchain-integrated AI story generation platform where readers predict which narrative branch the AI will choose. Win big. Fund stories. Shape the future of interactive fiction.
+            Prediction market meets interactive fiction. Bet USDC on story choices. 
+            Watch AI weave narratives. Win rewards when you predict correctly.
           </motion.p>
 
           {/* CTAs */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
           >
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-lg px-8 py-6 glow">
-              <Trophy className="w-5 h-5 mr-2" />
-              Start Betting
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-primary/50 hover:bg-primary/10 text-lg px-8 py-6"
-            >
-              <TrendingUp className="w-5 h-5 mr-2" />
-              Buy $FORGE
-            </Button>
+            <ConnectWallet />
+            <button className="btn-secondary">
+              Explore Stories
+            </button>
           </motion.div>
 
-          {/* Quick stats */}
+          {/* Stats */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
+            transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
           >
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
-                $2.4M
-              </div>
-              <div className="text-sm text-foreground/60">Total Bets Placed</div>
+            <div className="stat">
+              <span className="stat-value">$847K</span>
+              <span className="stat-label">Total Wagered</span>
             </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
-                15,234
-              </div>
-              <div className="text-sm text-foreground/60">Active Readers</div>
+            <div className="stat">
+              <span className="stat-value">15.2K</span>
+              <span className="stat-label">Predictors</span>
             </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
-                847
-              </div>
-              <div className="text-sm text-foreground/60">Stories Generated</div>
+            <div className="stat">
+              <span className="stat-value">284</span>
+              <span className="stat-label">Stories Forged</span>
             </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-primary mb-2">
-                $1.8M
-              </div>
-              <div className="text-sm text-foreground/60">Winnings Paid Out</div>
+            <div className="stat">
+              <span className="stat-value">94.7%</span>
+              <span className="stat-label">AI Accuracy</span>
             </div>
           </motion.div>
         </div>
-      </div>
 
-      {/* Floating cards animation */}
-      <div className="absolute top-1/4 left-10 opacity-20">
+        {/* Scroll indicator */}
         <motion.div
-          animate={{
-            y: [0, -20, 0],
-            rotate: [0, 5, 0],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="w-32 h-40 bg-gradient-to-br from-primary to-purple-500 rounded-lg"
-        />
-      </div>
-      <div className="absolute bottom-1/4 right-10 opacity-20">
-        <motion.div
-          animate={{
-            y: [0, 20, 0],
-            rotate: [0, -5, 0],
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="w-32 h-40 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg"
-        />
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2"
+        >
+          <div className="flex flex-col items-center gap-2 text-[--text-muted]">
+            <span className="text-xs uppercase tracking-widest" style={{ fontFamily: 'var(--font-ui)' }}>
+              Scroll to Explore
+            </span>
+            <ArrowDown
+              className="w-5 h-5"
+              style={{ animation: 'scrollBounce 2s infinite' }}
+            />
+          </div>
+        </motion.div>
       </div>
     </section>
   )

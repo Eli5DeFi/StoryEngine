@@ -1,92 +1,88 @@
 'use client'
 
-import { useState } from 'react'
-import { Menu, X, Wallet } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { useEffect, useState } from 'react'
+import { ConnectWallet } from '@/components/wallet/ConnectWallet'
 
 export function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 80)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-400"
+      style={{
+        background: scrolled ? 'rgba(5, 6, 11, 0.85)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(20px)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(212, 168, 83, 0.1)' : 'none',
+        padding: scrolled ? '10px 0' : '16px 0',
+      }}
+    >
+      <div className="container-custom">
+        <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center">
-            <span className="text-2xl font-bold text-gradient">
+          <a href="/" className="flex items-center gap-2">
+            <span
+              className="text-2xl"
+              style={{
+                color: 'var(--gold)',
+                animation: 'glyphPulse 3s infinite',
+              }}
+            >
+              ⬡
+            </span>
+            <span
+              className="text-lg uppercase tracking-wider font-semibold hidden sm:block"
+              style={{ fontFamily: 'var(--font-display)', color: 'var(--gold)' }}
+            >
               NarrativeForge
             </span>
-          </div>
+          </a>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <a href="#how-it-works" className="text-foreground/80 hover:text-foreground transition">
+          {/* Links */}
+          <div className="hidden md:flex items-center gap-8">
+            <a
+              href="#story"
+              className="text-sm uppercase tracking-wider transition-colors duration-300"
+              style={{
+                fontFamily: 'var(--font-ui)',
+                color: 'var(--text-secondary)',
+              }}
+            >
+              Features
+            </a>
+            <a
+              href="#mechanics"
+              className="text-sm uppercase tracking-wider transition-colors duration-300"
+              style={{
+                fontFamily: 'var(--font-ui)',
+                color: 'var(--text-secondary)',
+              }}
+            >
               How It Works
             </a>
-            <a href="#stories" className="text-foreground/80 hover:text-foreground transition">
+            <a
+              href="/stories"
+              className="text-sm uppercase tracking-wider transition-colors duration-300"
+              style={{
+                fontFamily: 'var(--font-ui)',
+                color: 'var(--text-secondary)',
+              }}
+            >
               Stories
             </a>
-            <a href="#tokenomics" className="text-foreground/80 hover:text-foreground transition">
-              $FORGE Token
-            </a>
-            <a href="#about" className="text-foreground/80 hover:text-foreground transition">
-              About
-            </a>
-            <Button className="bg-primary hover:bg-primary/90">
-              <Wallet className="w-4 h-4 mr-2" />
-              Connect Wallet
-            </Button>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-foreground hover:text-foreground/80 transition"
-            >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
+          {/* CTA */}
+          <ConnectWallet />
         </div>
       </div>
-
-      {/* Mobile Navigation */}
-      {isOpen && (
-        <div className="md:hidden bg-background/95 backdrop-blur-lg border-b border-border">
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            <a
-              href="#how-it-works"
-              className="block px-3 py-2 text-foreground/80 hover:text-foreground hover:bg-primary/10 rounded-md transition"
-            >
-              How It Works
-            </a>
-            <a
-              href="#stories"
-              className="block px-3 py-2 text-foreground/80 hover:text-foreground hover:bg-primary/10 rounded-md transition"
-            >
-              Stories
-            </a>
-            <a
-              href="#tokenomics"
-              className="block px-3 py-2 text-foreground/80 hover:text-foreground hover:bg-primary/10 rounded-md transition"
-            >
-              $FORGE Token
-            </a>
-            <a
-              href="#about"
-              className="block px-3 py-2 text-foreground/80 hover:text-foreground hover:bg-primary/10 rounded-md transition"
-            >
-              About
-            </a>
-            <div className="px-3 py-2">
-              <Button className="w-full bg-primary hover:bg-primary/90">
-                <Wallet className="w-4 h-4 mr-2" />
-                Connect Wallet
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </nav>
   )
 }

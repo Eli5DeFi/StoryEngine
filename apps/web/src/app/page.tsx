@@ -1,3 +1,4 @@
+import { Navbar } from '@/components/landing/Navbar'
 import { Hero } from '@/components/landing/Hero'
 import { Story } from '@/components/landing/Story'
 import { Mechanics } from '@/components/landing/Mechanics'
@@ -12,6 +13,9 @@ export default function Home() {
       {/* Ambient effects */}
       <Starfield />
       <DustParticles />
+      
+      {/* Navigation */}
+      <Navbar />
       
       {/* Main content */}
       <main className="relative z-10">

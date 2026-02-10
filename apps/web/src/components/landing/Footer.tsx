@@ -1,80 +1,113 @@
 'use client'
 
-import { Twitter, Github, MessageCircle, BookOpen } from 'lucide-react'
+import { Twitter, Github, MessageCircle } from 'lucide-react'
 
 export function Footer() {
   const links = {
     product: [
-      { label: 'How It Works', href: '#how-it-works' },
-      { label: 'Stories', href: '#stories' },
-      { label: '$FORGE Token', href: '#tokenomics' },
-      { label: 'Roadmap', href: '#roadmap' },
+      { label: 'How It Works', href: '#mechanics' },
+      { label: 'Stories', href: '/stories' },
+      { label: 'About', href: '/about' },
     ],
     resources: [
       { label: 'Documentation', href: '/docs' },
-      { label: 'API Reference', href: '/api-docs' },
+      { label: 'API', href: '/api-docs' },
       { label: 'Smart Contracts', href: '/contracts' },
-      { label: 'Whitepaper', href: '/whitepaper' },
     ],
     community: [
       { label: 'Discord', href: 'https://discord.gg/narrativeforge' },
       { label: 'Twitter', href: 'https://twitter.com/narrativeforge' },
-      { label: 'Telegram', href: 'https://t.me/narrativeforge' },
-      { label: 'Forum', href: '/forum' },
-    ],
-    legal: [
-      { label: 'Terms of Service', href: '/terms' },
-      { label: 'Privacy Policy', href: '/privacy' },
-      { label: 'Cookie Policy', href: '/cookies' },
-      { label: 'Disclaimer', href: '/disclaimer' },
+      { label: 'GitHub', href: 'https://github.com/narrativeforge' },
     ],
   }
 
-  const socials = [
-    { icon: Twitter, href: 'https://twitter.com/narrativeforge', label: 'Twitter' },
-    { icon: Github, href: 'https://github.com/narrativeforge', label: 'GitHub' },
-    { icon: MessageCircle, href: 'https://discord.gg/narrativeforge', label: 'Discord' },
-    { icon: BookOpen, href: '/docs', label: 'Docs' },
-  ]
-
   return (
-    <footer className="border-t border-border bg-background/50 backdrop-blur-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Main footer content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
+    <footer className="relative border-t border-[--border] py-16">
+      <div className="container-custom">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           {/* Brand */}
-          <div className="lg:col-span-1">
-            <div className="text-2xl font-bold text-gradient mb-4">
-              NarrativeForge
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-2 mb-4">
+              <span
+                className="text-2xl"
+                style={{
+                  color: 'var(--gold)',
+                  animation: 'glyphPulse 3s infinite',
+                }}
+              >
+                ⬡
+              </span>
+              <span
+                className="text-xl uppercase tracking-wider font-semibold"
+                style={{ fontFamily: 'var(--font-display)', color: 'var(--gold)' }}
+              >
+                NarrativeForge
+              </span>
             </div>
-            <p className="text-sm text-foreground/60 mb-4">
-              The blockchain-integrated AI story generation platform where readers bet on narrative choices.
+            
+            <p
+              className="text-sm leading-relaxed mb-6 max-w-sm"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              Prediction market meets interactive fiction. Bet on AI story choices using USDC. 
+              Shape narratives. Win rewards.
             </p>
+
             <div className="flex gap-3">
-              {socials.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 bg-primary/10 hover:bg-primary/20 rounded-lg transition-colors"
-                  aria-label={social.label}
-                >
-                  <social.icon className="w-5 h-5 text-primary" />
-                </a>
-              ))}
+              <a
+                href="https://twitter.com/narrativeforge"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded flex items-center justify-center transition-all duration-300"
+                style={{ 
+                  background: 'rgba(212, 168, 83, 0.05)', 
+                  border: '1px solid rgba(212, 168, 83, 0.1)' 
+                }}
+              >
+                <Twitter className="w-4 h-4" style={{ color: 'var(--gold)' }} />
+              </a>
+              <a
+                href="https://github.com/narrativeforge"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded flex items-center justify-center transition-all duration-300"
+                style={{ 
+                  background: 'rgba(212, 168, 83, 0.05)', 
+                  border: '1px solid rgba(212, 168, 83, 0.1)' 
+                }}
+              >
+                <Github className="w-4 h-4" style={{ color: 'var(--gold)' }} />
+              </a>
+              <a
+                href="https://discord.gg/narrativeforge"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded flex items-center justify-center transition-all duration-300"
+                style={{ 
+                  background: 'rgba(212, 168, 83, 0.05)', 
+                  border: '1px solid rgba(212, 168, 83, 0.1)' 
+                }}
+              >
+                <MessageCircle className="w-4 h-4" style={{ color: 'var(--gold)' }} />
+              </a>
             </div>
           </div>
 
           {/* Links */}
           <div>
-            <h3 className="font-semibold mb-4">Product</h3>
+            <h4
+              className="text-sm font-semibold uppercase tracking-wider mb-4"
+              style={{ fontFamily: 'var(--font-ui)', color: 'var(--text-primary)' }}
+            >
+              Product
+            </h4>
             <ul className="space-y-2">
               {links.product.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-sm text-foreground/60 hover:text-foreground transition-colors"
+                    className="text-sm transition-colors duration-300"
+                    style={{ color: 'var(--text-secondary)' }}
                   >
                     {link.label}
                   </a>
@@ -84,13 +117,19 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4">Resources</h3>
+            <h4
+              className="text-sm font-semibold uppercase tracking-wider mb-4"
+              style={{ fontFamily: 'var(--font-ui)', color: 'var(--text-primary)' }}
+            >
+              Resources
+            </h4>
             <ul className="space-y-2">
               {links.resources.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-sm text-foreground/60 hover:text-foreground transition-colors"
+                    className="text-sm transition-colors duration-300"
+                    style={{ color: 'var(--text-secondary)' }}
                   >
                     {link.label}
                   </a>
@@ -100,7 +139,12 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4">Community</h3>
+            <h4
+              className="text-sm font-semibold uppercase tracking-wider mb-4"
+              style={{ fontFamily: 'var(--font-ui)', color: 'var(--text-primary)' }}
+            >
+              Community
+            </h4>
             <ul className="space-y-2">
               {links.community.map((link) => (
                 <li key={link.label}>
@@ -108,23 +152,8 @@ export function Footer() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-foreground/60 hover:text-foreground transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold mb-4">Legal</h3>
-            <ul className="space-y-2">
-              {links.legal.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-foreground/60 hover:text-foreground transition-colors"
+                    className="text-sm transition-colors duration-300"
+                    style={{ color: 'var(--text-secondary)' }}
                   >
                     {link.label}
                   </a>
@@ -135,21 +164,19 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 border-t border-border">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-sm text-foreground/60">
-              © 2026 NarrativeForge. All rights reserved.
-            </div>
-            <div className="flex items-center gap-4 text-sm text-foreground/60">
-              <span>Powered by <span className="text-primary font-medium">Bankr</span></span>
-              <span>•</span>
-              <span>Built on <span className="text-primary font-medium">Base</span></span>
-              <span>•</span>
-              <span className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                All systems operational
-              </span>
-            </div>
+        <div
+          className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm"
+          style={{ 
+            borderTop: '1px solid rgba(212, 168, 83, 0.05)',
+            color: 'var(--text-muted)' 
+          }}
+        >
+          <div>© 2026 NarrativeForge. All rights reserved.</div>
+          <div
+            className="italic"
+            style={{ fontFamily: 'var(--font-display)', color: 'var(--gold-dim)' }}
+          >
+            "Every prediction shapes the story."
           </div>
         </div>
       </div>
