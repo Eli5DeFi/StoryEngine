@@ -20,8 +20,8 @@ export function Starfield() {
     resize()
     window.addEventListener('resize', resize)
 
-    // Create stars
-    const stars = Array.from({ length: 300 }, () => ({
+    // Create stars - OPTIMIZED (reduced from 300 to 150)
+    const stars = Array.from({ length: 150 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       size: Math.random() * 1.8 + 0.3,
@@ -33,8 +33,8 @@ export function Starfield() {
       ],
     }))
 
-    // Create nebula clouds
-    const nebulae = Array.from({ length: 5 }, () => ({
+    // Create nebula clouds - OPTIMIZED (reduced from 5 to 3)
+    const nebulae = Array.from({ length: 3 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       radius: Math.random() * 200 + 100,

@@ -1,27 +1,22 @@
 import type { Metadata } from 'next'
-import { Cinzel, Space_Grotesk, Rajdhani } from 'next/font/google'
+import { Cinzel, Space_Grotesk } from 'next/font/google'
 import { Providers } from '@/components/providers/Providers'
 import './globals.css'
 
 const cinzel = Cinzel({
   subsets: ['latin'],
-  weight: ['400', '600', '700', '900'],
+  weight: ['400', '700'],
   variable: '--font-cinzel',
   display: 'swap',
+  preload: true,
 })
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['400', '500', '600'],
   variable: '--font-space-grotesk',
   display: 'swap',
-})
-
-const rajdhani = Rajdhani({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-rajdhani',
-  display: 'swap',
+  preload: true,
 })
 
 export const metadata: Metadata = {
@@ -48,7 +43,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${cinzel.variable} ${spaceGrotesk.variable} ${rajdhani.variable}`}>
+    <html lang="en" className={`${cinzel.variable} ${spaceGrotesk.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body className="bg-background text-foreground antialiased">
         <Providers>
           {children}
