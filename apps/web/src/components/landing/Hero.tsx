@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ConnectWallet } from '@/components/wallet/ConnectWallet'
+import { ClientOnly } from '@/components/ClientOnly'
 
 export function Hero() {
   const [mounted, setMounted] = useState(false)
@@ -57,7 +58,9 @@ export function Hero() {
             Enter the Conclave
           </Link>
           
-          <ConnectWallet />
+          <ClientOnly>
+            <ConnectWallet />
+          </ClientOnly>
         </div>
 
         {/* Stats Grid */}

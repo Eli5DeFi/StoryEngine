@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Menu, X, Scroll } from 'lucide-react'
 import { ConnectWallet } from '@/components/wallet/ConnectWallet'
+import { ClientOnly } from '@/components/ClientOnly'
 
 const navLinks = [
   { label: 'The Story', href: '/story/voidborne-story' },
@@ -66,7 +67,9 @@ export function Navbar() {
 
             {/* Desktop CTA */}
             <div className="hidden lg:block">
-              <ConnectWallet />
+              <ClientOnly>
+                <ConnectWallet />
+              </ClientOnly>
             </div>
 
             {/* Mobile Menu Button */}
@@ -108,7 +111,9 @@ export function Navbar() {
             ))}
 
             <div className="mt-8 opacity-0 ambient-fade stagger-5">
-              <ConnectWallet />
+              <ClientOnly>
+                <ConnectWallet />
+              </ClientOnly>
             </div>
           </div>
         </div>

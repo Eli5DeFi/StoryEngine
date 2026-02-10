@@ -7,6 +7,7 @@ import { StoryHeader } from '@/components/story/StoryHeader'
 import { ChapterReader } from '@/components/story/ChapterReader'
 import { BettingInterface } from '@/components/story/BettingInterface'
 import { ChapterNavigation } from '@/components/story/ChapterNavigation'
+import { ClientOnly } from '@/components/ClientOnly'
 
 type StoryWithChapters = Story & {
   chapters: (Chapter & {
@@ -103,13 +104,15 @@ export default function StoryPage() {
           <div className="lg:col-span-1">
             <div className="sticky top-8">
               {currentChapter.bettingPool && currentChapter.bettingPool.contractAddress && (
-                <BettingInterface
-                  poolId={currentChapter.bettingPool.id}
-                  contractAddress={currentChapter.bettingPool.contractAddress as `0x${string}`}
-                  pool={currentChapter.bettingPool}
-                  choices={currentChapter.choices}
-                  onBetPlaced={fetchStory}
-                />
+                <ClientOnly>
+                  <BettingInterface
+                    poolId={currentChapter.bettingPool.id}
+                    contractAddress={currentChapter.bettingPool.contractAddress as `0x${string}`}
+                    pool={currentChapter.bettingPool}
+                    choices={currentChapter.choices}
+                    onBetPlaced={fetchStory}
+                  />
+                </ClientOnly>
               )}
             </div>
           </div>
