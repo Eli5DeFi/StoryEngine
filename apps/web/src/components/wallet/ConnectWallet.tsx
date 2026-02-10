@@ -2,6 +2,7 @@
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { Wallet } from 'lucide-react'
+import { USDCBalance } from './USDCBalance'
 
 /**
  * Custom wallet connect button with NarrativeForge styling
@@ -42,7 +43,7 @@ export function ConnectWallet() {
                   <button
                     onClick={openConnectModal}
                     type="button"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-lg transition-colors"
+                    className="btn-primary"
                   >
                     <Wallet className="w-5 h-5" />
                     Connect Wallet
@@ -55,7 +56,7 @@ export function ConnectWallet() {
                   <button
                     onClick={openChainModal}
                     type="button"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-error text-background font-ui font-semibold rounded-lg hover:bg-error/90 transition-colors duration-600"
                   >
                     Wrong Network
                   </button>
@@ -64,34 +65,41 @@ export function ConnectWallet() {
 
               return (
                 <div className="flex items-center gap-3">
+                  {/* USDC Balance */}
+                  <USDCBalance />
+
                   {/* Chain selector */}
                   <button
                     onClick={openChainModal}
                     type="button"
-                    className="flex items-center gap-2 px-4 py-2 bg-background border border-border rounded-lg hover:bg-accent transition-colors"
+                    className="glass-card px-4 py-2 rounded-lg hover:bg-white/5 transition-colors duration-600"
                   >
-                    {chain.hasIcon && chain.iconUrl && (
-                      <img
-                        alt={chain.name ?? 'Chain icon'}
-                        src={chain.iconUrl}
-                        className="w-5 h-5"
-                      />
-                    )}
-                    <span className="text-sm font-medium">{chain.name}</span>
+                    <div className="flex items-center gap-2">
+                      {chain.hasIcon && chain.iconUrl && (
+                        <img
+                          alt={chain.name ?? 'Chain icon'}
+                          src={chain.iconUrl}
+                          className="w-5 h-5"
+                        />
+                      )}
+                      <span className="text-sm font-ui font-medium text-foreground">{chain.name}</span>
+                    </div>
                   </button>
 
                   {/* Account */}
                   <button
                     onClick={openAccountModal}
                     type="button"
-                    className="flex items-center gap-3 px-4 py-2 bg-background border border-border rounded-lg hover:bg-accent transition-colors"
+                    className="glass-card px-4 py-2 rounded-lg hover:bg-white/5 transition-colors duration-600"
                   >
-                    <span className="text-sm font-medium">{account.displayName}</span>
-                    {account.displayBalance && (
-                      <span className="text-sm text-foreground/60">
-                        {account.displayBalance}
-                      </span>
-                    )}
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-ui font-medium text-gold">{account.displayName}</span>
+                      {account.displayBalance && (
+                        <span className="text-sm text-void-400 font-ui tabular-nums">
+                          {account.displayBalance}
+                        </span>
+                      )}
+                    </div>
                   </button>
                 </div>
               )

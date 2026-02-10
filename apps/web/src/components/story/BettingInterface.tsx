@@ -2,21 +2,28 @@
 
 import { useState, useEffect } from 'react'
 import { BettingPool, Choice } from '@narrative-forge/database'
-import { TrendingUp, Users, Clock, Trophy, AlertCircle } from 'lucide-react'
+import { TrendingUp, Users, Clock, Trophy, AlertCircle, DollarSign } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useAccount } from 'wagmi'
+import { usePlaceBet } from '@/hooks/usePlaceBet'
+import { useUSDCBalance } from '@/hooks/useUSDCBalance'
 
 interface BettingInterfaceProps {
+  poolId: string
+  contractAddress: string
   pool: BettingPool & { _count: { bets: number } }
   choices: (Choice & { _count: { bets: number } })[]
   onBetPlaced: () => void
 }
 
-export function BettingInterface({ pool, choices, onBetPlaced }: BettingInterfaceProps) {
-  const [selectedChoice, setSelectedChoice] = useState<string | null>(null)
+export function BettingInterface({ poolId, contractAddress, pool, choices, onBetPlaced }: BettingInterfaceProps) {
+  const { address, isConnected } = useAccount()
+  const { balance, balanceRaw } = useUSDCBalance()
+  const { placeBet, isApproving, isPlacing, needsApproval, error, resetError } = usePlaceBet(contractAddress)
+  
+  const [selectedChoice, setSelectedChoice] = useState<number | null>(null)
   const [betAmount, setBetAmount] = useState('')
-  const [placing, setPlacing] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [timeLeft, setTimeLeft] = useState<string>('')
 
   // Update countdown timer
@@ -52,52 +59,45 @@ export function BettingInterface({ pool, choices, onBetPlaced }: BettingInterfac
   const isOpen = pool.status === 'OPEN' && new Date() < new Date(pool.closesAt)
 
   async function handlePlaceBet() {
-    if (!selectedChoice || !betAmount) {
-      setError('Please select a choice and enter an amount')
-      return
-    }
-
+    if (!selectedChoice || !betAmount || !address) return
+    
+    resetError()
     const amount = parseFloat(betAmount)
+    
+    // Validate amount
     if (amount < pool.minBet.toNumber()) {
-      setError(`Minimum bet is ${pool.minBet} FORGE`)
       return
     }
 
     if (pool.maxBet && amount > pool.maxBet.toNumber()) {
-      setError(`Maximum bet is ${pool.maxBet} FORGE`)
       return
     }
 
-    setPlacing(true)
-    setError(null)
+    // Check balance
+    if (amount > parseFloat(balance)) {
+      return
+    }
 
     try {
-      // TODO: Get user wallet address from auth context
-      const walletAddress = '0x1234567890123456789012345678901234567890'
+      // Place bet (handles approval if needed)
+      const txHash = await placeBet(selectedChoice, amount, false) // isAgent = false
       
-      // Get or create user
-      const userRes = await fetch(`/api/users/${walletAddress}`)
-      const user = await userRes.json()
-
-      // TODO: Submit transaction to blockchain first
-      const txHash = '0xplaceholder' // Replace with actual tx hash
-
       // Record bet in database
       const response = await fetch('/api/betting/place', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          poolId: pool.id,
-          choiceId: selectedChoice,
-          userId: user.id,
+          poolId,
+          choiceId: choices[selectedChoice].id,
+          walletAddress: address,
           amount,
           txHash,
         }),
       })
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Failed to place bet')
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to record bet')
       }
 
       // Success!
@@ -105,109 +105,122 @@ export function BettingInterface({ pool, choices, onBetPlaced }: BettingInterfac
       setSelectedChoice(null)
       onBetPlaced()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to place bet')
-    } finally {
-      setPlacing(false)
+      console.error('Bet placement error:', err)
     }
   }
 
+  const selectedBranchOdds = selectedChoice !== null ? (() => {
+    const choice = choices[selectedChoice]
+    const totalPool = pool.totalPool.toNumber()
+    const choiceBets = choice.totalBets.toNumber()
+    return totalPool > 0 && choiceBets > 0 ? totalPool / choiceBets : 0
+  })() : 0
+
   return (
-    <div className="bg-card border border-border rounded-xl p-6">
+    <div className="glass-card rounded-2xl p-8">
       {/* Pool Header */}
-      <div className="mb-6">
-        <h3 className="text-2xl font-bold mb-2">Place Your Bet</h3>
-        <p className="text-sm text-foreground/70">
-          Predict which choice the AI will make
+      <div className="mb-8">
+        <h3 className="text-3xl font-display font-bold text-gold mb-2">Place Your Bet</h3>
+        <p className="text-void-300">
+          Predict which branch the AI will choose
         </p>
       </div>
 
       {/* Pool Stats */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="bg-background rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-1 text-foreground/60">
+      <div className="grid grid-cols-2 gap-4 mb-8">
+        <div className="glass-card rounded-xl p-4 bg-drift-teal/5 border border-drift-teal/20">
+          <div className="flex items-center gap-2 mb-2 text-void-400">
             <TrendingUp className="w-4 h-4" />
-            <span className="text-xs">Total Pool</span>
+            <span className="text-xs font-ui uppercase tracking-wider">Total Pool</span>
           </div>
-          <div className="text-2xl font-bold text-primary">
-            {pool.totalPool.toString()} <span className="text-sm text-foreground/60">FORGE</span>
+          <div className="text-3xl font-display font-bold text-drift-teal tabular-nums">
+            ${pool.totalPool.toFixed(2)}
           </div>
+          <div className="text-xs text-void-500 mt-1">USDC</div>
         </div>
 
-        <div className="bg-background rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-1 text-foreground/60">
+        <div className="glass-card rounded-xl p-4 bg-gold/5 border border-gold/20">
+          <div className="flex items-center gap-2 mb-2 text-void-400">
             <Users className="w-4 h-4" />
-            <span className="text-xs">Bettors</span>
+            <span className="text-xs font-ui uppercase tracking-wider">Bettors</span>
           </div>
-          <div className="text-2xl font-bold">{pool.uniqueBettors}</div>
+          <div className="text-3xl font-display font-bold text-gold tabular-nums">
+            {pool.uniqueBettors}
+          </div>
+          <div className="text-xs text-void-500 mt-1">Active</div>
         </div>
       </div>
 
       {/* Countdown */}
-      <div className="mb-6 p-4 bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/20 rounded-lg">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Clock className="w-5 h-5 text-primary" />
-            <span className="font-medium">Betting closes in:</span>
+      {isOpen && (
+        <div className="mb-8 p-6 glass-card rounded-xl border border-gold/30">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-gold/10 p-2 rounded-lg">
+                <Clock className="w-5 h-5 text-gold" />
+              </div>
+              <span className="font-ui font-semibold text-foreground">Betting closes in:</span>
+            </div>
+            <div className="text-3xl font-display font-bold text-gold tabular-nums">{timeLeft}</div>
           </div>
-          <div className="text-2xl font-bold text-primary">{timeLeft}</div>
         </div>
-      </div>
+      )}
 
       {/* Choices */}
-      <div className="mb-6 space-y-3">
-        <h4 className="font-semibold mb-3">Choose Your Path:</h4>
-        {choices.map((choice) => {
+      <div className="mb-8 space-y-4">
+        <h4 className="font-display font-semibold text-lg text-gold mb-4">Choose Your Path:</h4>
+        {choices.map((choice, index) => {
           const totalPool = pool.totalPool.toNumber()
           const choiceBets = choice.totalBets.toNumber()
           const percentage = totalPool > 0 ? (choiceBets / totalPool) * 100 : 0
           const odds = totalPool > 0 && choiceBets > 0 ? totalPool / choiceBets : 0
-          const isSelected = selectedChoice === choice.id
+          const isSelected = selectedChoice === index
 
           return (
             <motion.button
               key={choice.id}
-              onClick={() => isOpen && setSelectedChoice(choice.id)}
-              disabled={!isOpen}
-              whileHover={isOpen ? { scale: 1.02 } : {}}
-              whileTap={isOpen ? { scale: 0.98 } : {}}
-              className={`w-full p-4 rounded-lg border-2 transition-all ${
+              onClick={() => isOpen && isConnected && setSelectedChoice(index)}
+              disabled={!isOpen || !isConnected}
+              whileHover={isOpen && isConnected ? { scale: 1.01 } : {}}
+              whileTap={isOpen && isConnected ? { scale: 0.99 } : {}}
+              className={`w-full glass-card p-6 rounded-xl transition-all duration-600 ${
                 isSelected
-                  ? 'border-primary bg-primary/10'
-                  : 'border-border bg-background hover:border-primary/50'
-              } ${!isOpen && 'opacity-50 cursor-not-allowed'}`}
+                  ? 'border-2 border-gold bg-gold/10'
+                  : 'border border-void-800 hover:border-gold/50'
+              } ${(!isOpen || !isConnected) && 'opacity-50 cursor-not-allowed'}`}
             >
-              <div className="flex items-start justify-between mb-2">
-                <div className="flex items-start gap-3 flex-1 text-left">
-                  <div className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                    isSelected ? 'border-primary bg-primary' : 'border-border'
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-start gap-4 flex-1 text-left">
+                  <div className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors duration-600 ${
+                    isSelected ? 'border-gold bg-gold' : 'border-void-600'
                   }`}>
-                    {isSelected && <div className="w-2 h-2 bg-white rounded-full" />}
+                    {isSelected && <div className="w-3 h-3 bg-background rounded-full" />}
                   </div>
                   <div className="flex-1">
-                    <div className="font-medium mb-1">{choice.text}</div>
+                    <div className="font-ui font-semibold text-foreground mb-2">{choice.text}</div>
                     {choice.description && (
-                      <div className="text-sm text-foreground/60">{choice.description}</div>
+                      <div className="text-sm text-void-400 leading-relaxed">{choice.description}</div>
                     )}
                   </div>
                 </div>
                 {odds > 0 && (
-                  <div className="text-right ml-4">
-                    <div className="text-sm text-foreground/60">Odds</div>
-                    <div className="font-bold text-primary">{odds.toFixed(2)}x</div>
+                  <div className="text-right ml-6">
+                    <div className="text-xs text-void-500 font-ui uppercase tracking-wider mb-1">Odds</div>
+                    <div className="text-2xl font-display font-bold text-drift-teal tabular-nums">{odds.toFixed(2)}x</div>
                   </div>
                 )}
               </div>
 
               {/* Progress bar */}
-              <div className="w-full h-2 bg-background rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-void-900 rounded-full overflow-hidden mb-2">
                 <div
-                  className="h-full bg-primary transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-gold to-gold-light transition-all duration-600"
                   style={{ width: `${percentage}%` }}
                 />
               </div>
-              <div className="flex justify-between mt-1 text-xs text-foreground/60">
+              <div className="flex justify-between text-xs text-void-500 font-ui">
                 <span>{choice._count.bets} bets</span>
-                <span>{percentage.toFixed(1)}% of pool</span>
+                <span className="tabular-nums">{percentage.toFixed(1)}% of pool</span>
               </div>
             </motion.button>
           )
@@ -215,24 +228,28 @@ export function BettingInterface({ pool, choices, onBetPlaced }: BettingInterfac
       </div>
 
       {/* Bet Amount Input */}
-      {isOpen && (
-        <div className="mb-6">
-          <label className="block text-sm font-medium mb-2">
-            Bet Amount (FORGE)
+      {isOpen && isConnected && (
+        <div className="mb-8">
+          <label className="block text-sm font-ui font-semibold text-void-300 mb-3">
+            Bet Amount (USDC)
           </label>
-          <input
-            type="number"
-            value={betAmount}
-            onChange={(e) => setBetAmount(e.target.value)}
-            placeholder={`Min: ${pool.minBet}`}
-            min={pool.minBet.toNumber()}
-            max={pool.maxBet?.toNumber()}
-            step="0.001"
-            className="w-full px-4 py-3 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-          <div className="flex justify-between mt-2 text-xs text-foreground/60">
-            <span>Min: {pool.minBet.toString()} FORGE</span>
-            {pool.maxBet && <span>Max: {pool.maxBet.toString()} FORGE</span>}
+          <div className="relative">
+            <input
+              type="number"
+              value={betAmount}
+              onChange={(e) => setBetAmount(e.target.value)}
+              placeholder={`Min: $${pool.minBet.toFixed(2)}`}
+              min={pool.minBet.toNumber()}
+              max={pool.maxBet?.toNumber()}
+              step="1"
+              className="w-full px-6 py-4 pl-12 glass-card rounded-xl border border-void-800 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/50 transition-all duration-600 font-ui text-lg tabular-nums"
+            />
+            <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-drift-teal" />
+          </div>
+          <div className="flex justify-between mt-3 text-xs text-void-500 font-ui">
+            <span>Min: ${pool.minBet.toFixed(2)}</span>
+            <span>Balance: ${balance}</span>
+            {pool.maxBet && <span>Max: ${pool.maxBet.toFixed(2)}</span>}
           </div>
         </div>
       )}
@@ -244,36 +261,22 @@ export function BettingInterface({ pool, choices, onBetPlaced }: BettingInterfac
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-start gap-2"
+            className="mb-6 p-4 glass-card rounded-xl border border-error/30 bg-error/10 flex items-start gap-3"
           >
-            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-            <span className="text-sm text-red-500">{error}</span>
+            <AlertCircle className="w-5 h-5 text-error flex-shrink-0 mt-0.5" />
+            <span className="text-sm text-error font-ui">{error}</span>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Place Bet Button */}
-      {isOpen ? (
-        <Button
-          onClick={handlePlaceBet}
-          disabled={!selectedChoice || !betAmount || placing}
-          className="w-full bg-primary hover:bg-primary/90 text-lg py-6"
-        >
-          {placing ? (
-            <>
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-              Placing Bet...
-            </>
-          ) : (
-            <>
-              <Trophy className="w-5 h-5 mr-2" />
-              Place Bet
-            </>
-          )}
-        </Button>
-      ) : (
-        <div className="p-4 bg-foreground/5 border border-border rounded-lg text-center">
-          <p className="text-foreground/70">
+      {!isConnected ? (
+        <div className="p-6 glass-card rounded-xl border border-void-800 text-center">
+          <p className="text-void-400 font-ui">Connect your wallet to place a bet</p>
+        </div>
+      ) : !isOpen ? (
+        <div className="p-6 glass-card rounded-xl border border-void-800 text-center">
+          <p className="text-void-400 font-ui">
             {pool.status === 'CLOSED' || pool.status === 'RESOLVING'
               ? 'Betting closed - AI is deciding...'
               : pool.status === 'RESOLVED'
@@ -281,27 +284,49 @@ export function BettingInterface({ pool, choices, onBetPlaced }: BettingInterfac
               : 'Betting not yet open'}
           </p>
         </div>
+      ) : (
+        <Button
+          onClick={handlePlaceBet}
+          disabled={!selectedChoice || !betAmount || isApproving || isPlacing}
+          className="w-full btn-primary text-lg py-6 font-ui font-bold"
+        >
+          {isApproving ? (
+            <>
+              <div className="w-5 h-5 border-2 border-background border-t-transparent rounded-full animate-spin mr-2" />
+              Approving USDC...
+            </>
+          ) : isPlacing ? (
+            <>
+              <div className="w-5 h-5 border-2 border-background border-t-transparent rounded-full animate-spin mr-2" />
+              Placing Bet...
+            </>
+          ) : (
+            <>
+              <Trophy className="w-5 h-5 mr-2" />
+              {needsApproval ? 'Approve & Place Bet' : 'Place Bet'}
+            </>
+          )}
+        </Button>
       )}
 
       {/* Payout Info */}
-      {selectedChoice && betAmount && isOpen && (
-        <div className="mt-4 p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-lg">
-          <div className="text-sm text-foreground/70 mb-1">Potential Payout:</div>
-          <div className="text-2xl font-bold text-green-500">
-            {(() => {
-              const choice = choices.find((c) => c.id === selectedChoice)
-              if (!choice) return '0'
+      {selectedChoice !== null && betAmount && isOpen && isConnected && (
+        <div className="mt-6 p-6 glass-card rounded-xl border border-success/30 bg-success/5">
+          <div className="text-sm text-void-400 font-ui uppercase tracking-wider mb-2">Potential Payout:</div>
+          <div className="text-4xl font-display font-bold text-success tabular-nums">
+            ${(() => {
+              const choice = choices[selectedChoice]
+              if (!choice) return '0.00'
               const amount = parseFloat(betAmount)
               const choiceBets = choice.totalBets.toNumber() + amount
               const totalPool = pool.totalPool.toNumber() + amount
               const winnerShare = totalPool * 0.85
               const payout = (amount / choiceBets) * winnerShare
-              return payout.toFixed(3)
-            })()}{' '}
-            FORGE
+              return payout.toFixed(2)
+            })()}
           </div>
-          <div className="text-xs text-foreground/60 mt-1">
-            If your choice wins (85% pool to winners)
+          <div className="text-xs text-void-500 mt-2 font-ui">
+            If your choice wins (85% pool to winners • {selectedBranchOdds.toFixed(2)}x odds)
           </div>
         </div>
       )}
