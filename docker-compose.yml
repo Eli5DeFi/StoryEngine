@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: narrativeforge-postgres
+    environment:
+      POSTGRES_DB: narrativeforge
+      POSTGRES_USER: narrativeforge
+      POSTGRES_PASSWORD: narrativeforge_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U narrativeforge"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: narrativeforge-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # pgadmin (optional - for DB management GUI)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: narrativeforge-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@narrativeforge.xyz
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    profiles:
+      - tools
+
+volumes:
+  postgres-data:
+  redis-data:
