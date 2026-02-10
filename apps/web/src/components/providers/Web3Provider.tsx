@@ -15,7 +15,7 @@ const config = getDefaultConfig({
   transports: {
     [baseSepolia.id]: http('https://sepolia.base.org'),
   },
-  ssr: true,
+  ssr: false, // Disable SSR to avoid indexedDB errors from WalletConnect
 })
 
 // Create query client outside component
