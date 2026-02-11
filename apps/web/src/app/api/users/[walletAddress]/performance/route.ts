@@ -126,7 +126,7 @@ export async function GET(
     const distributionData = await prisma.$queryRawUnsafe(betDistributionQuery, user.id) as DistributionDataRow[]
 
     const totalBets = distributionData.reduce(
-      (sum, story) => sum + Number(story.betCount),
+      (sum: number, story: DistributionDataRow) => sum + Number(story.betCount),
       0
     )
 

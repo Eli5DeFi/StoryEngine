@@ -24,13 +24,13 @@ export async function checkAndAwardBadges(userId: string) {
 
     // Calculate total wagered
     const totalWagered = user.bets.reduce(
-      (sum, bet) => sum + parseFloat(bet.amount.toString()),
+      (sum: number, bet: { amount: any }) => sum + parseFloat(bet.amount.toString()),
       0
     )
 
     // Calculate total profit
     const totalProfit = user.bets.reduce(
-      (sum, bet) =>
+      (sum: number, bet: { isWinner: boolean; payout: any; amount: any }) =>
         sum +
         (bet.isWinner
           ? parseFloat((bet.payout || 0).toString()) - parseFloat(bet.amount.toString())
