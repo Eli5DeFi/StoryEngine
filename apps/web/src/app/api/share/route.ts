@@ -53,6 +53,7 @@ export async function POST(request: Request) {
       }
 
       shareData = {
+        storyId: bet.choice.chapter.storyId,
         storyTitle: bet.choice.chapter.story.title,
         choice: bet.choice.text,
         amount: parseFloat(bet.amount.toString()),
@@ -123,7 +124,7 @@ export async function POST(request: Request) {
     }
 
     // Generate share URLs for different platforms
-    const shareUrl = `${baseUrl}/story/${betId ? bet!.choice.chapter.storyId : ''}`
+    const shareUrl = `${baseUrl}/story/${shareData.storyId || ''}`
     
     const shareUrls = {
       twitter: generateTwitterUrl(shareText, shareUrl),
