@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@voidborne/database'
+import { cache, CacheTTL } from '@/lib/cache'
 
 const prisma = new PrismaClient()
 
-export const dynamic = 'force-dynamic'
+// Revalidate every 30 seconds
+export const revalidate = 30
 
 /**
  * GET /api/betting/recent
@@ -18,6 +20,18 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100)
+    
+    const cacheKey = `recent-bets-${limit}`
+    
+    // Check cache first
+    const cached = cache.get(cacheKey, CacheTTL.SHORT)
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60',
+        },
+      })
+    }
 
     const recentBets = await prisma.bet.findMany({
       take: limit,
@@ -70,9 +84,18 @@ export async function GET(request: Request) {
       poolStatus: bet.pool.status,
     }))
 
-    return NextResponse.json({
+    const response = {
       bets: formattedBets,
       timestamp: new Date().toISOString(),
+    }
+    
+    // Cache the response
+    cache.set(cacheKey, response)
+    
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60',
+      },
     })
   } catch (error) {
     console.error('Recent bets API error:', error)

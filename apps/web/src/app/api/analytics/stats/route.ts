@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@voidborne/database'
+import { cache, CacheTTL } from '@/lib/cache'
 
 const prisma = new PrismaClient()
 
-export const dynamic = 'force-dynamic'
+// Revalidate every 60 seconds (stats change less frequently)
+export const revalidate = 60
 
 /**
  * GET /api/analytics/stats
@@ -17,6 +19,18 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const timeframe = (searchParams.get('timeframe') || 'all') as 'all' | '30d' | '7d' | '24h'
+    
+    const cacheKey = `analytics-stats-${timeframe}`
+    
+    // Check cache first (1 minute TTL for stats)
+    const cached = cache.get(cacheKey, CacheTTL.MEDIUM)
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+        },
+      })
+    }
 
     // Build timeframe filter
     const timeframeFilter = getTimeframeFilter(timeframe)
@@ -138,7 +152,7 @@ export async function GET(request: Request) {
       return acc
     }, {} as Record<string, number>)
 
-    return NextResponse.json({
+    const response = {
       timeframe,
       stories: {
         total: storiesData.reduce((sum: number, item: { status: string; _count: number }) => sum + item._count, 0),
@@ -160,6 +174,15 @@ export async function GET(request: Request) {
         total: usersData,
       },
       timestamp: new Date().toISOString(),
+    }
+    
+    // Cache the response
+    cache.set(cacheKey, response)
+    
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+      },
     })
   } catch (error) {
     console.error('Stats API error:', error)

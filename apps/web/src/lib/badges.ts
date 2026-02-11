@@ -86,8 +86,6 @@ export async function checkAndAwardBadges(userId: string) {
             badgeId: badge.id,
           },
         })
-        
-        console.log(`🏆 User ${userId} earned badge: ${badge.name}`)
       }
     }
   } catch (error) {
@@ -139,8 +137,6 @@ export async function updateUserStreak(userId: string, won: boolean) {
         lastBetDate: now,
       },
     })
-
-    console.log(`📊 User ${userId} streak: ${newStreak} (won: ${won})`)
   } catch (error) {
     console.error('Streak update error:', error)
   } finally {

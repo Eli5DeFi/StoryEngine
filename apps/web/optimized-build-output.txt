@@ -1,0 +1,19 @@
+  ▲ Next.js 14.2.35
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+Failed to compile.
+
+./src/components/ui/optimized-image.tsx:53:17
+Type error: Property 'className' does not exist on type '{ id?: string | undefined; nonce?: string | undefined; fill?: boolean | undefined; title?: string | undefined; content?: string | undefined; width?: number | `${number}` | undefined; height?: number | ... 1 more ... | undefined; ... 291 more ...; lazyRoot?: string | undefined; }'.
+
+[0m [90m 51 |[39m           [32m'transition-all duration-300'[39m[33m,[39m[0m
+[0m [90m 52 |[39m           isLoading [33m?[39m [32m'scale-105 blur-sm'[39m [33m:[39m [32m'scale-100 blur-0'[39m[33m,[39m[0m
+[0m[31m[1m>[22m[39m[90m 53 |[39m           props[33m.[39mclassName[0m
+[0m [90m    |[39m                 [31m[1m^[22m[39m[0m
+[0m [90m 54 |[39m         )}[0m
+[0m [90m 55 |[39m       [33m/[39m[33m>[39m[0m
+[0m [90m 56 |[39m     [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+Next.js build worker exited with code: 1 and signal: null
