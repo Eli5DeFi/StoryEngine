@@ -141,7 +141,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       timeframe,
       stories: {
-        total: storiesData.reduce((sum, item) => sum + item._count, 0),
+        total: storiesData.reduce((sum: number, item: { status: string; _count: number }) => sum + item._count, 0),
         byStatus: storyStatusBreakdown,
         mostPopular: mostPopularStory,
       },
