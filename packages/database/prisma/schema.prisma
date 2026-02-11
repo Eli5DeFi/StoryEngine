@@ -34,9 +34,15 @@ model User {
   totalLost     Decimal  @default(0) @db.Decimal(20, 6)
   winRate       Float    @default(0) // Percentage
   
+  // Streaks & Achievements
+  currentStreak Int      @default(0)
+  longestStreak Int      @default(0)
+  lastBetDate   DateTime?
+  
   // Relationships
   bets          Bet[]
   createdStories Story[] @relation("StoryAuthor")
+  badges        UserBadge[]
   
   @@index([walletAddress])
   @@map("users")
@@ -337,4 +343,62 @@ model Analytics {
   
   @@index([date])
   @@map("analytics")
+}
+
+// ============================================================================
+// BADGES & ACHIEVEMENTS
+// ============================================================================
+
+model Badge {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  
+  // Badge info
+  name          String   @unique
+  description   String
+  icon          String   // Emoji or image URL
+  rarity        BadgeRarity
+  
+  // Unlock criteria
+  criteriaType  CriteriaType
+  criteriaValue Int?
+  
+  // Relationships
+  userBadges    UserBadge[]
+  
+  @@map("badges")
+}
+
+enum BadgeRarity {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+enum CriteriaType {
+  WINS       // X winning bets
+  STREAK     // X wins in a row
+  PROFIT     // $X total profit
+  VOLUME     // $X total wagered
+  BETS       // X total bets
+  SPECIAL    // Manual/event-based
+}
+
+model UserBadge {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  badgeId       String
+  badge         Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  
+  earnedAt      DateTime @default(now())
+  
+  @@unique([userId, badgeId])
+  @@index([userId])
+  @@index([badgeId])
+  @@map("user_badges")
 }

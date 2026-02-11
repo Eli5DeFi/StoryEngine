@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Trophy, TrendingUp, Target, DollarSign } from 'lucide-react'
+import { BadgeDisplay } from '@/components/badges/BadgeDisplay'
+import { StreakIndicator } from '@/components/badges/StreakIndicator'
 
 type LeaderboardEntry = {
   rank: number
@@ -15,6 +17,14 @@ type LeaderboardEntry = {
   winningBets: number
   winRate: number
   profit: number
+  currentStreak?: number
+  badges?: Array<{
+    id: string
+    name: string
+    description: string
+    icon: string
+    rarity: 'COMMON' | 'RARE' | 'EPIC' | 'LEGENDARY'
+  }>
 }
 
 type LeaderboardResponse = {
@@ -182,8 +192,8 @@ export function Leaderboard() {
               {/* Table Header */}
               <div className="grid grid-cols-12 gap-4 px-4 py-2 text-sm font-medium text-foreground/50 border-b border-gold/10">
                 <div className="col-span-1">Rank</div>
-                <div className="col-span-3">Player</div>
-                <div className="col-span-2 text-right">Bets</div>
+                <div className="col-span-4">Player</div>
+                <div className="col-span-1 text-right">Bets</div>
                 <div className="col-span-2 text-right">Wagered</div>
                 <div className="col-span-2 text-right">Win Rate</div>
                 <div className="col-span-2 text-right">Profit</div>
@@ -206,14 +216,31 @@ export function Leaderboard() {
                   </div>
 
                   {/* Player */}
-                  <div className="col-span-3 flex items-center">
-                    <span className="font-medium text-foreground truncate">
-                      {entry.username}
-                    </span>
+                  <div className="col-span-4 flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-foreground truncate">
+                        {entry.username}
+                      </span>
+                      {entry.currentStreak && entry.currentStreak > 0 && (
+                        <StreakIndicator
+                          currentStreak={entry.currentStreak}
+                          size="sm"
+                          showLabel={false}
+                        />
+                      )}
+                    </div>
+                    {entry.badges && entry.badges.length > 0 && (
+                      <BadgeDisplay
+                        badges={entry.badges}
+                        maxDisplay={3}
+                        size="sm"
+                        showTooltip={true}
+                      />
+                    )}
                   </div>
 
                   {/* Total Bets */}
-                  <div className="col-span-2 flex items-center justify-end">
+                  <div className="col-span-1 flex items-center justify-end">
                     <span className="text-foreground/70">{entry.totalBets}</span>
                   </div>
 

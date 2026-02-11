@@ -74,19 +74,49 @@ export async function GET(request: Request) {
     }
     const userStats = await prisma.$queryRawUnsafe(baseQuery) as UserStatsRow[]
 
+    // Fetch badges and streaks for top users
+    const userIds = userStats.map(u => u.userId)
+    const usersWithExtras = await prisma.user.findMany({
+      where: { id: { in: userIds } },
+      select: {
+        id: true,
+        currentStreak: true,
+        badges: {
+          include: { badge: true },
+          orderBy: { earnedAt: 'desc' },
+          take: 5,
+        },
+      },
+    })
+
+    const userExtrasMap = new Map(
+      usersWithExtras.map(u => [
+        u.id,
+        {
+          currentStreak: u.currentStreak,
+          badges: u.badges.map(ub => ub.badge),
+        },
+      ])
+    )
+
     // Convert BigInt to Number and Decimal strings to Numbers
-    const leaderboard = userStats.map((user, index) => ({
-      rank: index + 1,
-      userId: user.userId,
-      walletAddress: user.walletAddress || 'Anonymous',
-      username: user.username || formatAddress(user.walletAddress),
-      totalBets: Number(user.totalBets),
-      totalWagered: parseFloat(user.totalWagered),
-      totalWon: parseFloat(user.totalWon),
-      winningBets: Number(user.winningBets),
-      winRate: parseFloat(user.winRate),
-      profit: parseFloat(user.profit),
-    }))
+    const leaderboard = userStats.map((user, index) => {
+      const extras = userExtrasMap.get(user.userId)
+      return {
+        rank: index + 1,
+        userId: user.userId,
+        walletAddress: user.walletAddress || 'Anonymous',
+        username: user.username || formatAddress(user.walletAddress),
+        totalBets: Number(user.totalBets),
+        totalWagered: parseFloat(user.totalWagered),
+        totalWon: parseFloat(user.totalWon),
+        winningBets: Number(user.winningBets),
+        winRate: parseFloat(user.winRate),
+        profit: parseFloat(user.profit),
+        currentStreak: extras?.currentStreak || 0,
+        badges: extras?.badges || [],
+      }
+    })
 
     return NextResponse.json({
       leaderboard,
