@@ -34,7 +34,7 @@ export async function GET(request: Request) {
             text: true,
             chapter: {
               select: {
-                number: true,
+                chapterNumber: true,
                 story: {
                   select: {
                     id: true,
