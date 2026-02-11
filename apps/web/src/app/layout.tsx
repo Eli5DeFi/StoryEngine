@@ -20,7 +20,11 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: 'Voidborne: The Silent Throne',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://voidborne.vercel.app'),
+  title: {
+    default: 'Voidborne: The Silent Throne',
+    template: '%s | Voidborne',
+  },
   description: 'Navigate deadly succession politics. Bet USDC on which path shapes the narrative. Five houses. Five agendas. One choice.',
   keywords: ['AI stories', 'prediction market', 'betting', 'interactive fiction', 'web3', 'USDC', 'Base', 'space opera', 'political intrigue'],
   authors: [{ name: 'Voidborne' }],
@@ -29,11 +33,24 @@ export const metadata: Metadata = {
     description: 'Bet on AI-generated narratives in a space political saga. Shape the story. Claim your share of the pot.',
     type: 'website',
     url: 'https://voidborne.ai',
+    siteName: 'Voidborne',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Voidborne',
     description: 'The Silent Throne',
+    creator: '@Eli5DeFi',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 }
 

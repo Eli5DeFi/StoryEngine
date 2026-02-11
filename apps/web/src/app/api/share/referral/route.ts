@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@narrative-forge/database'
-import { Decimal } from '@prisma/client/runtime/library'
+import { prisma, Prisma } from '@voidborne/database'
+
+const Decimal = Prisma.Decimal
+type Decimal = Prisma.Decimal
 
 /**
  * GET /api/share/referral?code={code}
@@ -99,7 +101,7 @@ export async function POST(request: NextRequest) {
       // In production: reward = 5% of referred user's first bet
       reward: {
         percentage: 5,
-        description: 'You'll earn 5% of your friend's first bet!',
+        description: 'You will earn 5% of your friend\'s first bet!',
       },
     })
   } catch (error) {

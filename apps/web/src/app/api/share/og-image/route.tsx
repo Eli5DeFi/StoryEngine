@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { ImageResponse } from 'next/og'
-import { prisma } from '@narrative-forge/database'
+import { prisma } from '@voidborne/database'
 
 /**
  * GET /api/share/og-image

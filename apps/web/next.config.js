@@ -1,60 +1,43 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Performance optimizations
   reactStrictMode: true,
-  transpilePackages: ['@voidborne/bankr-integration', '@voidborne/contracts'],
   
-  // Image optimization - WebP/AVIF support
+  // Compiler optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
+  },
+
+  // Image optimization
   images: {
-    domains: ['voidborne.ai', 'narrativeforge.ai'],
     formats: ['image/webp', 'image/avif'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60,
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  
-  // Enable compression
-  compress: true,
-  
-  // Experimental optimizations
+
+  // Metadata base for OG images
+  env: {
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || 'https://voidborne.vercel.app',
+  },
+
+  // Bundle optimization
   experimental: {
-    optimizePackageImports: ['lucide-react', 'recharts', 'framer-motion'],
-    // optimizeCss: true, // Disabled - requires critters dependency
+    optimizePackageImports: ['lucide-react', 'recharts', 'date-fns', 'framer-motion'],
   },
-  
-  // Webpack optimizations
+
+  // Webpack optimizations (use Next.js defaults - they're already optimized)
   webpack: (config, { isServer }) => {
-    // Bundle analyzer (dev only)
-    if (process.env.ANALYZE === 'true' && !isServer) {
-      const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: 'static',
-          openAnalyzer: false,
-          reportFilename: './bundle-report.html',
-        })
-      )
-    }
-    
-    config.externals.push('pino-pretty', 'lokijs', 'encoding')
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      fs: false,
-      net: false,
-      tls: false,
-      'react-native-sqlite-storage': false,
-      '@react-native-async-storage/async-storage': false,
-    }
-    
-    // Tree shaking optimization
-    config.optimization = {
-      ...config.optimization,
-      usedExports: true,
-      sideEffects: false,
-    }
-    
+    // Custom optimizations if needed
     return config
   },
-  
-  // Caching headers
+
+  // Headers for caching
   async headers() {
     return [
       {
@@ -67,11 +50,11 @@ const nextConfig = {
         ],
       },
       {
-        source: '/fonts/:path*',
+        source: '/api/:path*',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
+            value: 'public, s-maxage=60, stale-while-revalidate=120',
           },
         ],
       },

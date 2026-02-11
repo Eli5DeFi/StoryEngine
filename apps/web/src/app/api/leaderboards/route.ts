@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@narrative-forge/database'
-import { Decimal } from '@prisma/client/runtime/library'
+import { prisma, Prisma } from '@voidborne/database'
+
+// Decimal class and type from Prisma
+const Decimal = Prisma.Decimal
+type Decimal = Prisma.Decimal
 
 /**
  * GET /api/leaderboards
