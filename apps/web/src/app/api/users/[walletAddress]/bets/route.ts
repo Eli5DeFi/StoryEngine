@@ -183,16 +183,17 @@ export async function GET(
     }
     const statsResult = await prisma.$queryRawUnsafe(statsQuery, user.id) as StatsRow[]
 
-    const stats = statsResult[0]
+    const statsRow = statsResult[0]
+    const stats = statsRow
       ? {
-          totalBets: Number(stats.totalBets),
-          totalWagered: parseFloat(stats.totalWagered),
-          totalWon: parseFloat(stats.totalWon),
-          netProfit: parseFloat(stats.netProfit),
-          roi: parseFloat(stats.roi),
-          winRate: parseFloat(stats.winRate),
-          bestWin: stats.bestWin ? parseFloat(stats.bestWin) : 0,
-          worstLoss: stats.worstLoss ? parseFloat(stats.worstLoss) : 0,
+          totalBets: Number(statsRow.totalBets),
+          totalWagered: parseFloat(statsRow.totalWagered),
+          totalWon: parseFloat(statsRow.totalWon),
+          netProfit: parseFloat(statsRow.netProfit),
+          roi: parseFloat(statsRow.roi),
+          winRate: parseFloat(statsRow.winRate),
+          bestWin: statsRow.bestWin ? parseFloat(statsRow.bestWin) : 0,
+          worstLoss: statsRow.worstLoss ? parseFloat(statsRow.worstLoss) : 0,
         }
       : {
           totalBets: 0,
