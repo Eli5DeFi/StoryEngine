@@ -41,9 +41,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.90.20
         version: 5.90.20(react@18.3.1)
-      '@voidborne/consequence-engine':
-        specifier: workspace:*
-        version: link:../../packages/consequence-engine
       '@voidborne/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
@@ -151,22 +148,6 @@ importers:
         version: 8.5.1(typescript@5.9.3)
       typescript:
         specifier: ^5.3.0
-        version: 5.9.3
-
-  packages/consequence-engine:
-    dependencies:
-      '@prisma/client':
-        specifier: ^5.22.0
-        version: 5.22.0(prisma@5.22.0)
-      zod:
-        specifier: ^3.25.76
-        version: 3.25.76
-    devDependencies:
-      '@types/node':
-        specifier: ^20.19.33
-        version: 20.19.33
-      typescript:
-        specifier: ^5.9.3
         version: 5.9.3
 
   packages/contracts: {}
