@@ -61,7 +61,7 @@ export async function GET(request: Request) {
     `
 
     // Get user stats with aggregations
-    const userStats = await prisma.$queryRawUnsafe<Array<{
+    type UserStatsRow = {
       userId: string
       walletAddress: string | null
       username: string | null
@@ -71,7 +71,8 @@ export async function GET(request: Request) {
       winningBets: bigint
       winRate: string
       profit: string
-    }>>(baseQuery)
+    }
+    const userStats = await prisma.$queryRawUnsafe(baseQuery) as UserStatsRow[]
 
     // Convert BigInt to Number and Decimal strings to Numbers
     const leaderboard = userStats.map((user, index) => ({
