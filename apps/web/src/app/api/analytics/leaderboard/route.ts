@@ -100,7 +100,7 @@ export async function GET(request: Request) {
     )
 
     // Convert BigInt to Number and Decimal strings to Numbers
-    const leaderboard = userStats.map((user, index) => {
+    const leaderboard = userStats.map((user: UserStatsRow, index: number) => {
       const extras = userExtrasMap.get(user.userId)
       return {
         rank: index + 1,
