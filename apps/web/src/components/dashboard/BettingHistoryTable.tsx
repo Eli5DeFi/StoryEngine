@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Clock, TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
+import { ShareIcon } from '@/components/share/ShareButton'
 
 type Bet = {
   id: string
@@ -183,6 +184,9 @@ export function BettingHistoryTable({ walletAddress, timeframe }: BettingHistory
                   <th className="text-right py-3 px-4 text-sm font-ui font-semibold text-void-400">
                     P/L
                   </th>
+                  <th className="text-center py-3 px-4 text-sm font-ui font-semibold text-void-400">
+                    Share
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -256,6 +260,20 @@ export function BettingHistoryTable({ walletAddress, timeframe }: BettingHistory
                         </div>
                       ) : (
                         <div className="text-sm text-void-500">—</div>
+                      )}
+                    </td>
+
+                    {/* Share */}
+                    <td className="py-4 px-4 text-center">
+                      {bet.status === 'WON' && bet.profit && bet.profit > 0 ? (
+                        <ShareIcon
+                          type="bet"
+                          id={bet.id}
+                          text={`🎉 I just won ${formatCurrency(bet.profit)} on Voidborne! Predicted "${bet.choice.text}" correctly with ${bet.odds.toFixed(2)}x odds. Can you beat my streak? 🔥`}
+                          url={`${window.location.origin}/story/${bet.story.id}`}
+                        />
+                      ) : (
+                        <div className="text-void-600">—</div>
                       )}
                     </td>
                   </motion.tr>

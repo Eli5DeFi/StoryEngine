@@ -13,6 +13,7 @@ import {
   Zap,
 } from 'lucide-react'
 import Image from 'next/image'
+import { ShareIcon } from '@/components/share/ShareButton'
 
 type Category = 'winners' | 'predictors' | 'streaks' | 'whales' | 'weekly'
 type Timeframe = 'all' | '30d' | '7d' | '24h'
@@ -328,6 +329,7 @@ function renderTableHeaders(category: Category) {
           <th className="px-6 py-4 text-right font-semibold">Net Profit</th>
           <th className="px-6 py-4 text-right font-semibold">Total Bets</th>
           <th className="px-6 py-4 text-right font-semibold">Win Rate</th>
+          <th className="px-6 py-4 text-center font-semibold">Share</th>
         </>
       )
     case 'predictors':
@@ -336,6 +338,7 @@ function renderTableHeaders(category: Category) {
           <th className="px-6 py-4 text-right font-semibold">Win Rate</th>
           <th className="px-6 py-4 text-right font-semibold">Total Bets</th>
           <th className="px-6 py-4 text-right font-semibold">Profit</th>
+          <th className="px-6 py-4 text-center font-semibold">Share</th>
         </>
       )
     case 'streaks':
@@ -344,6 +347,7 @@ function renderTableHeaders(category: Category) {
           <th className="px-6 py-4 text-right font-semibold">Current Streak</th>
           <th className="px-6 py-4 text-right font-semibold">Longest Streak</th>
           <th className="px-6 py-4 text-right font-semibold">Win Rate</th>
+          <th className="px-6 py-4 text-center font-semibold">Share</th>
         </>
       )
     case 'whales':
@@ -352,6 +356,7 @@ function renderTableHeaders(category: Category) {
           <th className="px-6 py-4 text-right font-semibold">Total Wagered</th>
           <th className="px-6 py-4 text-right font-semibold">Total Bets</th>
           <th className="px-6 py-4 text-right font-semibold">Profit</th>
+          <th className="px-6 py-4 text-center font-semibold">Share</th>
         </>
       )
     case 'weekly':
@@ -360,12 +365,32 @@ function renderTableHeaders(category: Category) {
           <th className="px-6 py-4 text-right font-semibold">Weekly Profit</th>
           <th className="px-6 py-4 text-right font-semibold">Bets This Week</th>
           <th className="px-6 py-4 text-right font-semibold">Win Rate</th>
+          <th className="px-6 py-4 text-center font-semibold">Share</th>
         </>
       )
   }
 }
 
 function renderTableData(category: Category, entry: LeaderboardEntry) {
+  const rankData = `${category}:${entry.rank}:${entry.userId}`
+  
+  const getShareText = () => {
+    switch (category) {
+      case 'winners':
+        return `👑 I'm #${entry.rank} on Voidborne's Top Winners leaderboard with $${parseFloat(entry.profit!).toFixed(2)} profit! Think you can beat me? 🎲`
+      case 'predictors':
+        return `🎯 I'm #${entry.rank} on Voidborne's Best Predictors with ${entry.winRate!.toFixed(1)}% win rate! Can you predict better? 🔮`
+      case 'streaks':
+        return `🔥 I'm #${entry.rank} on Voidborne's Hot Streaks with a ${entry.currentStreak}-win streak! Who's next? ⚡`
+      case 'whales':
+        return `💰 I'm #${entry.rank} on Voidborne's Biggest Bettors with $${formatNumber(entry.totalWagered!)} wagered! Join the big leagues! 🐋`
+      case 'weekly':
+        return `⭐ I'm #${entry.rank} on Voidborne's Weekly Champions with $${parseFloat(entry.weeklyProfit!).toFixed(2)} profit this week! 🏆`
+      default:
+        return `Check out my rank on Voidborne! 🎮`
+    }
+  }
+
   switch (category) {
     case 'winners':
       return (
@@ -379,6 +404,13 @@ function renderTableData(category: Category, entry: LeaderboardEntry) {
           <td className="px-6 py-4 text-right">
             <WinRateBadge winRate={entry.winRate!} />
           </td>
+          <td className="px-6 py-4 text-center">
+            <ShareIcon
+              type="leaderboard"
+              id={rankData}
+              text={getShareText()}
+            />
+          </td>
         </>
       )
     case 'predictors':
@@ -392,6 +424,13 @@ function renderTableData(category: Category, entry: LeaderboardEntry) {
           </td>
           <td className="px-6 py-4 text-right">
             <ProfitBadge profit={entry.profit!} />
+          </td>
+          <td className="px-6 py-4 text-center">
+            <ShareIcon
+              type="leaderboard"
+              id={rankData}
+              text={getShareText()}
+            />
           </td>
         </>
       )
@@ -406,6 +445,13 @@ function renderTableData(category: Category, entry: LeaderboardEntry) {
           </td>
           <td className="px-6 py-4 text-right">
             <WinRateBadge winRate={entry.winRate!} />
+          </td>
+          <td className="px-6 py-4 text-center">
+            <ShareIcon
+              type="leaderboard"
+              id={rankData}
+              text={getShareText()}
+            />
           </td>
         </>
       )
@@ -423,6 +469,13 @@ function renderTableData(category: Category, entry: LeaderboardEntry) {
           <td className="px-6 py-4 text-right">
             <ProfitBadge profit={entry.profit!} />
           </td>
+          <td className="px-6 py-4 text-center">
+            <ShareIcon
+              type="leaderboard"
+              id={rankData}
+              text={getShareText()}
+            />
+          </td>
         </>
       )
     case 'weekly':
@@ -436,6 +489,13 @@ function renderTableData(category: Category, entry: LeaderboardEntry) {
           </td>
           <td className="px-6 py-4 text-right">
             <WinRateBadge winRate={entry.winRate!} />
+          </td>
+          <td className="px-6 py-4 text-center">
+            <ShareIcon
+              type="leaderboard"
+              id={rankData}
+              text={getShareText()}
+            />
           </td>
         </>
       )
