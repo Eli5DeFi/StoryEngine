@@ -3,12 +3,28 @@
 import { useAccount } from 'wagmi'
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { ArrowLeft, Wallet } from 'lucide-react'
 import { PerformanceOverview } from '@/components/dashboard/PerformanceOverview'
-import { BettingHistoryTable } from '@/components/dashboard/BettingHistoryTable'
-import { PerformanceCharts } from '@/components/dashboard/PerformanceCharts'
 import { ConnectWallet } from '@/components/wallet/ConnectWallet'
+
+// Lazy load heavy chart components (reduce initial bundle size)
+const PerformanceCharts = dynamic(
+  () => import('@/components/dashboard/PerformanceCharts').then(mod => ({ default: mod.PerformanceCharts })),
+  {
+    loading: () => <div className="h-96 animate-pulse glass-card rounded-xl" />,
+    ssr: false,
+  }
+)
+
+const BettingHistoryTable = dynamic(
+  () => import('@/components/dashboard/BettingHistoryTable').then(mod => ({ default: mod.BettingHistoryTable })),
+  {
+    loading: () => <div className="h-96 animate-pulse glass-card rounded-xl" />,
+    ssr: false,
+  }
+)
 
 export default function MyBetsPage() {
   const { address, isConnected } = useAccount()

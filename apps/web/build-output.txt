@@ -1,0 +1,47 @@
+
+> @voidborne/web@0.1.0 build /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web
+> next build
+
+  ▲ Next.js 14.2.35
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/9) ...
+   Generating static pages (2/9) 
+   Generating static pages (4/9) 
+   Generating static pages (6/9) 
+ ✓ Generating static pages (9/9)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size     First Load JS
+┌ ○ /                                       9.47 kB         657 kB
+├ ○ /_not-found                             879 B          91.4 kB
+├ ○ /analytics                              3.62 kB         140 kB
+├ ƒ /api/analytics/leaderboard              0 B                0 B
+├ ƒ /api/analytics/stats                    0 B                0 B
+├ ƒ /api/betting/place                      0 B                0 B
+├ ƒ /api/betting/platform-stats             0 B                0 B
+├ ƒ /api/betting/pools/[poolId]             0 B                0 B
+├ ƒ /api/betting/recent                     0 B                0 B
+├ ƒ /api/betting/trending                   0 B                0 B
+├ ƒ /api/stories                            0 B                0 B
+├ ƒ /api/stories/[storyId]                  0 B                0 B
+├ ƒ /api/users/[walletAddress]              0 B                0 B
+├ ƒ /api/users/[walletAddress]/bets         0 B                0 B
+├ ƒ /api/users/[walletAddress]/performance  0 B                0 B
+├ ○ /dashboard                              5.08 kB         145 kB
+├ ○ /my-bets                                5.97 kB         694 kB
+└ ƒ /story/[storyId]                        16.1 kB         264 kB
++ First Load JS shared by all               90.6 kB
+  ├ chunks/809-109342597f457ddd.js          31.9 kB
+  ├ chunks/d003c1c0-c99b4beb34174ed4.js     53.6 kB
+  └ other shared chunks (total)             5 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

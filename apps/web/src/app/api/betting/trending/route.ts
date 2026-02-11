@@ -1,22 +1,43 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@voidborne/database'
+import { cache, CacheTTL } from '@/lib/cache'
 
 const prisma = new PrismaClient()
 
-export const dynamic = 'force-dynamic'
+// Revalidate every 30 seconds (trending data changes frequently)
+export const revalidate = 30
 
 /**
  * GET /api/betting/trending
  * 
  * Returns hot pools and trending choices
  * Based on betting activity in last 1 hour
+ * 
+ * Optimizations:
+ * - In-memory cache (30s TTL)
+ * - Parallel query execution
+ * - Response caching headers
  */
 export async function GET(request: Request) {
   try {
+    const cacheKey = 'trending-data'
+    
+    // Check cache first
+    const cached = cache.get(cacheKey, CacheTTL.SHORT)
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60',
+        },
+      })
+    }
+    
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
 
-    // Get hot pools (most activity in last hour)
-    const hotPoolsQuery = `
+    // Parallel query execution
+    const [hotPools, trendingChoices] = await Promise.all([
+      // Get hot pools (most activity in last hour)
+      prisma.$queryRawUnsafe(`
       SELECT 
         bp.id as "poolId",
         s.id as "storyId",
@@ -36,21 +57,18 @@ export async function GET(request: Request) {
       HAVING COUNT(b.id) > 0
       ORDER BY COUNT(b.id) DESC
       LIMIT 5
-    `
-
-    type HotPoolRow = {
-      poolId: string
-      storyId: string
-      storyTitle: string
-      chapterNumber: number
-      recentBets: bigint
-      totalPool: string
-      closesAt: Date
-    }
-    const hotPools = await prisma.$queryRawUnsafe(hotPoolsQuery, oneHourAgo) as HotPoolRow[]
-
-    // Get trending choices (highest volume in last hour)
-    const trendingChoicesQuery = `
+      `, oneHourAgo) as Promise<Array<{
+        poolId: string
+        storyId: string
+        storyTitle: string
+        chapterNumber: number
+        recentBets: bigint
+        totalPool: string
+        closesAt: Date
+      }>>,
+      
+      // Get trending choices (highest volume in last hour)
+      prisma.$queryRawUnsafe(`
       SELECT 
         c.id as "choiceId",
         c.text as "choiceText",
@@ -68,18 +86,16 @@ export async function GET(request: Request) {
       HAVING SUM(b.amount) > 0
       ORDER BY SUM(b.amount) DESC
       LIMIT 5
-    `
-
-    type TrendingChoiceRow = {
-      choiceId: string
-      choiceText: string
-      storyTitle: string
-      chapterNumber: number
-      recentVolume: string
-      totalBets: number
-      totalVolume: string
-    }
-    const trendingChoices = await prisma.$queryRawUnsafe(trendingChoicesQuery, oneHourAgo) as TrendingChoiceRow[]
+      `, oneHourAgo) as Promise<Array<{
+        choiceId: string
+        choiceText: string
+        storyTitle: string
+        chapterNumber: number
+        recentVolume: string
+        totalBets: number
+        totalVolume: string
+      }>>,
+    ])
 
     // Calculate momentum (percentage of total volume from last hour)
     const formattedTrendingChoices = trendingChoices.map((choice) => {
@@ -98,7 +114,7 @@ export async function GET(request: Request) {
       }
     })
 
-    return NextResponse.json({
+    const response = {
       hotPools: hotPools.map((pool) => ({
         ...pool,
         recentBets: Number(pool.recentBets),
@@ -106,6 +122,15 @@ export async function GET(request: Request) {
       })),
       trendingChoices: formattedTrendingChoices,
       timestamp: new Date().toISOString(),
+    }
+    
+    // Cache the response
+    cache.set(cacheKey, response)
+    
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60',
+      },
     })
   } catch (error) {
     console.error('Trending API error:', error)

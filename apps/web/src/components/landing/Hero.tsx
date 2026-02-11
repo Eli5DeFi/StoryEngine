@@ -58,9 +58,12 @@ export function Hero() {
             Enter the Conclave
           </Link>
           
-          <ClientOnly>
-            <ConnectWallet />
-          </ClientOnly>
+          <Link 
+            href="/dashboard"
+            className="btn-secondary text-lg px-10 py-4 inline-block"
+          >
+            View Dashboard
+          </Link>
         </div>
 
         {/* Stats Grid */}
