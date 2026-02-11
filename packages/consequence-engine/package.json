@@ -1,0 +1,28 @@
+{
+  "name": "@voidborne/consequence-engine",
+  "version": "0.1.0",
+  "description": "Consequence Propagation Engine - Track narrative state and propagate choice outcomes across chapters",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest"
+  },
+  "keywords": [
+    "voidborne",
+    "narrative",
+    "consequence",
+    "state-machine"
+  ],
+  "author": "Voidborne Team",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.33",
+    "typescript": "^5.9.3"
+  }
+}
