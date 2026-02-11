@@ -72,7 +72,7 @@ export async function GET(request: Request) {
       SELECT 
         bp.id as "poolId",
         s.title as "storyTitle",
-        ch.number as "chapterNumber",
+        ch."chapterNumber" as "chapterNumber",
         COUNT(b.id)::bigint as "betCount"
       FROM betting_pools bp
       JOIN chapters ch ON bp."chapterId" = ch.id
@@ -80,7 +80,7 @@ export async function GET(request: Request) {
       LEFT JOIN bets b ON bp.id = b."poolId" 
         AND b."createdAt" >= NOW() - INTERVAL '1 hour'
       WHERE bp.status = 'OPEN'
-      GROUP BY bp.id, s.title, ch.number
+      GROUP BY bp.id, s.title, ch."chapterNumber"
       ORDER BY COUNT(b.id) DESC
       LIMIT 1
     `

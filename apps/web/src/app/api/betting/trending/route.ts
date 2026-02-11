@@ -21,7 +21,7 @@ export async function GET(request: Request) {
         bp.id as "poolId",
         s.id as "storyId",
         s.title as "storyTitle",
-        ch.number as "chapterNumber",
+        ch."chapterNumber" as "chapterNumber",
         COUNT(b.id)::bigint as "recentBets",
         bp."totalPool"::text,
         bp."closesAt"
@@ -32,7 +32,7 @@ export async function GET(request: Request) {
         AND b."createdAt" >= $1
       WHERE bp.status = 'OPEN'
         AND bp."closesAt" > NOW()
-      GROUP BY bp.id, s.id, s.title, ch.number, bp."totalPool", bp."closesAt"
+      GROUP BY bp.id, s.id, s.title, ch."chapterNumber", bp."totalPool", bp."closesAt"
       HAVING COUNT(b.id) > 0
       ORDER BY COUNT(b.id) DESC
       LIMIT 5
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
         c.id as "choiceId",
         c.text as "choiceText",
         s.title as "storyTitle",
-        ch.number as "chapterNumber",
+        ch."chapterNumber" as "chapterNumber",
         SUM(b.amount)::text as "recentVolume",
         c."betCount" as "totalBets",
         c."totalBets"::text as "totalVolume"
@@ -63,7 +63,7 @@ export async function GET(request: Request) {
       JOIN stories s ON ch."storyId" = s.id
       JOIN bets b ON c.id = b."choiceId"
         AND b."createdAt" >= $1
-      GROUP BY c.id, c.text, s.title, ch.number, c."betCount", c."totalBets"
+      GROUP BY c.id, c.text, s.title, ch."chapterNumber", c."betCount", c."totalBets"
       HAVING SUM(b.amount) > 0
       ORDER BY SUM(b.amount) DESC
       LIMIT 5

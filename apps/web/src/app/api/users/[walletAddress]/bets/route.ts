@@ -86,7 +86,7 @@ export async function GET(
               isChosen: true,
               chapter: {
                 select: {
-                  number: true,
+                  chapterNumber: true,
                   title: true,
                   story: {
                     select: {
@@ -137,7 +137,7 @@ export async function GET(
           title: bet.choice.chapter.story.title,
         },
         chapter: {
-          number: bet.choice.chapter.number,
+          number: bet.choice.chapter.chapterNumber,
           title: bet.choice.chapter.title,
         },
         choice: {
