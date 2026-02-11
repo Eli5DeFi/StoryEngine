@@ -75,7 +75,7 @@ export async function GET(request: Request) {
     const userStats = await prisma.$queryRawUnsafe(baseQuery) as UserStatsRow[]
 
     // Fetch badges and streaks for top users
-    const userIds = userStats.map(u => u.userId)
+    const userIds = userStats.map((u: UserStatsRow) => u.userId)
     const usersWithExtras = await prisma.user.findMany({
       where: { id: { in: userIds } },
       select: {
@@ -90,11 +90,11 @@ export async function GET(request: Request) {
     })
 
     const userExtrasMap = new Map(
-      usersWithExtras.map(u => [
+      usersWithExtras.map((u: { id: string; currentStreak: number; badges: Array<{ badge: any }> }) => [
         u.id,
         {
           currentStreak: u.currentStreak,
-          badges: u.badges.map(ub => ub.badge),
+          badges: u.badges.map((ub: { badge: any }) => ub.badge),
         },
       ])
     )
