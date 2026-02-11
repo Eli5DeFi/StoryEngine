@@ -17,7 +17,7 @@ const nextConfig = {
   // Experimental optimizations
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts', 'framer-motion'],
-    optimizeCss: true,
+    // optimizeCss: true, // Disabled - requires critters dependency
   },
   
   // Webpack optimizations
