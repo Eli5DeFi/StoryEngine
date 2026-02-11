@@ -61,7 +61,7 @@ export async function GET(request: Request) {
       walletAddress: bet.user.walletAddress,
       storyId: bet.choice.chapter.story.id,
       storyTitle: bet.choice.chapter.story.title,
-      chapterNumber: bet.choice.chapter.number,
+      chapterNumber: bet.choice.chapter.chapterNumber,
       choiceText: bet.choice.text,
       amount: Number(bet.amount),
       odds: bet.odds || 0,
