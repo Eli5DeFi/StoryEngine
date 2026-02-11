@@ -57,10 +57,11 @@ export async function GET(
       ORDER BY date ASC
     `
 
-    const profitData = await prisma.$queryRawUnsafe<Array<{
+    type ProfitDataRow = {
       date: Date
       dailyProfit: string
-    }>>(profitTimeSeriesQuery, user.id)
+    }
+    const profitData = await prisma.$queryRawUnsafe(profitTimeSeriesQuery, user.id) as ProfitDataRow[]
 
     // Calculate cumulative profit
     let cumulative = 0
@@ -92,10 +93,11 @@ export async function GET(
       ORDER BY date ASC
     `
 
-    const winRateData = await prisma.$queryRawUnsafe<Array<{
+    type WinRateDataRow = {
       date: Date
       winRate: string
-    }>>(winRateTrendQuery, user.id)
+    }
+    const winRateData = await prisma.$queryRawUnsafe(winRateTrendQuery, user.id) as WinRateDataRow[]
 
     const winRateTrend = winRateData.map((day) => ({
       date: day.date,
@@ -117,10 +119,11 @@ export async function GET(
       ORDER BY COUNT(b.id) DESC
     `
 
-    const distributionData = await prisma.$queryRawUnsafe<Array<{
+    type DistributionDataRow = {
       storyTitle: string
       betCount: bigint
-    }>>(betDistributionQuery, user.id)
+    }
+    const distributionData = await prisma.$queryRawUnsafe(betDistributionQuery, user.id) as DistributionDataRow[]
 
     const totalBets = distributionData.reduce(
       (sum, story) => sum + Number(story.betCount),
@@ -157,12 +160,13 @@ export async function GET(
         (SUM(CASE WHEN b."isWinner" = true THEN b.payout ELSE 0 END) - SUM(b.amount)) / SUM(b.amount) DESC
     `
 
-    const roiData = await prisma.$queryRawUnsafe<Array<{
+    type RoiDataRow = {
       storyTitle: string
       bets: bigint
       wagered: string
       won: string
-    }>>(roiByStoryQuery, user.id)
+    }
+    const roiData = await prisma.$queryRawUnsafe(roiByStoryQuery, user.id) as RoiDataRow[]
 
     const roiByStory = roiData.map((story) => {
       const wagered = parseFloat(story.wagered)

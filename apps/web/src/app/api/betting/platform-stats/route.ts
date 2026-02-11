@@ -59,9 +59,10 @@ export async function GET(request: Request) {
       LIMIT 1
     `
 
-    const biggestWinResult = await prisma.$queryRawUnsafe<Array<{
+    type BiggestWinRow = {
       profit: string
-    }>>(biggestWinQuery)
+    }
+    const biggestWinResult = await prisma.$queryRawUnsafe(biggestWinQuery) as BiggestWinRow[]
 
     const biggestWin = biggestWinResult.length > 0 
       ? parseFloat(biggestWinResult[0].profit)
@@ -85,12 +86,13 @@ export async function GET(request: Request) {
       LIMIT 1
     `
 
-    const hottestPoolResult = await prisma.$queryRawUnsafe<Array<{
+    type HottestPoolRow = {
       poolId: string
       storyTitle: string
       chapterNumber: number
       betCount: bigint
-    }>>(hottestPoolQuery)
+    }
+    const hottestPoolResult = await prisma.$queryRawUnsafe(hottestPoolQuery) as HottestPoolRow[]
 
     const hottestPool = hottestPoolResult.length > 0
       ? {

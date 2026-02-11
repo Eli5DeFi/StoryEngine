@@ -171,7 +171,7 @@ export async function GET(
       WHERE b."userId" = $1
     `
 
-    const statsResult = await prisma.$queryRawUnsafe<Array<{
+    type StatsRow = {
       totalBets: bigint
       totalWagered: string
       totalWon: string
@@ -180,7 +180,8 @@ export async function GET(
       winRate: string
       bestWin: string | null
       worstLoss: string | null
-    }>>(statsQuery, user.id)
+    }
+    const statsResult = await prisma.$queryRawUnsafe(statsQuery, user.id) as StatsRow[]
 
     const stats = statsResult[0]
       ? {

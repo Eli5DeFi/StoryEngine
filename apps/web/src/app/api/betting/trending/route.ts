@@ -38,7 +38,7 @@ export async function GET(request: Request) {
       LIMIT 5
     `
 
-    const hotPools = await prisma.$queryRawUnsafe<Array<{
+    type HotPoolRow = {
       poolId: string
       storyId: string
       storyTitle: string
@@ -46,7 +46,8 @@ export async function GET(request: Request) {
       recentBets: bigint
       totalPool: string
       closesAt: Date
-    }>>(hotPoolsQuery, oneHourAgo)
+    }
+    const hotPools = await prisma.$queryRawUnsafe(hotPoolsQuery, oneHourAgo) as HotPoolRow[]
 
     // Get trending choices (highest volume in last hour)
     const trendingChoicesQuery = `
@@ -69,7 +70,7 @@ export async function GET(request: Request) {
       LIMIT 5
     `
 
-    const trendingChoices = await prisma.$queryRawUnsafe<Array<{
+    type TrendingChoiceRow = {
       choiceId: string
       choiceText: string
       storyTitle: string
@@ -77,7 +78,8 @@ export async function GET(request: Request) {
       recentVolume: string
       totalBets: number
       totalVolume: string
-    }>>(trendingChoicesQuery, oneHourAgo)
+    }
+    const trendingChoices = await prisma.$queryRawUnsafe(trendingChoicesQuery, oneHourAgo) as TrendingChoiceRow[]
 
     // Calculate momentum (percentage of total volume from last hour)
     const formattedTrendingChoices = trendingChoices.map((choice) => {
