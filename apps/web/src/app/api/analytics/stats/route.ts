@@ -133,7 +133,7 @@ export async function GET(request: Request) {
     }
 
     // Calculate story status breakdown
-    const storyStatusBreakdown = storiesData.reduce((acc: Record<string, number>, item) => {
+    const storyStatusBreakdown = storiesData.reduce((acc: Record<string, number>, item: { status: string; _count: number }) => {
       acc[item.status] = item._count
       return acc
     }, {} as Record<string, number>)
