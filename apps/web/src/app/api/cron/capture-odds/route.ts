@@ -7,7 +7,7 @@ import { prisma, Prisma } from '@voidborne/database'
  * Cron job that captures odds snapshots every 5 minutes
  * Run this via a cron service (e.g. Vercel Cron, GitHub Actions)
  * 
- * Schedule: */5 * * * * (every 5 minutes)
+ * Schedule: every 5 minutes.
  */
 
 export const dynamic = 'force-dynamic'
@@ -154,7 +154,7 @@ function calculateOdds(bets: any[], choices: any[]): Record<string, number> {
  *    {
  *      "crons": [{
  *        "path": "/api/cron/capture-odds",
- *        "schedule": "*/5 * * * *"
+ *        "schedule": "every 5 minutes"
  *      }]
  *    }
  * 
