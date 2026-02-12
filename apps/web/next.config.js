@@ -38,9 +38,71 @@ const nextConfig = {
   // Output standalone for better deployment
   output: 'standalone',
 
-  // Webpack optimizations (use Next.js defaults - they're already optimized)
-  webpack: (config, { isServer }) => {
-    // Custom optimizations if needed
+  // Webpack optimizations
+  webpack: (config, { isServer, webpack }) => {
+    // Bundle analyzer (run with ANALYZE=true pnpm build)
+    if (process.env.ANALYZE === 'true') {
+      const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+      config.plugins.push(
+        new BundleAnalyzerPlugin({
+          analyzerMode: 'static',
+          reportFilename: isServer ? '../analyze/server.html' : './analyze/client.html',
+          openAnalyzer: false,
+        })
+      )
+    }
+    
+    // Split vendor chunks for better caching
+    if (!isServer) {
+      config.optimization.splitChunks = {
+        chunks: 'all',
+        cacheGroups: {
+          default: false,
+          vendors: false,
+          
+          // Wallet libs (heavy, rarely change)
+          wallet: {
+            name: 'wallet',
+            test: /[\\/]node_modules[\\/](@rainbow-me|wagmi|viem)[\\/]/,
+            priority: 10,
+            reuseExistingChunk: true,
+          },
+          
+          // UI component libs
+          ui: {
+            name: 'ui',
+            test: /[\\/]node_modules[\\/](framer-motion|lucide-react|@radix-ui)[\\/]/,
+            priority: 9,
+            reuseExistingChunk: true,
+          },
+          
+          // Chart libraries (heavy, on-demand)
+          charts: {
+            name: 'charts',
+            test: /[\\/]node_modules[\\/](recharts|d3)[\\/]/,
+            priority: 8,
+            reuseExistingChunk: true,
+          },
+          
+          // Common React libs
+          react: {
+            name: 'react',
+            test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+            priority: 7,
+            reuseExistingChunk: true,
+          },
+          
+          // Everything else shared
+          commons: {
+            name: 'commons',
+            minChunks: 2,
+            priority: 5,
+            reuseExistingChunk: true,
+          },
+        },
+      }
+    }
+    
     return config
   },
 
