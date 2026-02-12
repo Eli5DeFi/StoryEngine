@@ -182,7 +182,7 @@ export async function POST(request: NextRequest) {
 /**
  * Helper function to send a notification (can be imported elsewhere)
  */
-export async function sendNotification({
+async function sendNotification({
   userId,
   type,
   title,
@@ -212,7 +212,7 @@ export async function sendNotification({
 /**
  * Helper function to send notifications to multiple users
  */
-export async function sendBulkNotifications({
+async function sendBulkNotifications({
   userIds,
   type,
   title,
