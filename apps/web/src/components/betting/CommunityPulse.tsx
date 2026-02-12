@@ -162,7 +162,7 @@ export function CommunityPulse() {
                 <div className="flex items-start justify-between gap-4 mb-2">
                   <div className="flex-1 min-w-0">
                     <p className="font-ui font-medium text-gold truncate">
-                      "{choice.choiceText}"
+                      &quot;{choice.choiceText}&quot;
                     </p>
                     <p className="text-xs text-void-500 mt-1">
                       {choice.storyTitle} • Ch {choice.chapterNumber}

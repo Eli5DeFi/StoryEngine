@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { 
   Users, 
@@ -48,11 +48,7 @@ export function StatsOverview() {
   const [error, setError] = useState<string | null>(null)
   const [timeframe, setTimeframe] = useState<TimeframeOption>('all')
 
-  useEffect(() => {
-    fetchStats()
-  }, [timeframe])
-
-  async function fetchStats() {
+  const fetchStats = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -70,7 +66,11 @@ export function StatsOverview() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [timeframe])
+
+  useEffect(() => {
+    fetchStats()
+  }, [fetchStats])
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -94,7 +94,7 @@ export function StatsOverview() {
             Platform Analytics
           </h2>
           <p className="text-foreground/70">
-            Real-time insights into Voidborne's betting ecosystem
+            Real-time insights into Voidborne&apos;s betting ecosystem
           </p>
         </div>
 

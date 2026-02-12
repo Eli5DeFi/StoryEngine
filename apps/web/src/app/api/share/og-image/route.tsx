@@ -218,7 +218,7 @@ function BetCardContent(props: {
             textAlign: 'center',
           }}
         >
-          "{props.choice}"
+          &quot;{props.choice}&quot;
         </div>
         <div style={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: 20 }}>
           {props.story} • Chapter {props.chapter}
