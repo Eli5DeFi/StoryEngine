@@ -43,6 +43,8 @@ model User {
   bets          Bet[]
   createdStories Story[] @relation("StoryAuthor")
   badges        UserBadge[]
+  notifications Notification[]
+  notificationPreference NotificationPreference?
   
   @@index([walletAddress])
   @@map("users")
@@ -426,4 +428,72 @@ model OddsSnapshot {
   
   @@index([poolId, createdAt])
   @@map("odds_snapshots")
+}
+
+// ============================================================================
+// NOTIFICATIONS (Smart Notification System)
+// ============================================================================
+
+model Notification {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Notification details
+  type          NotificationType
+  title         String
+  message       String   @db.Text
+  link          String?  // Deep link to relevant page
+  
+  // Read status
+  isRead        Boolean  @default(false)
+  readAt        DateTime?
+  
+  // Optional metadata (bet details, story info, etc.)
+  metadata      Json?
+  
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+enum NotificationType {
+  CHAPTER_RELEASED  // New chapter published
+  BET_WON           // Your bet won
+  BET_LOST          // Your bet lost
+  STREAK_MILESTONE  // Win streak achieved
+  LEADERBOARD       // Leaderboard position change
+  FRIEND_ACTIVITY   // Friend bet or won
+  WEEKLY_DIGEST     // Weekly performance summary
+  POOL_CLOSING      // Pool closing soon
+  SYSTEM            // System announcements
+}
+
+model NotificationPreference {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Channel preferences
+  pushEnabled   Boolean  @default(true)
+  emailEnabled  Boolean  @default(true)
+  inAppEnabled  Boolean  @default(true)
+  
+  // Notification type preferences
+  chapterReleases Boolean @default(true)
+  betOutcomes     Boolean @default(true)
+  streaks         Boolean @default(true)
+  leaderboard     Boolean @default(false)
+  friendActivity  Boolean @default(true)
+  weeklyDigest    Boolean @default(true)
+  poolClosing     Boolean @default(true)
+  system          Boolean @default(true)
+  
+  @@map("notification_preferences")
 }

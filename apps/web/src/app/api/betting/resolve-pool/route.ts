@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma, calculateStreakMultiplier } from '@voidborne/database'
+import { sendBulkNotifications } from '../notifications/send/route'
 
 /**
  * POST /api/betting/resolve-pool
@@ -207,6 +208,60 @@ export async function POST(request: NextRequest) {
 
       return { winnerUpdates, loserUpdates }
     })
+
+    // Send notifications to winners
+    if (updates.winnerUpdates.length > 0) {
+      await sendBulkNotifications({
+        userIds: updates.winnerUpdates.map((u) => u.userId),
+        type: 'BET_WON',
+        title: '🎉 You won!',
+        message: `Your bet on "${pool.chapter.choices.find((c) => c.id === winningChoiceId)?.text}" won! You earned ${updates.winnerUpdates.find((u) => u.userId)?.finalPayout.toFixed(2)} USDC.`,
+        link: `/story/${pool.chapter.storyId}`,
+        metadata: {
+          poolId,
+          choiceId: winningChoiceId,
+          totalWon: updates.winnerUpdates.reduce((sum, u) => sum + u.finalPayout, 0),
+        },
+      })
+    }
+
+    // Send notifications to losers
+    if (updates.loserUpdates.length > 0) {
+      await sendBulkNotifications({
+        userIds: updates.loserUpdates.map((u) => u.userId),
+        type: 'BET_LOST',
+        title: 'Better luck next time',
+        message: `Your bet didn't win this time. Keep predicting to improve your accuracy!`,
+        link: `/story/${pool.chapter.storyId}`,
+        metadata: {
+          poolId,
+          choiceId: winningChoiceId,
+          streakBroken: updates.loserUpdates.filter((u) => u.streakBroken).length,
+        },
+      })
+    }
+
+    // Send streak milestone notifications
+    const milestoneWinners = updates.winnerUpdates.filter((u) => {
+      return u.newStreak % 5 === 0 && u.newStreak > 0 // Every 5 wins
+    })
+
+    if (milestoneWinners.length > 0) {
+      for (const winner of milestoneWinners) {
+        await sendBulkNotifications({
+          userIds: [winner.userId],
+          type: 'STREAK_MILESTONE',
+          title: `🔥 ${winner.newStreak}-Win Streak!`,
+          message: `You're on fire! Keep the streak going for ${winner.streakMultiplier}x multipliers.`,
+          link: '/dashboard',
+          metadata: {
+            streak: winner.newStreak,
+            multiplier: winner.streakMultiplier,
+            isNewRecord: winner.isNewRecord,
+          },
+        })
+      }
+    }
 
     return NextResponse.json({
       success: true,
