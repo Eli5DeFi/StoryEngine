@@ -15,6 +15,9 @@ type Decimal = Prisma.Decimal
  * - limit: number of results (default 10, max 100)
  * - timeframe: all | 30d | 7d | 24h
  */
+// Cache for 5 minutes
+export const revalidate = 300
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@narrative-forge/database'
 import {
+  prisma,
   calculateStreakMultiplier,
   getNextMilestone,
   getStreakTier,
   getFireEmojis,
-} from '@narrative-forge/database/streaks'
+} from '@voidborne/database'
 
 /**
  * GET /api/users/[walletAddress]/streaks
@@ -27,10 +27,11 @@ export async function GET(
         walletAddress: true,
         currentStreak: true,
         longestStreak: true,
-        streakMultiplier: true,
-        consecutiveWins: true,
+        // TODO: Add streakMultiplier, consecutiveWins, streakShieldsAvailable to User model schema
+        // streakMultiplier: true,
+        // consecutiveWins: true,
         lastBetDate: true,
-        streakShieldsAvailable: true,
+        // streakShieldsAvailable: true,
         bets: {
           where: {
             pool: {
@@ -47,7 +48,8 @@ export async function GET(
             amount: true,
             payout: true,
             createdAt: true,
-            streakMultiplier: true,
+            // TODO: Add streakMultiplier to Bet model schema
+            // streakMultiplier: true,
             pool: {
               select: {
                 chapter: {
@@ -78,6 +80,7 @@ export async function GET(
     const currentTier = getStreakTier(user.currentStreak)
     const nextMilestone = getNextMilestone(user.currentStreak)
     const fireEmojis = getFireEmojis(user.currentStreak)
+    const currentMultiplier = calculateStreakMultiplier(user.currentStreak)
 
     // Format recent wins/losses
     const recentBets = user.bets.map(bet => ({
@@ -86,7 +89,8 @@ export async function GET(
       amount: bet.amount.toString(),
       payout: bet.payout?.toString() || null,
       timestamp: bet.createdAt,
-      streakMultiplier: bet.streakMultiplier,
+      // TODO: Add streakMultiplier to Bet model schema
+      // streakMultiplier: bet.streakMultiplier,
       story: bet.pool.chapter.story.title,
       chapter: bet.pool.chapter.chapterNumber,
     }))
@@ -94,7 +98,7 @@ export async function GET(
     return NextResponse.json({
       currentStreak: user.currentStreak,
       longestStreak: user.longestStreak,
-      multiplier: user.streakMultiplier,
+      multiplier: currentMultiplier, // Calculate from current streak instead of reading from DB
       tier: {
         name: currentTier.displayName,
         fireEmojis: currentTier.fireEmojis,
@@ -106,11 +110,13 @@ export async function GET(
         progress: nextMilestone.progress,
         winsNeeded: nextMilestone.wins - user.currentStreak,
       } : null,
-      streakShields: user.streakShieldsAvailable,
+      // TODO: Add streakShieldsAvailable to User model schema
+      streakShields: 0, // user.streakShieldsAvailable,
       lastBetDate: user.lastBetDate,
       recentBets,
       stats: {
-        consecutiveWins: user.consecutiveWins,
+        // TODO: Add consecutiveWins to User model schema
+        consecutiveWins: user.currentStreak, // Use currentStreak for now
         totalBetsTracked: user.bets.length,
       }
     })

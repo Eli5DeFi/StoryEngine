@@ -28,8 +28,15 @@ const nextConfig = {
 
   // Bundle optimization
   experimental: {
-    optimizePackageImports: ['lucide-react', 'recharts', 'date-fns', 'framer-motion'],
+    optimizePackageImports: ['lucide-react', 'recharts', 'date-fns', 'framer-motion', '@rainbow-me/rainbowkit', 'wagmi', 'viem'],
   },
+
+  // Production performance optimizations
+  swcMinify: true,
+  poweredByHeader: false,
+
+  // Output standalone for better deployment
+  output: 'standalone',
 
   // Webpack optimizations (use Next.js defaults - they're already optimized)
   webpack: (config, { isServer }) => {

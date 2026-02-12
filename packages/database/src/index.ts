@@ -24,3 +24,4 @@ export * from '@prisma/client'
 
 // Export utility functions
 export * from './utils'
+export * from './streaks'

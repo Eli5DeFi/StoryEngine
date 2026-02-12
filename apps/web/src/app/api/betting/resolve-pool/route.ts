@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@narrative-forge/database'
-import { calculateStreakMultiplier } from '@narrative-forge/database/streaks'
+import { prisma, calculateStreakMultiplier } from '@voidborne/database'
 
 /**
  * POST /api/betting/resolve-pool
@@ -93,7 +92,8 @@ export async function POST(request: NextRequest) {
             data: {
               isWinner: true,
               payout: finalPayout,
-              streakMultiplier: newMultiplier,
+              // TODO: Add streakMultiplier to Bet model schema
+              // streakMultiplier: newMultiplier,
             },
           })
 
@@ -103,14 +103,15 @@ export async function POST(request: NextRequest) {
             data: {
               currentStreak: newStreak,
               longestStreak: Math.max(newStreak, user.longestStreak),
-              streakMultiplier: newMultiplier,
-              consecutiveWins: { increment: 1 },
+              // TODO: Add streakMultiplier, consecutiveWins, streakShieldsAvailable to User model schema
+              // streakMultiplier: newMultiplier,
+              // consecutiveWins: { increment: 1 },
               totalWon: { increment: finalPayout },
               lastBetDate: new Date(),
               // Award shields
-              ...(streakShields > 0 && {
-                streakShieldsAvailable: { increment: streakShields }
-              }),
+              // ...(streakShields > 0 && {
+              //   streakShieldsAvailable: { increment: streakShields }
+              // }),
             },
           })
 
@@ -135,14 +136,16 @@ export async function POST(request: NextRequest) {
             where: { id: bet.userId },
             select: {
               currentStreak: true,
-              streakShieldsAvailable: true,
+              // TODO: Add streakShieldsAvailable to User model schema
+              // streakShieldsAvailable: true,
             },
           })
 
           if (!user) throw new Error(`User ${bet.userId} not found`)
 
           const hadStreak = user.currentStreak > 0
-          const hasShield = user.streakShieldsAvailable > 0
+          // TODO: Add streakShieldsAvailable to User model schema
+          // const hasShield = user.streakShieldsAvailable > 0
 
           // TODO: Implement shield usage logic (requires user confirmation)
           // For now, always break streak
@@ -152,8 +155,9 @@ export async function POST(request: NextRequest) {
             where: { id: bet.id },
             data: {
               isWinner: false,
-              wasStreakBroken: hadStreak && !usedShield,
-              usedStreakShield: usedShield,
+              // TODO: Add wasStreakBroken, usedStreakShield to Bet model schema
+              // wasStreakBroken: hadStreak && !usedShield,
+              // usedStreakShield: usedShield,
             },
           })
 
@@ -162,7 +166,8 @@ export async function POST(request: NextRequest) {
               where: { id: bet.userId },
               data: {
                 currentStreak: 0,
-                streakMultiplier: 1.0,
+                // TODO: Add streakMultiplier to User model schema
+                // streakMultiplier: 1.0,
                 totalLost: { increment: Number(bet.amount) },
               },
             })
