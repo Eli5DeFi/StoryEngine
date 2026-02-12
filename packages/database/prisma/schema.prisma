@@ -221,6 +221,7 @@ model BettingPool {
   
   // Relationships
   bets          Bet[]
+  oddsSnapshots OddsSnapshot[]
   
   @@index([status, closesAt])
   @@map("betting_pools")
@@ -401,4 +402,28 @@ model UserBadge {
   @@index([userId])
   @@index([badgeId])
   @@map("user_badges")
+}
+
+// ============================================================================
+// ODDS TRACKING (Real-Time Betting Odds Dashboard)
+// ============================================================================
+
+model OddsSnapshot {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  
+  poolId        String
+  pool          BettingPool @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  
+  // Snapshot data (JSON to store odds for all choices)
+  // Format: { "choice_id_1": 0.65, "choice_id_2": 0.35 }
+  choiceOdds    Json
+  
+  // Pool state at snapshot time
+  totalPool     Decimal  @db.Decimal(20, 6)
+  totalBets     Int
+  uniqueBettors Int
+  
+  @@index([poolId, createdAt])
+  @@map("odds_snapshots")
 }
