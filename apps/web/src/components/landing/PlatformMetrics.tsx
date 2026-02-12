@@ -49,7 +49,7 @@ export function PlatformMetrics() {
             Platform <span className="text-gradient">Metrics</span>
           </h2>
           <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-            Real-time stats from the world's first blockchain-integrated AI story betting platform
+            Real-time stats from the world&apos;s first blockchain-integrated AI story betting platform
           </p>
         </motion.div>
 

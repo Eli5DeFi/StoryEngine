@@ -3,6 +3,7 @@
 import { Chapter, Story } from '@voidborne/database'
 import { Clock, Sparkles } from 'lucide-react'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 interface ChapterReaderProps {
   chapter: Chapter
@@ -49,9 +50,12 @@ export function ChapterReader({ chapter, story }: ChapterReaderProps) {
       {/* Chapter Image */}
       {chapter.headerImage && (
         <div className="mb-8 rounded-lg overflow-hidden">
-          <img
+          <Image
             src={chapter.headerImage}
             alt={chapter.title}
+            width={1600}
+            height={900}
+            unoptimized
             className="w-full h-auto"
           />
         </div>

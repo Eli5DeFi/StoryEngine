@@ -125,7 +125,7 @@ export function ShareButton({ type, id, text, url, compact = false }: ShareButto
                 <div className="px-4 py-3 bg-void-950/50 border-t border-void-800">
                   <div className="text-xs text-foreground/70">
                     <span className="text-gold font-semibold">Earn 5%</span> of your
-                    friend's first bet!
+                    friend&apos;s first bet!
                   </div>
                 </div>
               )}

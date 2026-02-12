@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Trophy, TrendingUp, Target, DollarSign } from 'lucide-react'
 import { BadgeDisplay } from '@/components/badges/BadgeDisplay'
@@ -44,11 +44,7 @@ export function Leaderboard() {
   const [sortBy, setSortBy] = useState<SortOption>('profit')
   const [timeframe, setTimeframe] = useState<TimeframeOption>('all')
 
-  useEffect(() => {
-    fetchLeaderboard()
-  }, [sortBy, timeframe])
-
-  async function fetchLeaderboard() {
+  const fetchLeaderboard = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -68,7 +64,11 @@ export function Leaderboard() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [sortBy, timeframe])
+
+  useEffect(() => {
+    fetchLeaderboard()
+  }, [fetchLeaderboard])
 
   const getRankIcon = (rank: number) => {
     if (rank === 1) return '🥇'
