@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Users, TrendingUp, TrendingDown, Minus } from 'lucide-react'
 
@@ -37,7 +37,7 @@ export function ConsensusGauge({
   const [consensus, setConsensus] = useState<Consensus | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const fetchConsensus = async () => {
+  const fetchConsensus = useCallback(async () => {
     try {
       const res = await fetch(`/api/betting/consensus/${poolId}`)
       if (!res.ok) throw new Error('Failed to fetch consensus')
@@ -49,7 +49,7 @@ export function ConsensusGauge({
     } finally {
       setLoading(false)
     }
-  }
+  }, [poolId])
 
   useEffect(() => {
     fetchConsensus()
@@ -58,7 +58,7 @@ export function ConsensusGauge({
       const intervalId = setInterval(fetchConsensus, refreshInterval)
       return () => clearInterval(intervalId)
     }
-  }, [poolId, autoRefresh, refreshInterval])
+  }, [fetchConsensus, autoRefresh, refreshInterval])
 
   if (loading || !consensus) {
     return (

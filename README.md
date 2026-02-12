@@ -396,6 +396,7 @@ const tokenAddress = await tokenManager.launchForgeToken()
 - **[QUICK_START.md](./QUICK_START.md)** - 5-minute setup
 - **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Production deployment
 - **[BUILD_PROGRESS.md](./BUILD_PROGRESS.md)** - Development status
+- **[docs/README.md](./docs/README.md)** - Organized docs map and archive index
 
 ### Package Docs
 - **[packages/database/README.md](./packages/database/README.md)** - Database schema

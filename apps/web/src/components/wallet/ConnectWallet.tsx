@@ -2,6 +2,7 @@
 
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { Wallet } from 'lucide-react'
+import Image from 'next/image'
 import { USDCBalance } from './USDCBalance'
 
 /**
@@ -76,9 +77,12 @@ export function ConnectWallet() {
                   >
                     <div className="flex items-center gap-2">
                       {chain.hasIcon && chain.iconUrl && (
-                        <img
+                        <Image
                           alt={chain.name ?? 'Chain icon'}
                           src={chain.iconUrl}
+                          width={20}
+                          height={20}
+                          unoptimized
                           className="w-5 h-5"
                         />
                       )}

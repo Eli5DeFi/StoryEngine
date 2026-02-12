@@ -108,10 +108,10 @@ vercel --prod
 | Document | Purpose | Read Time |
 |----------|---------|-----------|
 | **SKILL.md** | Agent integration | 15 min |
-| **MVP_DEPLOYMENT_CHECKLIST.md** | Step-by-step deployment | 10 min |
-| **AUTONOMOUS_DEPLOYMENT_COMPLETE.md** | What was accomplished | 5 min |
-| **E2E_TESTING_GUIDE.md** | Testing checklist | 10 min |
-| **PRODUCTION_DB_SETUP.md** | Database setup | 10 min |
+| **docs/archive/root-legacy/MVP_DEPLOYMENT_CHECKLIST.md** | Step-by-step deployment | 10 min |
+| **docs/archive/root-legacy/AUTONOMOUS_DEPLOYMENT_COMPLETE.md** | What was accomplished | 5 min |
+| **docs/archive/root-legacy/E2E_TESTING_GUIDE.md** | Testing checklist | 10 min |
+| **docs/archive/root-legacy/PRODUCTION_DB_SETUP.md** | Database setup | 10 min |
 
 ---
 
@@ -201,9 +201,9 @@ pnpm build
 
 ### Need help?
 Check the comprehensive guides:
-- `MVP_DEPLOYMENT_CHECKLIST.md` - Full deployment guide
-- `PRODUCTION_DB_SETUP.md` - Database setup
-- `E2E_TESTING_GUIDE.md` - Testing guide
+- `docs/archive/root-legacy/MVP_DEPLOYMENT_CHECKLIST.md` - Full deployment guide
+- `docs/archive/root-legacy/PRODUCTION_DB_SETUP.md` - Database setup
+- `docs/archive/root-legacy/E2E_TESTING_GUIDE.md` - Testing guide
 
 ---
 
@@ -250,10 +250,10 @@ cd /Users/eli5defi/.openclaw/workspace/StoryEngine
 The wizard will guide you through everything.
 
 **Or deploy manually:**
-Follow `MVP_DEPLOYMENT_CHECKLIST.md`
+Follow `docs/archive/root-legacy/MVP_DEPLOYMENT_CHECKLIST.md`
 
 **Or just read:**
-`AUTONOMOUS_DEPLOYMENT_COMPLETE.md` for full details
+`docs/archive/root-legacy/AUTONOMOUS_DEPLOYMENT_COMPLETE.md` for full details
 
 ---
 
