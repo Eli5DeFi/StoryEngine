@@ -1,0 +1,38 @@
+
+> @voidborne/web@0.1.0 build /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web
+> next build
+
+  ▲ Next.js 14.2.35
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./src/app/api/betting/resolve-pool/route.ts
+Module not found: Can't resolve '../notifications/send/route'
+
+https://nextjs.org/docs/messages/module-not-found
+
+./src/app/api/cron/capture-odds/route.ts
+Error: 
+  [31mx[0m Expression expected
+    ,-[[36;1;4m/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/src/app/api/cron/capture-odds/route.ts[0m:7:1]
+ [2m 7[0m |  * Cron job that captures odds snapshots every 5 minutes
+ [2m 8[0m |  * Run this via a cron service (e.g. Vercel Cron, GitHub Actions)
+ [2m 9[0m |  * 
+ [2m10[0m |  * Schedule: */5 * * * * (every 5 minutes)
+    : [31;1m                   ^[0m
+ [2m11[0m |  */
+ [2m12[0m | 
+ [2m13[0m | export const dynamic = 'force-dynamic'
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/api/cron/capture-odds/route.ts
+
+
+> Build failed because of webpack errors
+ ELIFECYCLE  Command failed with exit code 1.
