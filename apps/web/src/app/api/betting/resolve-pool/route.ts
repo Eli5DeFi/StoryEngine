@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma, calculateStreakMultiplier } from '@voidborne/database'
-import { sendBulkNotifications } from '../notifications/send/route'
+import { sendBulkNotifications } from '@/lib/notifications'
 
 /**
  * POST /api/betting/resolve-pool
