@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { TrendingUp, DollarSign, Target, Flame, TrendingDown } from 'lucide-react'
 
@@ -31,11 +31,7 @@ export function PerformanceOverview({ walletAddress, timeframe }: PerformanceOve
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchStats()
-  }, [walletAddress, timeframe])
-
-  async function fetchStats() {
+  const fetchStats = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -53,7 +49,11 @@ export function PerformanceOverview({ walletAddress, timeframe }: PerformanceOve
       setError(err instanceof Error ? err.message : 'Unknown error')
       setLoading(false)
     }
-  }
+  }, [walletAddress, timeframe])
+
+  useEffect(() => {
+    fetchStats()
+  }, [fetchStats])
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   LineChart,
   Line,
@@ -53,7 +53,7 @@ export function OddsChart({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchOdds = async () => {
+  const fetchOdds = useCallback(async () => {
     try {
       const res = await fetch(`/api/betting/odds-history/${poolId}?interval=${interval}&limit=50`)
       if (!res.ok) throw new Error('Failed to fetch odds')
@@ -88,7 +88,7 @@ export function OddsChart({
     } finally {
       setLoading(false)
     }
-  }
+  }, [interval, poolId])
 
   useEffect(() => {
     fetchOdds()
@@ -97,7 +97,7 @@ export function OddsChart({
       const intervalId = setInterval(fetchOdds, refreshInterval)
       return () => clearInterval(intervalId)
     }
-  }, [poolId, interval, autoRefresh, refreshInterval])
+  }, [fetchOdds, autoRefresh, refreshInterval])
 
   if (loading) {
     return (

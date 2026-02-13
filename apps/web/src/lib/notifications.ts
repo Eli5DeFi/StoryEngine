@@ -1,10 +1,35 @@
 import { prisma } from '@voidborne/database'
 import type { NotificationType } from '@voidborne/database'
 
+export async function sendNotification({
+  userId,
+  type,
+  title,
+  message,
+  link,
+  metadata,
+}: {
+  userId: string
+  type: NotificationType
+  title: string
+  message: string
+  link?: string
+  metadata?: any
+}) {
+  return prisma.notification.create({
+    data: {
+      userId,
+      type,
+      title,
+      message,
+      link,
+      metadata,
+    },
+  })
+}
+
 export async function sendBulkNotifications({
-  walletAddresses,
   userIds,
-  broadcastType,
   type,
   title,
   message,
@@ -12,9 +37,7 @@ export async function sendBulkNotifications({
   metadata,
   respectPreferences = true,
 }: {
-  walletAddresses?: string[]
-  userIds?: string[]
-  broadcastType?: 'all' | 'active' | 'betting'
+  userIds: string[]
   type: NotificationType
   title: string
   message: string
@@ -22,75 +45,58 @@ export async function sendBulkNotifications({
   metadata?: any
   respectPreferences?: boolean
 }) {
-  // Collect target user IDs
-  let targetUserIds: string[] = []
+  let filteredUserIds = userIds
 
-  if (userIds) {
-    targetUserIds = userIds
-  } else if (walletAddresses) {
-    const users = await prisma.user.findMany({
-      where: {
-        walletAddress: { in: walletAddresses },
-      },
-      select: { id: true },
-    })
-    targetUserIds = users.map((u) => u.id)
-  } else if (broadcastType) {
-    const where: any = {}
-    if (broadcastType === 'active') {
-      const sevenDaysAgo = new Date()
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
-      where.lastActiveAt = { gte: sevenDaysAgo }
-    } else if (broadcastType === 'betting') {
-      where.bets = { some: {} }
-    }
-
-    const users = await prisma.user.findMany({
-      where,
-      select: { id: true },
-    })
-    targetUserIds = users.map((u) => u.id)
-  }
-
-  if (targetUserIds.length === 0) {
-    return { sent: 0, filtered: 0 }
-  }
-
-  // Filter by preferences if requested
-  let filteredUserIds = targetUserIds
   if (respectPreferences) {
     const preferences = await prisma.notificationPreference.findMany({
-      where: {
-        userId: { in: targetUserIds },
-      },
+      where: { userId: { in: userIds } },
     })
 
-    const disabledUsers = new Set(
-      preferences
-        .filter((pref) => {
-          const typeField = `${type.toLowerCase()}Enabled` as keyof typeof pref
-          return pref[typeField] === false
-        })
-        .map((pref) => pref.userId)
-    )
+    filteredUserIds = userIds.filter((userId) => {
+      const userPref = preferences.find((p) => p.userId === userId)
+      if (!userPref) return true
 
-    filteredUserIds = targetUserIds.filter((id) => !disabledUsers.has(id))
+      switch (type) {
+        case 'CHAPTER_RELEASED':
+          return userPref.chapterReleases
+        case 'BET_WON':
+        case 'BET_LOST':
+          return userPref.betOutcomes
+        case 'STREAK_MILESTONE':
+          return userPref.streaks
+        case 'LEADERBOARD':
+          return userPref.leaderboard
+        case 'FRIEND_ACTIVITY':
+          return userPref.friendActivity
+        case 'WEEKLY_DIGEST':
+          return userPref.weeklyDigest
+        case 'POOL_CLOSING':
+          return userPref.poolClosing
+        case 'SYSTEM':
+          return userPref.system
+        default:
+          return true
+      }
+    })
   }
 
-  // Create notifications
-  const notifications = await prisma.notification.createMany({
+  if (filteredUserIds.length === 0) {
+    return { sent: 0, filtered: userIds.length }
+  }
+
+  const result = await prisma.notification.createMany({
     data: filteredUserIds.map((userId) => ({
       userId,
       type,
       title,
       message,
       link,
-      metadata: metadata ? JSON.stringify(metadata) : undefined,
+      metadata,
     })),
   })
 
   return {
-    sent: notifications.count,
-    filtered: targetUserIds.length - filteredUserIds.length,
+    sent: result.count,
+    filtered: userIds.length - filteredUserIds.length,
   }
 }

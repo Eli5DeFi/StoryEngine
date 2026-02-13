@@ -163,7 +163,7 @@ export function RecentActivityFeed() {
                           <div className="flex items-center gap-2 text-sm">
                             <span className="text-void-400">on</span>
                             <span className="text-gold font-medium truncate">
-                              "{bet.choiceText}"
+                              &quot;{bet.choiceText}&quot;
                             </span>
                           </div>
                           <div className="flex items-center gap-2 text-xs text-void-500">

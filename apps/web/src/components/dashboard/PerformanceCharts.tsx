@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { TrendingUp, PieChart, BarChart3 } from 'lucide-react'
 
@@ -37,11 +37,7 @@ export function PerformanceCharts({ walletAddress, timeframe }: PerformanceChart
   const [data, setData] = useState<PerformanceData | null>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchPerformanceData()
-  }, [walletAddress, timeframe])
-
-  async function fetchPerformanceData() {
+  const fetchPerformanceData = useCallback(async () => {
     try {
       setLoading(true)
       
@@ -58,7 +54,11 @@ export function PerformanceCharts({ walletAddress, timeframe }: PerformanceChart
       console.error('Failed to fetch performance data:', err)
       setLoading(false)
     }
-  }
+  }, [walletAddress, timeframe])
+
+  useEffect(() => {
+    fetchPerformanceData()
+  }, [fetchPerformanceData])
 
   if (loading || !data) {
     return (

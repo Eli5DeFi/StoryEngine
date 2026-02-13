@@ -7,7 +7,7 @@ import { prisma, Prisma } from '@voidborne/database'
  * Cron job that captures odds snapshots every 5 minutes
  * Run this via a cron service (e.g. Vercel Cron, GitHub Actions)
  * 
- * Schedule: every 5 minutes
+ * Schedule: every 5 minutes.
  */
 
 export const dynamic = 'force-dynamic'

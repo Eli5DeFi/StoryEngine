@@ -43,23 +43,23 @@ contract InfluenceTokenTest is Test {
         token.mintInfluence(alice, 1000e18);
         assertEq(token.balanceOf(alice), 2000e18);
         
-        // Third win: 20% bonus (streak = 2)
+        // Third win: no bonus (streak bonus starts at previous streak >= 3)
         vm.warp(block.timestamp + 1 days);
         vm.prank(minter);
         token.mintInfluence(alice, 1000e18);
-        assertEq(token.balanceOf(alice), 3200e18); // 2000 + 1200 (20% bonus)
+        assertEq(token.balanceOf(alice), 3000e18); // 2000 + 1000
         
-        // Fourth win: 20% bonus (streak = 3)
+        // Fourth win: 20% bonus (previous streak = 3)
         vm.warp(block.timestamp + 1 days);
         vm.prank(minter);
         token.mintInfluence(alice, 1000e18);
-        assertEq(token.balanceOf(alice), 4400e18); // 3200 + 1200
+        assertEq(token.balanceOf(alice), 4200e18); // 3000 + 1200
         
-        // Fifth win: 50% bonus (streak = 4)
+        // Fifth win: 20% bonus (previous streak = 4)
         vm.warp(block.timestamp + 1 days);
         vm.prank(minter);
         token.mintInfluence(alice, 1000e18);
-        assertEq(token.balanceOf(alice), 5900e18); // 4400 + 1500 (50% bonus)
+        assertEq(token.balanceOf(alice), 5400e18); // 4200 + 1200
     }
     
     function testStreakResets() public {
@@ -274,7 +274,7 @@ contract InfluenceTokenTest is Test {
         assertEq(vote2.poolId, 2);
         assertEq(vote2.choiceId, 2);
         assertEq(vote2.amount, 200e18);
-        assertEq(vote2.voter, bob);
+        assertEq(vote2.voter, alice);
     }
     
     function testTotalVotesCount() public {

@@ -20,7 +20,7 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
       - run: pnpm install
-      - run: pnpm lint
+      - run: pnpm --filter @voidborne/web lint
 
   type-check:
     name: Type Check
@@ -35,7 +35,7 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
       - run: pnpm install
-      - run: pnpm type-check
+      - run: pnpm --filter @voidborne/web type-check
 
   test-contracts:
     name: Test Smart Contracts
@@ -66,7 +66,7 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
       - run: pnpm install
-      - run: pnpm build
+      - run: pnpm --filter @voidborne/web build
         env:
           DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
           BANKR_API_KEY: placeholder

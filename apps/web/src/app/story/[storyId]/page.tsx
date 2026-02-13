@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { Story, Chapter, BettingPool, Choice } from '@voidborne/database'
 import { StoryHeader } from '@/components/story/StoryHeader'
@@ -25,11 +25,7 @@ export default function StoryPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchStory()
-  }, [storyId])
-
-  async function fetchStory() {
+  const fetchStory = useCallback(async () => {
     try {
       setLoading(true)
       const response = await fetch(`/api/stories/${storyId}`)
@@ -50,7 +46,11 @@ export default function StoryPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [storyId])
+
+  useEffect(() => {
+    fetchStory()
+  }, [fetchStory])
 
   if (loading) {
     return (

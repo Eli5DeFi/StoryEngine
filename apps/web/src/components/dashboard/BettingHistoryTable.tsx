@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Clock, TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
@@ -52,11 +52,7 @@ export function BettingHistoryTable({ walletAddress, timeframe }: BettingHistory
   const [loading, setLoading] = useState(true)
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'won' | 'lost'>('all')
 
-  useEffect(() => {
-    fetchBets()
-  }, [walletAddress, timeframe, statusFilter, pagination.offset])
-
-  async function fetchBets() {
+  const fetchBets = useCallback(async () => {
     try {
       setLoading(true)
       
@@ -74,7 +70,11 @@ export function BettingHistoryTable({ walletAddress, timeframe }: BettingHistory
       console.error('Failed to fetch betting history:', err)
       setLoading(false)
     }
-  }
+  }, [walletAddress, timeframe, statusFilter, pagination.offset])
+
+  useEffect(() => {
+    fetchBets()
+  }, [fetchBets])
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {

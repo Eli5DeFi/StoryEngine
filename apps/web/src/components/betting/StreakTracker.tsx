@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Flame, Shield, TrendingUp, Trophy } from 'lucide-react'
 
@@ -47,15 +47,7 @@ export function StreakTracker({ walletAddress, compact = false }: Props) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchStreakData()
-    
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(fetchStreakData, 30000)
-    return () => clearInterval(interval)
-  }, [walletAddress])
-
-  async function fetchStreakData() {
+  const fetchStreakData = useCallback(async () => {
     try {
       const res = await fetch(`/api/users/${walletAddress}/streaks`)
       
@@ -70,7 +62,15 @@ export function StreakTracker({ walletAddress, compact = false }: Props) {
       setError(err instanceof Error ? err.message : 'Unknown error')
       setLoading(false)
     }
-  }
+  }, [walletAddress])
+
+  useEffect(() => {
+    fetchStreakData()
+
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(fetchStreakData, 30000)
+    return () => clearInterval(interval)
+  }, [fetchStreakData])
 
   if (loading) {
     return (

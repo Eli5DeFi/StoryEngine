@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Trophy,
@@ -98,11 +98,7 @@ export function Leaderboards() {
   const [data, setData] = useState<LeaderboardData | null>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchLeaderboard()
-  }, [category, timeframe])
-
-  async function fetchLeaderboard() {
+  const fetchLeaderboard = useCallback(async () => {
     setLoading(true)
     try {
       const res = await fetch(
@@ -115,7 +111,11 @@ export function Leaderboards() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [category, timeframe])
+
+  useEffect(() => {
+    fetchLeaderboard()
+  }, [fetchLeaderboard])
 
   const currentCategory = CATEGORIES.find((c) => c.id === category)!
 
@@ -134,7 +134,7 @@ export function Leaderboards() {
           </h1>
         </motion.div>
         <p className="text-foreground/70 max-w-2xl mx-auto">
-          Legends who've mastered the art of prediction. May their wisdom guide your bets.
+          Legends who&apos;ve mastered the art of prediction. May their wisdom guide your bets.
         </p>
       </div>
 
