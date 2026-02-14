@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@voidborne/database'
 import { cache, CacheTTL } from '@/lib/cache'
 
@@ -18,9 +18,9 @@ export const revalidate = 60
  * - Parallel query execution where possible
  * - Response caching headers
  */
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const timeframe = searchParams.get('timeframe') || '24h'
     
     const cacheKey = `platform-stats:${timeframe}`

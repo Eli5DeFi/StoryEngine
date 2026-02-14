@@ -20,7 +20,7 @@ export const revalidate = 300
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const category = searchParams.get('category') || 'winners'
     const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 100)
     const timeframe = searchParams.get('timeframe') || 'all'
