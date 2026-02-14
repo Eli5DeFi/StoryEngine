@@ -82,6 +82,7 @@ model Story {
   
   // Relationships
   chapters      Chapter[]
+  characters    Character[]
   
   @@index([status, createdAt])
   @@index([genre])
@@ -428,6 +429,128 @@ model OddsSnapshot {
   
   @@index([poolId, createdAt])
   @@map("odds_snapshots")
+}
+
+// ============================================================================
+// CHARACTER MEMORY SYSTEM (Story Universe Continuity)
+// ============================================================================
+
+model Character {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  storyId       String
+  story         Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  
+  // Profile
+  name          String
+  description   String   @db.Text
+  portrait      String?  // AI-generated image URL
+  
+  // AI-tracked traits (JSON)
+  // Format: { "brave": 0.8, "cautious": 0.2, "loyal": 0.9 }
+  traits        Json     @default("{}")
+  
+  // Appearance tracking
+  firstAppearance Int    // Chapter number
+  lastAppearance  Int    // Chapter number
+  totalAppearances Int   @default(0)
+  
+  // Relationships
+  memories      CharacterMemory[]
+  relationships CharacterRelationship[] @relation("CharacterA")
+  relatedTo     CharacterRelationship[] @relation("CharacterB")
+  
+  @@unique([storyId, name])
+  @@index([storyId])
+  @@map("characters")
+}
+
+model CharacterMemory {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  
+  characterId   String
+  character     Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  
+  chapterId     String
+  choiceId      String?  // Winning choice that created this memory
+  
+  // Memory content
+  eventType     MemoryType
+  description   String   @db.Text
+  emotionalImpact Float  // -1.0 (traumatic) to +1.0 (joyful)
+  importance    Int      // 1-10 (how much this shapes character)
+  
+  @@index([characterId])
+  @@index([chapterId])
+  @@map("character_memories")
+}
+
+enum MemoryType {
+  DECISION       // Character made a choice
+  RELATIONSHIP   // Interaction with another character
+  REVELATION     // Learned something important
+  TRAUMA         // Negative event
+  ACHIEVEMENT    // Positive accomplishment
+}
+
+model CharacterRelationship {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  characterAId  String
+  characterA    Character @relation("CharacterA", fields: [characterAId], references: [id], onDelete: Cascade)
+  
+  characterBId  String
+  characterB    Character @relation("CharacterB", fields: [characterBId], references: [id], onDelete: Cascade)
+  
+  // Relationship score: -1.0 (enemies) to +1.0 (best friends)
+  score         Float    @default(0)
+  relationshipType RelationType
+  
+  // How this evolved
+  history       Json     @default("[]")
+  // Format: [{ chapter: 3, event: "Sarah saved Marcus", delta: +0.3 }]
+  
+  @@unique([characterAId, characterBId])
+  @@index([characterAId])
+  @@index([characterBId])
+  @@map("character_relationships")
+}
+
+enum RelationType {
+  FAMILY
+  FRIEND
+  ROMANTIC
+  RIVAL
+  MENTOR
+  ENEMY
+  ALLY
+  NEUTRAL
+}
+
+model AlternateOutcome {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  
+  chapterId     String
+  choiceId      String   // The choice that DIDN'T win
+  
+  // AI-generated preview
+  preview       String   @db.Text
+  fullContent   String?  @db.Text // Optional: full alternate chapter
+  
+  // Metadata
+  aiModel       String
+  generated     Boolean  @default(false)
+  viewCount     Int      @default(0)
+  
+  @@unique([chapterId, choiceId])
+  @@index([chapterId])
+  @@map("alternate_outcomes")
 }
 
 // ============================================================================
