@@ -10,7 +10,7 @@ import { prisma } from '@voidborne/database'
  */
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const walletAddress = searchParams.get('walletAddress')
 
     if (!walletAddress) {

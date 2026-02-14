@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@voidborne/database'
 
 const prisma = new PrismaClient()
@@ -17,12 +17,12 @@ export const dynamic = 'force-dynamic'
  * - timeframe: 'all' | '30d' | '7d' | '24h' (default: 'all')
  */
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { walletAddress: string } }
 ) {
   try {
     const { walletAddress } = params
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     
     const status = searchParams.get('status') || 'all'
     const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100)

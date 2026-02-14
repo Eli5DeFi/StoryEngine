@@ -50,6 +50,14 @@ const nextConfig = {
 
   // Webpack optimizations
   webpack: (config, { isServer, webpack }) => {
+    // Suppress build warnings for optional/dev dependencies
+    config.ignoreWarnings = [
+      // MetaMask SDK trying to import React Native dependencies (not needed in browser)
+      { module: /node_modules\/@metamask\/sdk/ },
+      // Pino-pretty is an optional dev dependency for logging
+      { module: /node_modules\/pino/ },
+    ]
+    
     // Bundle analyzer (run with ANALYZE=true pnpm build)
     if (process.env.ANALYZE === 'true') {
       const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')

@@ -20,7 +20,7 @@ export async function GET(
 ) {
   try {
     const { poolId } = params
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const interval = searchParams.get('interval') || '5m'
     const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 500)
 

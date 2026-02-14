@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@voidborne/database'
 
 const prisma = new PrismaClient()
@@ -15,9 +15,9 @@ export const dynamic = 'force-dynamic'
  * - sortBy: 'wagered' | 'winRate' | 'profit' (default: 'profit')
  * - timeframe: 'all' | '30d' | '7d' | '24h' (default: 'all')
  */
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 100)
     const sortBy = (searchParams.get('sortBy') || 'profit') as 'wagered' | 'winRate' | 'profit'
     const timeframe = (searchParams.get('timeframe') || 'all') as 'all' | '30d' | '7d' | '24h'

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Flame, Zap, Activity } from 'lucide-react';
 
@@ -39,15 +39,7 @@ export function NVIDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchDashboard();
-    
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(fetchDashboard, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  async function fetchDashboard() {
+  const fetchDashboard = useCallback(async () => {
     try {
       const response = await fetch('/api/nvi/dashboard');
       const result = await response.json();
@@ -76,7 +68,15 @@ export function NVIDashboard() {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    fetchDashboard();
+    
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(fetchDashboard, 30000);
+    return () => clearInterval(interval);
+  }, [fetchDashboard]);
 
   if (loading) {
     return (
