@@ -2,12 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import { BettingPool, Choice } from '@voidborne/database'
-import { TrendingUp, Users, Clock, Trophy, AlertCircle, DollarSign } from 'lucide-react'
+import { TrendingUp, Users, Clock, Trophy, AlertCircle, DollarSign, ChevronDown, ChevronUp, BarChart3 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAccount } from 'wagmi'
 import { usePlaceBet } from '@/hooks/usePlaceBet'
 import { useUSDCBalance } from '@/hooks/useUSDCBalance'
+import { LiveOddsChart } from '@/components/betting/LiveOddsChart'
+import { MarketSentiment } from '@/components/betting/MarketSentiment'
+import { PoolClosingTimer } from '@/components/betting/PoolClosingTimer'
 
 interface BettingInterfaceProps {
   poolId: string
@@ -25,6 +28,7 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null)
   const [betAmount, setBetAmount] = useState('')
   const [timeLeft, setTimeLeft] = useState<string>('')
+  const [showLiveChart, setShowLiveChart] = useState(false)
 
   // Update countdown timer
   useEffect(() => {
@@ -149,6 +153,81 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
           </div>
           <div className="text-xs text-void-500 mt-1">Active</div>
         </div>
+      </div>
+
+      {/* Live Odds Dashboard - Collapsible */}
+      <div className="mb-8">
+        <button
+          onClick={() => setShowLiveChart(!showLiveChart)}
+          className="w-full flex items-center justify-between p-4 glass-card rounded-xl border border-primary/20 hover:border-primary/40 transition-all duration-300 group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="bg-primary/10 p-2 rounded-lg group-hover:bg-primary/20 transition-colors">
+              <BarChart3 className="w-5 h-5 text-primary" />
+            </div>
+            <div className="text-left">
+              <h4 className="font-display font-semibold text-lg text-foreground">Live Betting Chart</h4>
+              <p className="text-xs text-void-400">Real-time odds, market sentiment & whale activity</p>
+            </div>
+          </div>
+          {showLiveChart ? (
+            <ChevronUp className="w-5 h-5 text-void-400 group-hover:text-primary transition-colors" />
+          ) : (
+            <ChevronDown className="w-5 h-5 text-void-400 group-hover:text-primary transition-colors" />
+          )}
+        </button>
+
+        <AnimatePresence>
+          {showLiveChart && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
+              <div className="mt-4 space-y-4">
+                {/* Live Odds Chart */}
+                <LiveOddsChart
+                  poolId={poolId}
+                  choices={choices.map(choice => {
+                    const totalPool = pool.totalPool.toNumber()
+                    const choiceBets = choice.totalBets.toNumber()
+                    const currentOdds = totalPool > 0 ? choiceBets / totalPool : 0
+                    
+                    return {
+                      id: choice.id,
+                      text: choice.text,
+                      choiceNumber: choice.choiceNumber,
+                      currentOdds,
+                      totalBets: choice._count.bets,
+                      isHot: false // Will be calculated by API
+                    }
+                  })}
+                  updateInterval={5000}
+                  timeframe="24h"
+                />
+
+                {/* Market Sentiment */}
+                <MarketSentiment
+                  poolId={poolId}
+                  updateInterval={10000}
+                  showWhaleAlerts={true}
+                  showRecentBets={true}
+                  showMomentum={true}
+                />
+
+                {/* Enhanced Pool Closing Timer */}
+                {isOpen && (
+                  <PoolClosingTimer
+                    closesAt={new Date(pool.closesAt)}
+                    style="auto"
+                  />
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Countdown */}
