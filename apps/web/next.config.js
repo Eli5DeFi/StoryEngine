@@ -29,6 +29,16 @@ const nextConfig = {
   // Bundle optimization
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts', 'date-fns', 'framer-motion', '@rainbow-me/rainbowkit', 'wagmi', 'viem'],
+    // Use SWC for faster bundling
+    serverComponentsExternalPackages: ['@prisma/client'],
+  },
+
+  // Modularize imports for tree-shaking
+  modularizeImports: {
+    'lucide-react': {
+      transform: 'lucide-react/dist/esm/icons/{{kebabCase member}}',
+      skipDefaultConversion: true,
+    },
   },
 
   // Production performance optimizations

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { TrendingUp, TrendingDown, Minus, Zap, Users, DollarSign } from 'lucide-react'
 
@@ -43,7 +43,7 @@ export function MarketSentiment({
   const [loading, setLoading] = useState(true)
   const [newWhale, setNewWhale] = useState<Whale | null>(null)
 
-  const fetchSentiment = async () => {
+  const fetchSentiment = useCallback(async () => {
     try {
       const response = await fetch(`/api/pools/${poolId}/odds`)
       if (!response.ok) throw new Error('Failed to fetch sentiment')
@@ -69,13 +69,13 @@ export function MarketSentiment({
     } finally {
       setLoading(false)
     }
-  }
+  }, [poolId, whales, showWhaleAlerts])
 
   useEffect(() => {
     fetchSentiment()
     const interval = setInterval(fetchSentiment, updateInterval)
     return () => clearInterval(interval)
-  }, [poolId, updateInterval])
+  }, [fetchSentiment, updateInterval])
 
   if (loading || !sentiment) {
     return (
@@ -124,7 +124,7 @@ export function MarketSentiment({
                     </span>
                   </p>
                   <p className="text-xs text-foreground/70 line-clamp-2">
-                    on "{newWhale.choiceText}"
+                    on &ldquo;{newWhale.choiceText}&rdquo;
                   </p>
                 </div>
               </div>
