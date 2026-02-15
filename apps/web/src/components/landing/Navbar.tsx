@@ -8,6 +8,7 @@ import { ClientOnly } from '@/components/ClientOnly'
 
 const navLinks = [
   { label: 'The Story', href: '/story/voidborne-story' },
+  { label: 'Lore', href: '/lore' },
   { label: 'Leaderboards', href: '/leaderboards' },
   { label: 'Analytics', href: '/analytics' },
   { label: 'How It Works', href: '#how-it-works' },
