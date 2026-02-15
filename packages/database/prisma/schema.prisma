@@ -45,6 +45,7 @@ model User {
   badges        UserBadge[]
   notifications Notification[]
   notificationPreference NotificationPreference?
+  userHouses    UserHouse[] // House affiliations
   
   @@index([walletAddress])
   @@map("users")
@@ -551,6 +552,145 @@ model AlternateOutcome {
   @@unique([chapterId, choiceId])
   @@index([chapterId])
   @@map("alternate_outcomes")
+}
+
+// ============================================================================
+// VOIDBORNE LORE SYSTEM (Houses, Protocols, Characters)
+// ============================================================================
+
+model House {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Identity
+  slug          String   @unique // valdris, meridian, thuun, proof, drift, weave, null
+  name          String   @unique
+  description   String   @db.Text
+  lore          String   @db.Text // Full lore content (markdown)
+  
+  // Visual Identity
+  primaryColor  String   // Hex color (#00ff41)
+  secondaryColor String?
+  icon          String?  // Icon URL or emoji
+  bannerImage   String?  // Header image
+  
+  // Strand Affiliation
+  strandType    String   // G (Gravity), L (Lattice), S (Stitch), R (Radiance), C (Code), Ø (Null)
+  strandDescription String @db.Text
+  
+  // Territory & Power
+  territory     String?
+  population    Int?
+  influence     Int      @default(500) // 0-1000 power scale
+  
+  // Game Mechanics
+  reputation    Int      @default(500) // Base house reputation
+  totalMembers  Int      @default(0)
+  
+  // Stats
+  totalBets     Decimal  @default(0) @db.Decimal(20, 6)
+  totalWins     Int      @default(0)
+  winRate       Float    @default(0)
+  
+  // Relations
+  protocols     Protocol[]
+  userHouses    UserHouse[]
+  
+  @@index([slug])
+  @@index([strandType])
+  @@map("houses")
+}
+
+model Protocol {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Identity
+  slug          String   @unique // stellar-return, null-genesis, etc.
+  code          String   @unique // SR-01, NL-∅, etc.
+  name          String
+  description   String   @db.Text
+  lore          String   @db.Text // Full lore content (markdown)
+  
+  // House Affiliation
+  houseId       String
+  house         House    @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  
+  // Technical Specs
+  strandType    String   // Primary Strand (G, L, S, R, C, Ø)
+  spectrum      String   // HARD (military), SOFT (civilian), HYBRID
+  orderRange    String   // "7-9", "4-6", "1-3", etc.
+  
+  // Mechanics
+  cost          String   @db.Text // Energy cost, requirements
+  effects       String   @db.Text // What it does
+  risks         String?  @db.Text // Dangers, side effects
+  
+  // Rarity & Power
+  rarity        ProtocolRarity @default(COMMON)
+  powerLevel    Int      @default(5) // 1-10 scale
+  
+  // Usage Stats (for game mechanics)
+  timesUsed     Int      @default(0)
+  successRate   Float    @default(0)
+  
+  // Visual
+  icon          String?
+  color         String?  // Hex color
+  
+  @@index([houseId])
+  @@index([strandType])
+  @@index([spectrum])
+  @@index([rarity])
+  @@map("protocols")
+}
+
+enum ProtocolRarity {
+  COMMON        // Basic protocols
+  UNCOMMON      // Specialized
+  RARE          // Advanced
+  EPIC          // Powerful
+  LEGENDARY     // Forbidden/Lost
+}
+
+model UserHouse {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Relations
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  houseId       String
+  house         House    @relation(fields: [houseId], references: [id], onDelete: Cascade)
+  
+  // Status
+  isPrimary     Boolean  @default(false) // Primary house affiliation
+  joinedAt      DateTime @default(now())
+  
+  // Progression
+  reputation    Int      @default(0) // House-specific reputation
+  rank          String   @default("Initiate")
+  level         Int      @default(1)
+  experience    Int      @default(0)
+  
+  // Contributions
+  totalBets     Decimal  @default(0) @db.Decimal(20, 6)
+  totalWins     Int      @default(0)
+  protocolsLearned String[] // Protocol IDs
+  
+  // Achievements
+  badges        String[] // House-specific badges
+  title         String?  // Honorary title
+  
+  @@unique([userId, houseId])
+  @@index([userId])
+  @@index([houseId])
+  @@index([reputation])
+  @@map("user_houses")
 }
 
 // ============================================================================
