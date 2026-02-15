@@ -124,7 +124,7 @@ export function MarketSentiment({
                     </span>
                   </p>
                   <p className="text-xs text-foreground/70 line-clamp-2">
-                    on "{newWhale.choiceText}"
+                    on &ldquo;{newWhale.choiceText}&rdquo;
                   </p>
                 </div>
               </div>

@@ -1,11 +1,33 @@
-'use client'
-
-import { PlatformStats } from '@/components/betting/PlatformStats'
-import { RecentActivityFeed } from '@/components/betting/RecentActivityFeed'
-import { CommunityPulse } from '@/components/betting/CommunityPulse'
-import { motion } from 'framer-motion'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { ArrowLeft, BarChart3, User } from 'lucide-react'
+import { Metadata } from 'next'
+
+// Lazy load heavy components for better initial load
+const PlatformStats = dynamic(() => import('@/components/betting/PlatformStats').then(mod => ({ default: mod.PlatformStats })), {
+  loading: () => <div className="h-48 animate-pulse bg-muted rounded-lg" />,
+  ssr: false,
+})
+
+const RecentActivityFeed = dynamic(() => import('@/components/betting/RecentActivityFeed').then(mod => ({ default: mod.RecentActivityFeed })), {
+  loading: () => <div className="h-96 animate-pulse bg-muted rounded-lg" />,
+  ssr: false,
+})
+
+const CommunityPulse = dynamic(() => import('@/components/betting/CommunityPulse').then(mod => ({ default: mod.CommunityPulse })), {
+  loading: () => <div className="h-64 animate-pulse bg-muted rounded-lg" />,
+  ssr: false,
+})
+
+// Lazy load framer-motion wrapper
+const AnimatedSection = dynamic(() => import('@/components/ui/AnimatedSection'), {
+  ssr: false,
+})
+
+export const metadata: Metadata = {
+  title: 'Betting Dashboard | Voidborne',
+  description: 'Real-time betting statistics, community pulse, and recent activity on Voidborne.',
+}
 
 export default function DashboardPage() {
   return (
@@ -18,6 +40,7 @@ export default function DashboardPage() {
               <Link
                 href="/"
                 className="text-foreground/70 hover:text-gold transition-colors"
+                aria-label="Go back to homepage"
               >
                 <ArrowLeft className="w-5 h-5" />
               </Link>
@@ -49,53 +72,38 @@ export default function DashboardPage() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Platform Stats */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
+        <AnimatedSection delay={0.1}>
           <PlatformStats />
-        </motion.section>
+        </AnimatedSection>
 
         {/* Community Pulse */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
+        <AnimatedSection delay={0.2}>
           <CommunityPulse />
-        </motion.section>
+        </AnimatedSection>
 
         {/* Recent Activity Feed */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
+        <AnimatedSection delay={0.3}>
           <RecentActivityFeed />
-        </motion.section>
+        </AnimatedSection>
 
         {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="text-center py-12"
-        >
-          <h3 className="text-2xl font-cinzel font-bold text-gold mb-4">
-            See a hot pool?
-          </h3>
-          <p className="text-foreground/70 mb-6 max-w-2xl mx-auto">
-            Jump into the action and place your bets before the pools close. 
-            May the odds be in your favor.
-          </p>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gold hover:bg-gold/90 text-void-950 rounded-lg font-bold transition-all"
-          >
-            Browse Stories
-          </Link>
-        </motion.div>
+        <AnimatedSection delay={0.4}>
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-cinzel font-bold text-gold mb-4">
+              See a hot pool?
+            </h2>
+            <p className="text-foreground/70 mb-6 max-w-2xl mx-auto">
+              Jump into the action and place your bets before the pools close. 
+              May the odds be in your favor.
+            </p>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gold hover:bg-gold/90 text-void-950 rounded-lg font-bold transition-all"
+            >
+              Browse Stories
+            </Link>
+          </div>
+        </AnimatedSection>
       </div>
     </div>
   )
