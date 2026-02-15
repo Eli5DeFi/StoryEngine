@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import {
   LineChart,
   Line,
@@ -62,7 +62,7 @@ export function LiveOddsChart({
   const [isLive, setIsLive] = useState(true)
 
   // Fetch odds data
-  const fetchOdds = async () => {
+  const fetchOdds = useCallback(async () => {
     try {
       const response = await fetch(
         `/api/pools/${poolId}/odds?timeframe=${selectedTimeframe}`
@@ -79,12 +79,12 @@ export function LiveOddsChart({
     } finally {
       setLoading(false)
     }
-  }
+  }, [poolId, selectedTimeframe])
 
   // Initial fetch
   useEffect(() => {
     fetchOdds()
-  }, [poolId, selectedTimeframe])
+  }, [fetchOdds])
 
   // Live updates
   useEffect(() => {
@@ -95,7 +95,7 @@ export function LiveOddsChart({
     }, updateInterval)
 
     return () => clearInterval(interval)
-  }, [poolId, selectedTimeframe, updateInterval, isLive])
+  }, [fetchOdds, updateInterval, isLive])
 
   // Format chart data
   const chartData = snapshots.map(snapshot => {

@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@voidborne/database'
 
 const prisma = new PrismaClient()
@@ -15,12 +15,12 @@ export const dynamic = 'force-dynamic'
  * - ROI by story
  */
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { walletAddress: string } }
 ) {
   try {
     const { walletAddress } = params
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const timeframe = searchParams.get('timeframe') || 'all'
 
     // Find user

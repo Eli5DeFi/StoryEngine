@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@voidborne/database'
 import { cache, CacheTTL } from '@/lib/cache'
 
@@ -16,9 +16,9 @@ export const revalidate = 30
  * Query params:
  * - limit: number (default: 50, max: 100)
  */
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100)
     
     const cacheKey = `recent-bets-${limit}`
