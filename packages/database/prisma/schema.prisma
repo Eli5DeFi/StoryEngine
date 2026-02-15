@@ -45,9 +45,54 @@ model User {
   badges        UserBadge[]
   notifications Notification[]
   notificationPreference NotificationPreference?
+  playerSkill   PlayerSkill?
   
   @@index([walletAddress])
   @@map("users")
+}
+
+// ============================================================================
+// DYNAMIC DIFFICULTY BETTING (Skill-Based Matchmaking)
+// ============================================================================
+
+model PlayerSkill {
+  id              String   @id @default(cuid())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // ELO Rating (1000-3000)
+  eloRating       Int      @default(1000)
+  
+  // Betting stats
+  totalBets       Int      @default(0)
+  wins            Int      @default(0)
+  losses          Int      @default(0)
+  winRate         Float    @default(0) // 0-1
+  
+  // Streaks
+  currentStreak   Int      @default(0) // Positive = wins, negative = losses
+  longestWinStreak Int     @default(0)
+  
+  // Skill tier (NOVICE, INTERMEDIATE, EXPERT, MASTER, LEGEND)
+  tier            String   @default("NOVICE")
+  
+  // Financial stats
+  lastBetDate     DateTime @default(now())
+  averageBetSize  Decimal  @default(0) @db.Decimal(20, 6)
+  totalWagered    Decimal  @default(0) @db.Decimal(20, 6)
+  totalEarnings   Decimal  @default(0) @db.Decimal(20, 6)
+  netProfit       Decimal  @default(0) @db.Decimal(20, 6)
+  
+  // Tier history (for tracking progression)
+  tierHistory     Json     @default("[]")
+  // Format: [{ tier: "NOVICE", achievedAt: "2026-02-15T..." }]
+  
+  @@index([tier])
+  @@index([eloRating])
+  @@map("player_skills")
 }
 
 // ============================================================================

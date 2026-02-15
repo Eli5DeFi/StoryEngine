@@ -2,12 +2,16 @@
 
 import { useState, useEffect } from 'react'
 import { BettingPool, Choice } from '@voidborne/database'
-import { TrendingUp, Users, Clock, Trophy, AlertCircle, DollarSign } from 'lucide-react'
+import { TrendingUp, Users, Clock, Trophy, AlertCircle, DollarSign, ChevronDown, ChevronUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAccount } from 'wagmi'
 import { usePlaceBet } from '@/hooks/usePlaceBet'
 import { useUSDCBalance } from '@/hooks/useUSDCBalance'
+import { SkillTierBadge } from '@/components/betting/SkillTierBadge'
+import { SkillProgressCard } from '@/components/betting/SkillProgressCard'
+import { AdaptiveOddsDisplay } from '@/components/betting/AdaptiveOddsDisplay'
+import { SkillTier } from '@/lib/dynamic-difficulty/skillRating'
 
 interface BettingInterfaceProps {
   poolId: string
@@ -25,6 +29,33 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null)
   const [betAmount, setBetAmount] = useState('')
   const [timeLeft, setTimeLeft] = useState<string>('')
+  const [showSkillCard, setShowSkillCard] = useState(false)
+  
+  // Skill system state
+  const [skillData, setSkillData] = useState<any>(null)
+  const [loadingSkill, setLoadingSkill] = useState(false)
+
+  // Fetch player skill on load
+  useEffect(() => {
+    if (!address) return
+
+    async function fetchSkill() {
+      setLoadingSkill(true)
+      try {
+        const response = await fetch(`/api/skill?walletAddress=${address}`)
+        if (response.ok) {
+          const data = await response.json()
+          setSkillData(data)
+        }
+      } catch (error) {
+        console.error('Error fetching skill:', error)
+      } finally {
+        setLoadingSkill(false)
+      }
+    }
+
+    fetchSkill()
+  }, [address])
 
   // Update countdown timer
   useEffect(() => {
@@ -116,14 +147,83 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
     return totalPool > 0 && choiceBets > 0 ? totalPool / choiceBets : 0
   })() : 0
 
+  // Calculate adaptive odds if skill data is available
+  const tier = skillData?.skill?.tier as SkillTier || SkillTier.NOVICE
+  const tierMultiplier = {
+    [SkillTier.NOVICE]: 1.15,
+    [SkillTier.INTERMEDIATE]: 1.05,
+    [SkillTier.EXPERT]: 1.0,
+    [SkillTier.MASTER]: 0.95,
+    [SkillTier.LEGEND]: 0.90
+  }[tier] || 1.0
+  const adaptiveOdds = selectedBranchOdds * tierMultiplier
+
   return (
     <div className="glass-card rounded-2xl p-8">
       {/* Pool Header */}
       <div className="mb-8">
-        <h3 className="text-3xl font-display font-bold text-gold mb-2">Place Your Bet</h3>
-        <p className="text-void-300">
-          Predict which branch the AI will choose
-        </p>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-3xl font-display font-bold text-gold mb-2">Place Your Bet</h3>
+            <p className="text-void-300">
+              Predict which branch the AI will choose
+            </p>
+          </div>
+          {isConnected && skillData && !loadingSkill && (
+            <SkillTierBadge 
+              tier={tier} 
+              eloRating={skillData.skill.eloRating}
+              size="md"
+            />
+          )}
+        </div>
+
+        {/* Skill Progress Card (Collapsible) */}
+        {isConnected && skillData && !loadingSkill && (
+          <div className="mt-4">
+            <button
+              onClick={() => setShowSkillCard(!showSkillCard)}
+              className="
+                w-full flex items-center justify-between
+                px-4 py-3 rounded-lg
+                bg-gray-900/50 border border-gray-800
+                hover:border-gold/50 transition-all duration-200
+                text-sm text-gray-400 hover:text-gray-300
+              "
+            >
+              <span className="flex items-center gap-2">
+                <Trophy className="w-4 h-4" />
+                Your Skill Progress
+              </span>
+              {showSkillCard ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+            
+            <AnimatePresence>
+              {showSkillCard && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="mt-4"
+                >
+                  <SkillProgressCard
+                    currentTier={skillData.skill.tier}
+                    nextTier={skillData.progress.nextTier}
+                    eloRating={skillData.skill.eloRating}
+                    totalBets={skillData.skill.totalBets}
+                    wins={skillData.skill.wins}
+                    winRate={skillData.skill.winRate}
+                    currentStreak={skillData.skill.currentStreak}
+                    betsNeeded={skillData.progress.betsNeeded}
+                    eloNeeded={skillData.progress.eloNeeded}
+                    progressPercent={skillData.progress.progressPercent}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
       </div>
 
       {/* Pool Stats */}
@@ -309,24 +409,48 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
         </Button>
       )}
 
-      {/* Payout Info */}
+      {/* Payout Info with Adaptive Odds */}
       {selectedChoice !== null && betAmount && isOpen && isConnected && (
-        <div className="mt-6 p-6 glass-card rounded-xl border border-success/30 bg-success/5">
-          <div className="text-sm text-void-400 font-ui uppercase tracking-wider mb-2">Potential Payout:</div>
-          <div className="text-4xl font-display font-bold text-success tabular-nums">
-            ${(() => {
-              const choice = choices[selectedChoice]
-              if (!choice) return '0.00'
-              const amount = parseFloat(betAmount)
-              const choiceBets = choice.totalBets.toNumber() + amount
-              const totalPool = pool.totalPool.toNumber() + amount
-              const winnerShare = totalPool * 0.85
-              const payout = (amount / choiceBets) * winnerShare
-              return payout.toFixed(2)
-            })()}
-          </div>
-          <div className="text-xs text-void-500 mt-2 font-ui">
-            If your choice wins (85% pool to winners • {selectedBranchOdds.toFixed(2)}x odds)
+        <div className="mt-6 space-y-4">
+          {/* Adaptive Odds Display */}
+          {skillData && !loadingSkill && (
+            <div className="p-4 glass-card rounded-xl border border-gold/20 bg-gold/5">
+              <AdaptiveOddsDisplay
+                standardOdds={selectedBranchOdds}
+                tier={tier}
+                betAmount={parseFloat(betAmount) || 0}
+              />
+            </div>
+          )}
+
+          {/* Potential Payout */}
+          <div className="p-6 glass-card rounded-xl border border-success/30 bg-success/5">
+            <div className="text-sm text-void-400 font-ui uppercase tracking-wider mb-2">
+              {skillData && tierMultiplier !== 1.0 ? 'Your Personalized Payout:' : 'Potential Payout:'}
+            </div>
+            <div className="text-4xl font-display font-bold text-success tabular-nums">
+              ${(() => {
+                const choice = choices[selectedChoice]
+                if (!choice) return '0.00'
+                const amount = parseFloat(betAmount)
+                const choiceBets = choice.totalBets.toNumber() + amount
+                const totalPool = pool.totalPool.toNumber() + amount
+                const winnerShare = totalPool * 0.85
+                const standardPayout = (amount / choiceBets) * winnerShare
+                
+                // Apply tier multiplier if skill data available
+                const adjustedPayout = skillData ? standardPayout * tierMultiplier : standardPayout
+                return adjustedPayout.toFixed(2)
+              })()}
+            </div>
+            <div className="text-xs text-void-500 mt-2 font-ui">
+              If your choice wins (85% pool to winners • {adaptiveOdds.toFixed(2)}x odds
+              {skillData && tierMultiplier !== 1.0 && (
+                <span className={tierMultiplier > 1 ? 'text-green-400' : 'text-red-400'}>
+                  {' '}• {tierMultiplier > 1 ? '+' : ''}{((tierMultiplier - 1) * 100).toFixed(0)}% tier adjustment
+                </span>
+              )})
+            </div>
           </div>
         </div>
       )}

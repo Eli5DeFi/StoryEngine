@@ -1,13 +1,13 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
 
 /**
  * GET /api/stories
  * List all active stories
  */
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = request.nextUrl
     const status = searchParams.get('status') || 'ACTIVE'
     const genre = searchParams.get('genre')
     const limit = parseInt(searchParams.get('limit') || '20')
