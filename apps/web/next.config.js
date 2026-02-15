@@ -29,6 +29,8 @@ const nextConfig = {
   // Bundle optimization
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts', 'date-fns', 'framer-motion', '@rainbow-me/rainbowkit', 'wagmi', 'viem'],
+    // Optimize CSS
+    optimizeCss: true,
   },
 
   // Production performance optimizations
