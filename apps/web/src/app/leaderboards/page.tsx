@@ -1,7 +1,24 @@
-import { Leaderboards } from '@/components/leaderboards/Leaderboards'
+import dynamic from 'next/dynamic'
 import { Navbar } from '@/components/landing/Navbar'
 import { Footer } from '@/components/landing/Footer'
 import { Metadata } from 'next'
+import { Loader2 } from 'lucide-react'
+
+// Lazy load leaderboards component (includes framer-motion)
+const Leaderboards = dynamic(
+  () => import('@/components/leaderboards/Leaderboards').then(mod => ({ default: mod.Leaderboards })),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-gold mx-auto mb-4" />
+          <p className="text-lg text-muted-foreground">Loading leaderboards...</p>
+        </div>
+      </div>
+    ),
+    ssr: false,
+  }
+)
 
 export const metadata: Metadata = {
   title: 'The Void Champions | Voidborne Leaderboards',

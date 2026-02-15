@@ -15,37 +15,38 @@ datasource db {
 // ============================================================================
 
 model User {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Wallet authentication
-  walletAddress String   @unique
-  nonce         String?  // For signature verification
-  
+  walletAddress String  @unique
+  nonce         String? // For signature verification
+
   // Profile
-  username      String?  @unique
-  bio           String?
-  avatar        String?
-  
+  username String? @unique
+  bio      String?
+  avatar   String?
+
   // Stats
-  totalBets     Int      @default(0)
-  totalWon      Decimal  @default(0) @db.Decimal(20, 6)
-  totalLost     Decimal  @default(0) @db.Decimal(20, 6)
-  winRate       Float    @default(0) // Percentage
-  
+  totalBets Int     @default(0)
+  totalWon  Decimal @default(0) @db.Decimal(20, 6)
+  totalLost Decimal @default(0) @db.Decimal(20, 6)
+  winRate   Float   @default(0) // Percentage
+
   // Streaks & Achievements
-  currentStreak Int      @default(0)
-  longestStreak Int      @default(0)
+  currentStreak Int       @default(0)
+  longestStreak Int       @default(0)
   lastBetDate   DateTime?
-  
+
   // Relationships
-  bets          Bet[]
-  createdStories Story[] @relation("StoryAuthor")
-  badges        UserBadge[]
-  notifications Notification[]
+  bets                   Bet[]
+  createdStories         Story[]                 @relation("StoryAuthor")
+  badges                 UserBadge[]
+  notifications          Notification[]
   notificationPreference NotificationPreference?
-  
+  progress               UserProgress?           @relation("UserProgress")
+
   @@index([walletAddress])
   @@map("users")
 }
@@ -55,94 +56,94 @@ model User {
 // ============================================================================
 
 model Story {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Metadata
-  title         String
-  description   String
-  genre         String   // Sci-Fi, Fantasy, Cyberpunk, etc.
-  coverImage    String?
-  
+  title       String
+  description String
+  genre       String // Sci-Fi, Fantasy, Cyberpunk, etc.
+  coverImage  String?
+
   // Status
-  status        StoryStatus @default(ACTIVE)
-  currentChapter Int      @default(1)
-  totalChapters Int      @default(0)
-  
+  status         StoryStatus @default(ACTIVE)
+  currentChapter Int         @default(1)
+  totalChapters  Int         @default(0)
+
   // Author (can be AI or human)
   authorId      String
-  author        User     @relation("StoryAuthor", fields: [authorId], references: [id])
-  isAIGenerated Boolean  @default(true)
-  
+  author        User    @relation("StoryAuthor", fields: [authorId], references: [id])
+  isAIGenerated Boolean @default(true)
+
   // Stats
-  totalReaders  Int      @default(0)
-  totalBets     Decimal  @default(0) @db.Decimal(20, 6)
-  viewCount     Int      @default(0)
-  
+  totalReaders Int     @default(0)
+  totalBets    Decimal @default(0) @db.Decimal(20, 6)
+  viewCount    Int     @default(0)
+
   // Relationships
-  chapters      Chapter[]
-  characters    Character[]
-  
+  chapters   Chapter[]
+  characters Character[]
+
   @@index([status, createdAt])
   @@index([genre])
   @@map("stories")
 }
 
 enum StoryStatus {
-  ACTIVE      // Currently accepting bets
-  PAUSED      // Temporarily paused
-  COMPLETED   // Story finished
-  ARCHIVED    // No longer active
+  ACTIVE // Currently accepting bets
+  PAUSED // Temporarily paused
+  COMPLETED // Story finished
+  ARCHIVED // No longer active
 }
 
 model Chapter {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Chapter info
   storyId       String
-  story         Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  story         Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
   chapterNumber Int
-  
+
   // Content
-  title         String
-  content       String   @db.Text
-  summary       String?  @db.Text
-  
+  title   String
+  content String  @db.Text
+  summary String? @db.Text
+
   // Images (AI-generated or uploaded)
-  headerImage   String?
-  images        String[] // Array of image URLs
-  
+  headerImage String?
+  images      String[] // Array of image URLs
+
   // Metadata
-  wordCount     Int      @default(0)
-  readTime      Int      @default(0) // Minutes
-  
+  wordCount Int @default(0)
+  readTime  Int @default(0) // Minutes
+
   // Status
-  status        ChapterStatus @default(DRAFT)
-  publishedAt   DateTime?
-  
+  status      ChapterStatus @default(DRAFT)
+  publishedAt DateTime?
+
   // AI Generation metadata
-  aiModel       String?  // GPT-4, Claude, etc.
-  aiPrompt      String?  @db.Text
-  generationTime Int?    // Milliseconds
-  
+  aiModel        String? // GPT-4, Claude, etc.
+  aiPrompt       String? @db.Text
+  generationTime Int? // Milliseconds
+
   // Relationships
-  choices       Choice[]
-  bettingPool   BettingPool?
-  
+  choices     Choice[]
+  bettingPool BettingPool?
+
   @@unique([storyId, chapterNumber])
   @@index([storyId, chapterNumber])
   @@map("chapters")
 }
 
 enum ChapterStatus {
-  DRAFT       // Being written/generated
-  PUBLISHED   // Live and readable
-  BETTING     // Betting pool active for next chapter
-  RESOLVED    // AI made choice, betting resolved
-  ARCHIVED    // No longer active
+  DRAFT // Being written/generated
+  PUBLISHED // Live and readable
+  BETTING // Betting pool active for next chapter
+  RESOLVED // AI made choice, betting resolved
+  ARCHIVED // No longer active
 }
 
 // ============================================================================
@@ -150,123 +151,123 @@ enum ChapterStatus {
 // ============================================================================
 
 model Choice {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Choice info
-  chapterId     String
-  chapter       Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  choiceNumber  Int      // 1, 2, 3, etc.
-  
+  chapterId    String
+  chapter      Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  choiceNumber Int // 1, 2, 3, etc.
+
   // Content
-  text          String   @db.Text
-  description   String?  @db.Text
-  
+  text        String  @db.Text
+  description String? @db.Text
+
   // Outcome (after AI chooses)
-  isChosen      Boolean  @default(false)
-  chosenAt      DateTime?
-  
+  isChosen Boolean   @default(false)
+  chosenAt DateTime?
+
   // AI Analysis
-  aiScore       Float?   // 0-100, AI's preference score
-  aiReasoning   String?  @db.Text
-  
+  aiScore     Float? // 0-100, AI's preference score
+  aiReasoning String? @db.Text
+
   // Stats
-  totalBets     Decimal  @default(0) @db.Decimal(20, 6)
-  betCount      Int      @default(0)
-  oddsSnapshot  Float?   // Odds at close time
-  
+  totalBets    Decimal @default(0) @db.Decimal(20, 6)
+  betCount     Int     @default(0)
+  oddsSnapshot Float? // Odds at close time
+
   // Relationships
-  bets          Bet[]
-  
+  bets Bet[]
+
   @@unique([chapterId, choiceNumber])
   @@index([chapterId])
   @@map("choices")
 }
 
 model BettingPool {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Pool info
-  chapterId     String   @unique
-  chapter       Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  
+  chapterId String  @unique
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
   // Pool settings
-  betToken      String   @default("USDC") // USDC or USDT
+  betToken        String   @default("USDC") // USDC or USDT
   betTokenAddress String // ERC20 contract address
-  minBet        Decimal  @default(10) @db.Decimal(20, 6) // $10 USDC
-  maxBet        Decimal? @default(10000) @db.Decimal(20, 6) // $10,000 USDC
-  
+  minBet          Decimal  @default(10) @db.Decimal(20, 6) // $10 USDC
+  maxBet          Decimal? @default(10000) @db.Decimal(20, 6) // $10,000 USDC
+
   // Timing
-  opensAt       DateTime
-  closesAt      DateTime
-  resolvedAt    DateTime?
-  
+  opensAt    DateTime
+  closesAt   DateTime
+  resolvedAt DateTime?
+
   // Status
-  status        PoolStatus @default(PENDING)
-  
+  status PoolStatus @default(PENDING)
+
   // Pool totals
-  totalPool     Decimal  @default(0) @db.Decimal(20, 6)
-  totalBets     Int      @default(0)
-  uniqueBettors Int      @default(0)
-  
+  totalPool     Decimal @default(0) @db.Decimal(20, 6)
+  totalBets     Int     @default(0)
+  uniqueBettors Int     @default(0)
+
   // Smart contract
   contractAddress String?
   contractTxHash  String?
-  
+
   // Winner info (after resolution)
   winningChoiceId String?
-  winnersPaid     Decimal  @default(0) @db.Decimal(20, 6)
-  treasuryCut     Decimal  @default(0) @db.Decimal(20, 6)
-  devCut          Decimal  @default(0) @db.Decimal(20, 6)
-  
+  winnersPaid     Decimal @default(0) @db.Decimal(20, 6)
+  treasuryCut     Decimal @default(0) @db.Decimal(20, 6)
+  devCut          Decimal @default(0) @db.Decimal(20, 6)
+
   // Relationships
   bets          Bet[]
   oddsSnapshots OddsSnapshot[]
-  
+
   @@index([status, closesAt])
   @@map("betting_pools")
 }
 
 enum PoolStatus {
-  PENDING     // Not yet open
-  OPEN        // Accepting bets
-  CLOSED      // No more bets, waiting for AI
-  RESOLVING   // AI is deciding
-  RESOLVED    // Winner chosen
-  CANCELLED   // Pool cancelled (refunds)
+  PENDING // Not yet open
+  OPEN // Accepting bets
+  CLOSED // No more bets, waiting for AI
+  RESOLVING // AI is deciding
+  RESOLVED // Winner chosen
+  CANCELLED // Pool cancelled (refunds)
 }
 
 model Bet {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Bettor
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
-  
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
   // Bet details
-  poolId        String
-  pool          BettingPool @relation(fields: [poolId], references: [id])
-  
-  choiceId      String
-  choice        Choice   @relation(fields: [choiceId], references: [id])
-  
+  poolId String
+  pool   BettingPool @relation(fields: [poolId], references: [id])
+
+  choiceId String
+  choice   Choice @relation(fields: [choiceId], references: [id])
+
   // Amount
-  amount        Decimal  @db.Decimal(20, 6)
-  
+  amount Decimal @db.Decimal(20, 6)
+
   // Outcome
-  isWinner      Boolean  @default(false)
-  payout        Decimal? @db.Decimal(20, 6)
-  payoutTxHash  String?
-  
+  isWinner     Boolean  @default(false)
+  payout       Decimal? @db.Decimal(20, 6)
+  payoutTxHash String?
+
   // Metadata
-  odds          Float?   // Odds at time of bet
-  txHash        String?  // Blockchain transaction hash
-  
+  odds   Float? // Odds at time of bet
+  txHash String? // Blockchain transaction hash
+
   @@index([userId])
   @@index([poolId])
   @@index([choiceId])
@@ -278,73 +279,73 @@ model Bet {
 // ============================================================================
 
 model AIGeneration {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
 
   // Generation type
-  type          GenerationType
-  
+  type GenerationType
+
   // Reference
-  entityId      String   // Story, Chapter, or Choice ID
-  entityType    String   // "story", "chapter", "choice"
-  
+  entityId   String // Story, Chapter, or Choice ID
+  entityType String // "story", "chapter", "choice"
+
   // AI Model
-  model         String   // GPT-4, Claude-3, DALL-E, etc.
-  provider      String   // OpenAI, Anthropic, etc.
-  
+  model    String // GPT-4, Claude-3, DALL-E, etc.
+  provider String // OpenAI, Anthropic, etc.
+
   // Prompt & Response
-  prompt        String   @db.Text
-  response      String   @db.Text
-  
+  prompt   String @db.Text
+  response String @db.Text
+
   // Metadata
-  tokensUsed    Int?
-  cost          Decimal? @db.Decimal(10, 6)
-  latency       Int?     // Milliseconds
-  
+  tokensUsed Int?
+  cost       Decimal? @db.Decimal(10, 6)
+  latency    Int? // Milliseconds
+
   // Success/Error
-  status        String   // success, error, partial
-  error         String?  @db.Text
-  
+  status String // success, error, partial
+  error  String? @db.Text
+
   @@index([entityId, entityType])
   @@index([createdAt])
   @@map("ai_generations")
 }
 
 enum GenerationType {
-  STORY_CONCEPT   // Initial story idea
+  STORY_CONCEPT // Initial story idea
   CHAPTER_CONTENT // Chapter text
-  CHOICE_OPTIONS  // Multiple choice options
-  AI_DECISION     // AI choosing winning path
-  IMAGE           // Image generation
-  SUMMARY         // Content summarization
+  CHOICE_OPTIONS // Multiple choice options
+  AI_DECISION // AI choosing winning path
+  IMAGE // Image generation
+  SUMMARY // Content summarization
 }
 
 model Analytics {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  date          DateTime @unique @db.Date
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  date      DateTime @unique @db.Date
 
   // Daily metrics
-  activeUsers   Int      @default(0)
-  newUsers      Int      @default(0)
-  
+  activeUsers Int @default(0)
+  newUsers    Int @default(0)
+
   // Story metrics
-  storiesCreated Int     @default(0)
-  chaptersPublished Int  @default(0)
-  
+  storiesCreated    Int @default(0)
+  chaptersPublished Int @default(0)
+
   // Betting metrics
-  totalBets     Int      @default(0)
-  totalVolume   Decimal  @default(0) @db.Decimal(20, 6)
-  uniqueBettors Int      @default(0)
-  
+  totalBets     Int     @default(0)
+  totalVolume   Decimal @default(0) @db.Decimal(20, 6)
+  uniqueBettors Int     @default(0)
+
   // Revenue
-  platformFees  Decimal  @default(0) @db.Decimal(20, 6)
-  tradingFees   Decimal  @default(0) @db.Decimal(20, 6)
-  
+  platformFees Decimal @default(0) @db.Decimal(20, 6)
+  tradingFees  Decimal @default(0) @db.Decimal(20, 6)
+
   // AI usage
-  aiCalls       Int      @default(0)
-  aiCost        Decimal  @default(0) @db.Decimal(10, 6)
-  
+  aiCalls Int     @default(0)
+  aiCost  Decimal @default(0) @db.Decimal(10, 6)
+
   @@index([date])
   @@map("analytics")
 }
@@ -354,22 +355,22 @@ model Analytics {
 // ============================================================================
 
 model Badge {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
   // Badge info
-  name          String   @unique
-  description   String
-  icon          String   // Emoji or image URL
-  rarity        BadgeRarity
-  
+  name        String      @unique
+  description String
+  icon        String // Emoji or image URL
+  rarity      BadgeRarity
+
   // Unlock criteria
   criteriaType  CriteriaType
   criteriaValue Int?
-  
+
   // Relationships
-  userBadges    UserBadge[]
-  
+  userBadges UserBadge[]
+
   @@map("badges")
 }
 
@@ -381,26 +382,26 @@ enum BadgeRarity {
 }
 
 enum CriteriaType {
-  WINS       // X winning bets
-  STREAK     // X wins in a row
-  PROFIT     // $X total profit
-  VOLUME     // $X total wagered
-  BETS       // X total bets
-  SPECIAL    // Manual/event-based
+  WINS // X winning bets
+  STREAK // X wins in a row
+  PROFIT // $X total profit
+  VOLUME // $X total wagered
+  BETS // X total bets
+  SPECIAL // Manual/event-based
 }
 
 model UserBadge {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  
-  userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  badgeId       String
-  badge         Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
-  
-  earnedAt      DateTime @default(now())
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  badgeId String
+  badge   Badge  @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  earnedAt DateTime @default(now())
+
   @@unique([userId, badgeId])
   @@index([userId])
   @@index([badgeId])
@@ -412,21 +413,21 @@ model UserBadge {
 // ============================================================================
 
 model OddsSnapshot {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  
-  poolId        String
-  pool          BettingPool @relation(fields: [poolId], references: [id], onDelete: Cascade)
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  poolId String
+  pool   BettingPool @relation(fields: [poolId], references: [id], onDelete: Cascade)
+
   // Snapshot data (JSON to store odds for all choices)
   // Format: { "choice_id_1": 0.65, "choice_id_2": 0.35 }
-  choiceOdds    Json
-  
+  choiceOdds Json
+
   // Pool state at snapshot time
-  totalPool     Decimal  @db.Decimal(20, 6)
+  totalPool     Decimal @db.Decimal(20, 6)
   totalBets     Int
   uniqueBettors Int
-  
+
   @@index([poolId, createdAt])
   @@map("odds_snapshots")
 }
@@ -436,85 +437,85 @@ model OddsSnapshot {
 // ============================================================================
 
 model Character {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  storyId       String
-  story         Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  storyId String
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
   // Profile
-  name          String
-  description   String   @db.Text
-  portrait      String?  // AI-generated image URL
-  
+  name        String
+  description String  @db.Text
+  portrait    String? // AI-generated image URL
+
   // AI-tracked traits (JSON)
   // Format: { "brave": 0.8, "cautious": 0.2, "loyal": 0.9 }
-  traits        Json     @default("{}")
-  
+  traits Json @default("{}")
+
   // Appearance tracking
-  firstAppearance Int    // Chapter number
-  lastAppearance  Int    // Chapter number
-  totalAppearances Int   @default(0)
-  
+  firstAppearance  Int // Chapter number
+  lastAppearance   Int // Chapter number
+  totalAppearances Int @default(0)
+
   // Relationships
   memories      CharacterMemory[]
   relationships CharacterRelationship[] @relation("CharacterA")
   relatedTo     CharacterRelationship[] @relation("CharacterB")
-  
+
   @@unique([storyId, name])
   @@index([storyId])
   @@map("characters")
 }
 
 model CharacterMemory {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  
-  characterId   String
-  character     Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-  
-  chapterId     String
-  choiceId      String?  // Winning choice that created this memory
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  chapterId String
+  choiceId  String? // Winning choice that created this memory
+
   // Memory content
-  eventType     MemoryType
-  description   String   @db.Text
-  emotionalImpact Float  // -1.0 (traumatic) to +1.0 (joyful)
-  importance    Int      // 1-10 (how much this shapes character)
-  
+  eventType       MemoryType
+  description     String     @db.Text
+  emotionalImpact Float // -1.0 (traumatic) to +1.0 (joyful)
+  importance      Int // 1-10 (how much this shapes character)
+
   @@index([characterId])
   @@index([chapterId])
   @@map("character_memories")
 }
 
 enum MemoryType {
-  DECISION       // Character made a choice
-  RELATIONSHIP   // Interaction with another character
-  REVELATION     // Learned something important
-  TRAUMA         // Negative event
-  ACHIEVEMENT    // Positive accomplishment
+  DECISION // Character made a choice
+  RELATIONSHIP // Interaction with another character
+  REVELATION // Learned something important
+  TRAUMA // Negative event
+  ACHIEVEMENT // Positive accomplishment
 }
 
 model CharacterRelationship {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  characterAId  String
-  characterA    Character @relation("CharacterA", fields: [characterAId], references: [id], onDelete: Cascade)
-  
-  characterBId  String
-  characterB    Character @relation("CharacterB", fields: [characterBId], references: [id], onDelete: Cascade)
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  characterAId String
+  characterA   Character @relation("CharacterA", fields: [characterAId], references: [id], onDelete: Cascade)
+
+  characterBId String
+  characterB   Character @relation("CharacterB", fields: [characterBId], references: [id], onDelete: Cascade)
+
   // Relationship score: -1.0 (enemies) to +1.0 (best friends)
-  score         Float    @default(0)
+  score            Float        @default(0)
   relationshipType RelationType
-  
+
   // How this evolved
-  history       Json     @default("[]")
+  history Json @default("[]")
   // Format: [{ chapter: 3, event: "Sarah saved Marcus", delta: +0.3 }]
-  
+
   @@unique([characterAId, characterBId])
   @@index([characterAId])
   @@index([characterBId])
@@ -533,21 +534,21 @@ enum RelationType {
 }
 
 model AlternateOutcome {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  
-  chapterId     String
-  choiceId      String   // The choice that DIDN'T win
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  chapterId String
+  choiceId  String // The choice that DIDN'T win
+
   // AI-generated preview
-  preview       String   @db.Text
-  fullContent   String?  @db.Text // Optional: full alternate chapter
-  
+  preview     String  @db.Text
+  fullContent String? @db.Text // Optional: full alternate chapter
+
   // Metadata
-  aiModel       String
-  generated     Boolean  @default(false)
-  viewCount     Int      @default(0)
-  
+  aiModel   String
+  generated Boolean @default(false)
+  viewCount Int     @default(0)
+
   @@unique([chapterId, choiceId])
   @@index([chapterId])
   @@map("alternate_outcomes")
@@ -558,56 +559,56 @@ model AlternateOutcome {
 // ============================================================================
 
 model Notification {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   // Notification details
-  type          NotificationType
-  title         String
-  message       String   @db.Text
-  link          String?  // Deep link to relevant page
-  
+  type    NotificationType
+  title   String
+  message String           @db.Text
+  link    String? // Deep link to relevant page
+
   // Read status
-  isRead        Boolean  @default(false)
-  readAt        DateTime?
-  
+  isRead Boolean   @default(false)
+  readAt DateTime?
+
   // Optional metadata (bet details, story info, etc.)
-  metadata      Json?
-  
+  metadata Json?
+
   @@index([userId, isRead])
   @@index([userId, createdAt])
   @@map("notifications")
 }
 
 enum NotificationType {
-  CHAPTER_RELEASED  // New chapter published
-  BET_WON           // Your bet won
-  BET_LOST          // Your bet lost
-  STREAK_MILESTONE  // Win streak achieved
-  LEADERBOARD       // Leaderboard position change
-  FRIEND_ACTIVITY   // Friend bet or won
-  WEEKLY_DIGEST     // Weekly performance summary
-  POOL_CLOSING      // Pool closing soon
-  SYSTEM            // System announcements
+  CHAPTER_RELEASED // New chapter published
+  BET_WON // Your bet won
+  BET_LOST // Your bet lost
+  STREAK_MILESTONE // Win streak achieved
+  LEADERBOARD // Leaderboard position change
+  FRIEND_ACTIVITY // Friend bet or won
+  WEEKLY_DIGEST // Weekly performance summary
+  POOL_CLOSING // Pool closing soon
+  SYSTEM // System announcements
 }
 
 model NotificationPreference {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  userId        String   @unique
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   // Channel preferences
-  pushEnabled   Boolean  @default(true)
-  emailEnabled  Boolean  @default(true)
-  inAppEnabled  Boolean  @default(true)
-  
+  pushEnabled  Boolean @default(true)
+  emailEnabled Boolean @default(true)
+  inAppEnabled Boolean @default(true)
+
   // Notification type preferences
   chapterReleases Boolean @default(true)
   betOutcomes     Boolean @default(true)
@@ -617,6 +618,311 @@ model NotificationPreference {
   weeklyDigest    Boolean @default(true)
   poolClosing     Boolean @default(true)
   system          Boolean @default(true)
-  
+
   @@map("notification_preferences")
+}
+
+// ============================================================================
+// PRESTIGE PROGRESSION SYSTEM (PPS)
+// ============================================================================
+
+model UserProgress {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String @unique
+  user   User   @relation("UserProgress", fields: [userId], references: [id], onDelete: Cascade)
+
+  // Level System (1-100)
+  level         Int @default(1)
+  currentXP     Int @default(0)
+  totalXP       Int @default(0)
+  xpToNextLevel Int @default(100) // Calculated based on level
+
+  // Prestige System (after level 100)
+  prestigeLevel  Int @default(0)
+  prestigePoints Int @default(0)
+
+  // Activity Stats
+  chaptersRead     Int @default(0)
+  betsPlaced       Int @default(0)
+  betsWon          Int @default(0)
+  loreDiscovered   Int @default(0)
+  fanFicsSubmitted Int @default(0)
+
+  // Skill Points
+  skillPointsAvailable Int @default(0)
+  skillPointsSpent     Int @default(0)
+
+  // Last activity
+  lastXPGain   DateTime?
+  lastLevelUp  DateTime?
+  lastPrestige DateTime?
+
+  // Relationships
+  skills       UserSkill[]
+  achievements UserAchievement[]
+  quests       UserQuest[]
+
+  @@index([userId])
+  @@index([level])
+  @@index([prestigeLevel])
+  @@map("user_progress")
+}
+
+model SkillTree {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Tree info
+  name        String        @unique
+  description String        @db.Text
+  icon        String // Emoji or icon name
+  category    SkillCategory
+
+  // Requirements
+  minLevel Int @default(1)
+
+  // Relationships
+  skills Skill[]
+
+  @@map("skill_trees")
+}
+
+enum SkillCategory {
+  BETTOR // Risk Taker, Oracle, Whale
+  LORE_HUNTER // Detective, Archivist, Prophet
+  CREATOR // Wordsmith, Canon Weaver, Architect
+}
+
+model Skill {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Skill info
+  treeId String
+  tree   SkillTree @relation(fields: [treeId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String @db.Text
+  icon        String
+  tier        Int    @default(1) // 1-5 (higher = more powerful)
+
+  // Requirements
+  requiredLevel  Int      @default(1)
+  requiredSkills String[] // Array of skill IDs that must be unlocked first
+  skillPointCost Int      @default(1)
+
+  // Benefits (stored as JSON for flexibility)
+  // Example: { "payoutBonus": 0.05, "description": "+5% payout on long-shot bets" }
+  benefits Json
+
+  // Relationships
+  userSkills UserSkill[]
+
+  @@unique([treeId, name])
+  @@index([treeId])
+  @@map("skills")
+}
+
+model UserSkill {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId       String
+  userProgress UserProgress @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  skillId String
+  skill   Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  // Skill level (for upgradeable skills)
+  level    Int @default(1)
+  maxLevel Int @default(1)
+
+  // Unlock info
+  unlockedAt DateTime @default(now())
+  timesUsed  Int      @default(0)
+
+  @@unique([userId, skillId])
+  @@index([userId])
+  @@index([skillId])
+  @@map("user_skills")
+}
+
+model Achievement {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Achievement info
+  name        String              @unique
+  description String              @db.Text
+  icon        String
+  category    AchievementCategory
+  rarity      AchievementRarity
+
+  // Requirements
+  requirementType  AchievementRequirement
+  requirementValue Int // Threshold value (e.g., 100 bets)
+
+  // Rewards
+  xpReward         Int     @default(0)
+  skillPointReward Int     @default(0)
+  title            String? // Optional title for profile
+
+  // Display
+  isSecret  Boolean @default(false) // Hidden until unlocked
+  sortOrder Int     @default(0)
+
+  // Relationships
+  userAchievements UserAchievement[]
+
+  @@index([category])
+  @@map("achievements")
+}
+
+enum AchievementCategory {
+  BETTING // Win bets, place bets
+  READING // Read chapters
+  LORE // Discover lore
+  SOCIAL // Referrals, community
+  PROGRESSION // Reach levels
+  SPECIAL // Event-based
+}
+
+enum AchievementRarity {
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+enum AchievementRequirement {
+  BETS_PLACED
+  BETS_WON
+  CHAPTERS_READ
+  LORE_DISCOVERED
+  WIN_STREAK
+  TOTAL_PROFIT
+  REACH_LEVEL
+  REACH_PRESTIGE
+  FAN_FICS_SUBMITTED
+  ARTIFACTS_OWNED
+}
+
+model UserAchievement {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId       String
+  userProgress UserProgress @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  // Progress
+  progress    Int       @default(0)
+  isCompleted Boolean   @default(false)
+  completedAt DateTime?
+
+  // Claimed rewards
+  rewardsClaimed Boolean @default(false)
+
+  @@unique([userId, achievementId])
+  @@index([userId])
+  @@index([achievementId])
+  @@index([isCompleted])
+  @@map("user_achievements")
+}
+
+model Quest {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Quest info
+  name        String
+  description String          @db.Text
+  icon        String
+  type        QuestType
+  difficulty  QuestDifficulty
+
+  // Requirements
+  requirementType  QuestRequirement
+  requirementValue Int
+
+  // Rewards
+  xpReward         Int
+  skillPointReward Int @default(0)
+
+  // Timing (for daily/weekly)
+  duration Int? // Hours (24 for daily, 168 for weekly)
+
+  // Active status
+  isActive Boolean   @default(true)
+  startsAt DateTime?
+  endsAt   DateTime?
+
+  // Relationships
+  userQuests UserQuest[]
+
+  @@index([type])
+  @@index([isActive])
+  @@map("quests")
+}
+
+enum QuestType {
+  DAILY // Resets every 24h
+  WEEKLY // Resets every 7 days
+  SPECIAL // One-time or event-based
+  MILESTONE // Progress-based (doesn't reset)
+}
+
+enum QuestDifficulty {
+  EASY
+  MEDIUM
+  HARD
+  EPIC
+}
+
+enum QuestRequirement {
+  READ_CHAPTERS
+  PLACE_BETS
+  WIN_BETS
+  DISCOVER_LORE
+  SUBMIT_FAN_FIC
+  MINT_ARTIFACT
+  VOTE_IN_ORACLE
+}
+
+model UserQuest {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId       String
+  userProgress UserProgress @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  questId String
+  quest   Quest  @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  // Progress
+  progress    Int       @default(0)
+  isCompleted Boolean   @default(false)
+  completedAt DateTime?
+
+  // Quest instance timing
+  assignedAt DateTime  @default(now())
+  expiresAt  DateTime?
+
+  // Rewards
+  rewardsClaimed Boolean @default(false)
+
+  @@unique([userId, questId, assignedAt])
+  @@index([userId])
+  @@index([questId])
+  @@index([isCompleted])
+  @@map("user_quests")
 }
