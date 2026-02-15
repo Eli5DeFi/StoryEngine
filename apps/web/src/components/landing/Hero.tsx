@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ConnectWallet } from '@/components/wallet/ConnectWallet'
-import { ClientOnly } from '@/components/ClientOnly'
 
 export function Hero() {
   const [mounted, setMounted] = useState(false)
@@ -15,79 +13,141 @@ export function Hero() {
   if (!mounted) return null
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden starfield-bg">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 z-0">
-        {/* Floating Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-drift-teal/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-drift-purple/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Primary Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#0F172A] via-[#1E1B3A] to-[#0F172A]" style={{ backgroundSize: '200% 200%' }} />
+      
+      {/* Ambient Strand Glow - Mesh Gradients */}
+      <div className="absolute inset-0 opacity-40">
+        <div 
+          className="absolute w-[800px] h-[800px] top-1/4 left-1/4 animate-drift"
+          style={{
+            background: 'radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 60%)',
+            animation: 'drift 25s ease-in-out infinite',
+          }}
+        />
+        <div 
+          className="absolute w-[600px] h-[600px] bottom-1/3 right-1/3 animate-drift"
+          style={{
+            background: 'radial-gradient(ellipse, rgba(167,139,250,0.08) 0%, transparent 60%)',
+            animation: 'drift 20s ease-in-out infinite',
+            animationDelay: '5s',
+          }}
+        />
+        <div 
+          className="absolute w-[700px] h-[700px] top-1/2 right-1/4 animate-drift"
+          style={{
+            background: 'radial-gradient(ellipse, rgba(245,158,11,0.06) 0%, transparent 50%)',
+            animation: 'drift 22s ease-in-out infinite',
+            animationDelay: '10s',
+          }}
+        />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-24 text-center">
-        {/* Ceremonial Header */}
-        <div className="mb-8 opacity-0 ambient-fade">
-          <div className="text-ceremonial mb-4">
+        {/* Section Marker - Institutional */}
+        <div className="mb-12 animate-fadeIn" style={{ fontFamily: 'var(--font-mono)', letterSpacing: '4px' }}>
+          <div className="text-[10px] uppercase text-[#64748B] tracking-[4px] mb-6">
             The Grand Conclave
           </div>
-          <div className="w-24 h-px mx-auto ceremonial-divider" />
+          <div className="w-24 h-px mx-auto bg-gradient-to-r from-transparent via-[#64748B]/20 to-transparent" />
         </div>
 
-        {/* Main Headline */}
-        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-display font-bold tracking-tight mb-8 opacity-0 ambient-fade stagger-1">
-          <span className="block text-gold gold-glow-strong">
-            VOIDBORNE
+        {/* Main Headline - Geometric Display Font */}
+        <h1 className="font-display font-extrabold tracking-tight mb-8 animate-fadeIn" style={{ animationDelay: '0.1s' }}>
+          <span className="block text-[56px] sm:text-[72px] lg:text-[92px] text-[#F1F5F9]" style={{ letterSpacing: '-1px' }}>
+            VØ<span className="text-[#64748B]">I</span>DBORNE
           </span>
-          <span className="block text-foreground mt-4">
-            The Silent Throne
+          <span className="block text-[20px] sm:text-[24px] text-[#64748B] mt-4" style={{ fontFamily: 'var(--font-mono)', letterSpacing: '6px' }}>
+            THE SILENT THRONE
           </span>
         </h1>
 
-        {/* Subtitle */}
-        <p className="text-xl sm:text-2xl text-void-300 max-w-3xl mx-auto mb-12 leading-relaxed opacity-0 ambient-fade stagger-2">
-          Navigate deadly succession politics. <br />
-          <span className="text-drift-teal">Bet on which path shapes the narrative.</span> <br />
-          <span className="text-gold">Five houses. Five agendas. One choice.</span>
+        {/* Tagline */}
+        <p className="text-lg sm:text-xl text-[#E2E8F0] max-w-3xl mx-auto mb-6 leading-relaxed animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+          Navigate deadly succession politics.
+        </p>
+        <p className="text-base sm:text-lg text-[#94A3B8] max-w-2xl mx-auto mb-12 leading-relaxed animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+          <span className="text-[#6366F1]">Bet USDC on which path shapes the narrative.</span><br />
+          Five houses. Five agendas. <span className="text-[#F59E0B]">One choice.</span>
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16 opacity-0 ambient-fade stagger-3">
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-20 animate-fadeIn" style={{ animationDelay: '0.4s' }}>
           <Link 
-            href="/story/voidborne-story"
-            className="btn-primary text-lg px-10 py-4 inline-block"
+            href="/lore"
+            className="group relative px-10 py-4 rounded-lg overflow-hidden transition-all duration-200 hover:scale-[1.02]"
+            style={{
+              background: 'rgba(30, 41, 59, 0.5)',
+              backdropFilter: 'blur(16px)',
+              border: '1px solid rgba(99, 102, 241, 0.2)',
+              boxShadow: '0 0 30px rgba(99,102,241,0.15)',
+            }}
           >
-            Enter the Conclave
+            <span className="relative text-lg font-semibold text-[#F1F5F9]">
+              Explore the Lore
+            </span>
           </Link>
           
           <Link 
-            href="/dashboard"
-            className="btn-secondary text-lg px-10 py-4 inline-block"
+            href="/story/voidborne-story"
+            className="group relative px-10 py-4 rounded-lg overflow-hidden transition-all duration-200 hover:scale-[1.02]"
+            style={{
+              background: 'rgba(30, 41, 59, 0.5)',
+              backdropFilter: 'blur(16px)',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+            }}
           >
-            View Dashboard
+            <span className="relative text-lg font-semibold text-[#E2E8F0]">
+              Read the Story
+            </span>
           </Link>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto opacity-0 ambient-fade stagger-4">
+        {/* Stats Grid - Glassmorphism Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto animate-fadeIn" style={{ animationDelay: '0.5s' }}>
           <StatsCard
             value="$127K"
             label="Total Wagered"
-            gradient="drift-teal"
+            strandColor="rgba(99,102,241,0.2)"
           />
           <StatsCard
             value="1,247"
             label="Active Bettors"
-            gradient="gold"
+            strandColor="rgba(245,158,11,0.2)"
           />
           <StatsCard
             value="89%"
             label="Avg. Payout Rate"
-            gradient="drift-purple"
+            strandColor="rgba(167,139,250,0.2)"
           />
         </div>
       </div>
 
       {/* Bottom Fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0F172A] to-transparent z-10" />
+      
+      <style jsx>{`
+        @keyframes drift {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(20px, -10px) scale(1.05); }
+          66% { transform: translate(-15px, 10px) scale(0.95); }
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fadeIn {
+          animation: fadeIn 0.6s ease-out forwards;
+          opacity: 0;
+        }
+        
+        .animate-drift {
+          will-change: transform;
+        }
+      `}</style>
     </section>
   )
 }
@@ -95,28 +155,27 @@ export function Hero() {
 interface StatsCardProps {
   value: string
   label: string
-  gradient: 'gold' | 'drift-teal' | 'drift-purple'
+  strandColor: string
 }
 
-function StatsCard({ value, label, gradient }: StatsCardProps) {
-  const gradientClasses = {
-    'gold': 'from-gold/20 to-gold/5',
-    'drift-teal': 'from-drift-teal/20 to-drift-teal/5',
-    'drift-purple': 'from-drift-purple/20 to-drift-purple/5',
-  }
-
-  const textColors = {
-    'gold': 'text-gold',
-    'drift-teal': 'text-drift-teal',
-    'drift-purple': 'text-drift-purple',
-  }
-
+function StatsCard({ value, label, strandColor }: StatsCardProps) {
   return (
-    <div className="glass-card p-6 rounded-xl">
-      <div className={`text-4xl font-display font-bold mb-2 tabular-nums ${textColors[gradient]}`}>
+    <div 
+      className="group p-6 rounded-[14px] transition-all duration-200 hover:scale-[1.01]"
+      style={{
+        background: 'rgba(30, 41, 59, 0.5)',
+        backdropFilter: 'blur(16px)',
+        border: `1px solid ${strandColor}`,
+        boxShadow: `0 0 20px ${strandColor.replace('0.2', '0.08')}`,
+      }}
+    >
+      <div className="text-4xl font-display font-bold mb-2 tabular-nums text-[#F1F5F9]">
         {value}
       </div>
-      <div className="text-sm text-void-400 font-ui uppercase tracking-wider">
+      <div 
+        className="text-[10px] uppercase tracking-[3px] text-[#64748B]"
+        style={{ fontFamily: 'var(--font-mono)' }}
+      >
         {label}
       </div>
     </div>

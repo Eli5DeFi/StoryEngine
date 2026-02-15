@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Rajdhani:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -9,6 +9,7 @@
     --font-cinzel: 'Cinzel', serif;
     --font-space-grotesk: 'Space Grotesk', sans-serif;
     --font-rajdhani: 'Rajdhani', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
     
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
@@ -220,4 +221,86 @@
     rgba(212, 168, 83, 0.3) 80%,
     transparent 100%
   );
+}
+
+/* Brand-Compliant Animations (Voidborne Brand Guide) */
+
+/* Drift Animation - Ambient movement for glows */
+@keyframes drift {
+  0%, 100% { 
+    transform: translate(0, 0) scale(1); 
+  }
+  33% { 
+    transform: translate(20px, -10px) scale(1.05); 
+  }
+  66% { 
+    transform: translate(-15px, 10px) scale(0.95); 
+  }
+}
+
+/* Fade In - Content entry animation */
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(12px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* Strand Pulse - For active Resonance elements */
+@keyframes pulse-glow {
+  0%, 100% { 
+    opacity: 0.3; 
+  }
+  50% { 
+    opacity: 0.7; 
+  }
+}
+
+/* Utility classes */
+.animate-drift {
+  animation: drift 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* Brand Strand Colors (from Brand Guide) */
+:root {
+  --strand-g: #6366F1;  /* G-Strand: Indigo-Violet (Gravity/Space) */
+  --strand-l: #F59E0B;  /* L-Strand: Amber-Gold (Light/Energy) */
+  --strand-s: #EF4444;  /* S-Strand: Crimson (Entropy/Time) */
+  --strand-r: #10B981;  /* R-Strand: Emerald (Matter/Form) */
+  --strand-c: #A78BFA;  /* C-Strand: Soft Violet (Consciousness) */
+  --strand-null: #64748B; /* Ø-Strand: Slate-Grey (Null/Void) */
+  
+  /* Core Palette */
+  --void-core: #0F172A;
+  --lattice-depth: #1E1B3A;
+  --surface: #1E293B;
+  --surface-hover: #334155;
+  
+  /* Text */
+  --text-primary: #F1F5F9;
+  --text-secondary: #E2E8F0;
+  --text-muted: #94A3B8;
+  --text-faint: #64748B;
+  --text-disabled: #475569;
+  
+  /* Accent */
+  --accent: #6366F1;
+  --accent-muted: #818CF8;
+  
+  /* Borders */
+  --border: rgba(255,255,255,0.06);
 }

@@ -7,13 +7,11 @@ import { ConnectWallet } from '@/components/wallet/ConnectWallet'
 import { ClientOnly } from '@/components/ClientOnly'
 
 const navLinks = [
-  { label: 'The Story', href: '/story/voidborne-story' },
-  { label: 'Lore', href: '/lore' },
+  { label: 'Explore Lore', href: '/lore' },
+  { label: 'Read Story', href: '/story/voidborne-story' },
+  { label: 'How It Works', href: '#how-it-works' },
   { label: 'Leaderboards', href: '/leaderboards' },
   { label: 'Analytics', href: '/analytics' },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'About', href: '#about' },
-  { label: 'Docs', href: '/docs' },
 ]
 
 export function Navbar() {

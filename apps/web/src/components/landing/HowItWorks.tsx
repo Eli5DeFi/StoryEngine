@@ -1,135 +1,140 @@
 'use client'
 
-import { Brain, Coins, TrendingUp, Trophy } from 'lucide-react'
-
-const steps = [
-  {
-    icon: Brain,
-    title: 'AI Generates Story Branches',
-    description: 'At each chapter, our AI creates multiple possible narrative paths. Each branch offers a unique continuation of the story.',
-    color: 'drift-purple',
-  },
-  {
-    icon: Coins,
-    title: 'Place Your Bet',
-    description: 'Bet USDC on which branch you think the AI will choose. Your prediction shapes the parimutuel pool.',
-    color: 'gold',
-  },
-  {
-    icon: TrendingUp,
-    title: 'AI Makes the Choice',
-    description: 'The AI evaluates all branches using narrative coherence, reader engagement, and story momentum to select the winning path.',
-    color: 'drift-teal',
-  },
-  {
-    icon: Trophy,
-    title: 'Winners Share the Pot',
-    description: '85% of the pool goes to winners. 12.5% funds the treasury. 2.5% supports platform development.',
-    color: 'gold',
-  },
-]
+import { BookOpen, Vote, Trophy, Zap } from 'lucide-react'
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="relative py-32 bg-gradient-to-b from-background via-void-950 to-background">
-      {/* Decorative Background */}
-      <div className="absolute inset-0 starfield-bg opacity-30" />
+    <section id="how-it-works" className="relative py-24 overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0F172A] via-[#1E1B3A] to-[#0F172A]" />
+      
+      {/* Ambient Glow */}
+      <div className="absolute inset-0 opacity-20">
+        <div 
+          className="absolute w-[600px] h-[600px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          style={{
+            background: 'radial-gradient(ellipse, rgba(99,102,241,0.15) 0%, transparent 70%)',
+          }}
+        />
+      </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         {/* Section Header */}
-        <div className="text-center mb-20">
-          <div className="text-ceremonial mb-4">
-            The Protocol
+        <div className="text-center mb-16">
+          <div 
+            className="text-[10px] uppercase text-[#64748B] tracking-[4px] mb-4"
+            style={{ fontFamily: 'var(--font-mono)' }}
+          >
+            Mechanics
           </div>
-          <h2 className="text-4xl sm:text-5xl font-display font-bold text-gold gold-glow mb-6">
+          <h2 className="text-4xl sm:text-5xl font-display font-bold text-[#F1F5F9] mb-4" style={{ letterSpacing: '-1px' }}>
             How It Works
           </h2>
-          <p className="text-xl text-void-300 max-w-2xl mx-auto">
-            Four steps from spectator to storyteller
+          <p className="text-lg text-[#94A3B8] max-w-2xl mx-auto">
+            Four simple steps to shape the narrative
           </p>
         </div>
 
-        {/* Steps */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {steps.map((step, index) => (
-            <StepCard
-              key={index}
-              step={step}
-              index={index}
-            />
-          ))}
+        {/* Steps Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Step
+            number="01"
+            icon={<BookOpen className="w-6 h-6" />}
+            title="Read the Story"
+            description="Follow the succession crisis as it unfolds. Political intrigue across five competing houses."
+            strandColor="rgba(99,102,241,0.2)"
+          />
+          <Step
+            number="02"
+            icon={<Vote className="w-6 h-6" />}
+            title="Place Your Bet"
+            description="Bet USDC on which path the story will take. Choose wisely—every choice has consequences."
+            strandColor="rgba(245,158,11,0.2)"
+          />
+          <Step
+            number="03"
+            icon={<Zap className="w-6 h-6" />}
+            title="AI Decides"
+            description="Advanced AI weighs narrative coherence, market sentiment, and dramatic tension."
+            strandColor="rgba(167,139,250,0.2)"
+          />
+          <Step
+            number="04"
+            icon={<Trophy className="w-6 h-6" />}
+            title="Winners Split Pot"
+            description="Correct predictions split the prize pool. The story continues based on the outcome."
+            strandColor="rgba(16,185,129,0.2)"
+          />
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-20 text-center">
-          <div className="glass-card inline-block p-8 rounded-2xl">
-            <p className="text-lg text-void-300 mb-6 max-w-2xl">
-              <span className="text-gold font-semibold">Self-sustaining economy:</span> All trading fees from <span className="text-gold">$FORGE</span> token
-              fund AI compute. Zero ongoing costs. Infinite scalability.
-            </p>
-            <a
-              href="#stories"
-              className="btn-primary inline-block"
-            >
-              Start Reading & Betting
-            </a>
-          </div>
+        <div className="text-center mt-16">
+          <a
+            href="/story/voidborne-story"
+            className="inline-block px-10 py-4 rounded-lg transition-all duration-200 hover:scale-[1.02]"
+            style={{
+              background: 'rgba(30, 41, 59, 0.5)',
+              backdropFilter: 'blur(16px)',
+              border: '1px solid rgba(99, 102, 241, 0.2)',
+              boxShadow: '0 0 30px rgba(99,102,241,0.1)',
+            }}
+          >
+            <span className="text-lg font-semibold text-[#F1F5F9]">
+              Start Reading
+            </span>
+          </a>
         </div>
       </div>
     </section>
   )
 }
 
-interface StepCardProps {
-  step: typeof steps[0]
-  index: number
+interface StepProps {
+  number: string
+  icon: React.ReactNode
+  title: string
+  description: string
+  strandColor: string
 }
 
-function StepCard({ step, index }: StepCardProps) {
-  const Icon = step.icon
-
-  const colorClasses = {
-    'gold': {
-      iconBg: 'bg-gold/10',
-      iconText: 'text-gold',
-      border: 'border-gold/30',
-    },
-    'drift-teal': {
-      iconBg: 'bg-drift-teal/10',
-      iconText: 'text-drift-teal',
-      border: 'border-drift-teal/30',
-    },
-    'drift-purple': {
-      iconBg: 'bg-drift-purple/10',
-      iconText: 'text-drift-purple',
-      border: 'border-drift-purple/30',
-    },
-  }
-
-  const colors = colorClasses[step.color as keyof typeof colorClasses]
-
+function Step({ number, icon, title, description, strandColor }: StepProps) {
   return (
-    <div className={`glass-card p-8 rounded-2xl relative overflow-hidden group opacity-0 ambient-fade stagger-${index + 1}`}>
-      {/* Step Number */}
-      <div className="absolute top-4 right-4 text-6xl font-display font-bold text-void-900 opacity-20">
-        {String(index + 1).padStart(2, '0')}
+    <div 
+      className="group relative p-8 rounded-[14px] transition-all duration-200 hover:scale-[1.02]"
+      style={{
+        background: 'rgba(30, 41, 59, 0.5)',
+        backdropFilter: 'blur(16px)',
+        border: `1px solid ${strandColor}`,
+      }}
+    >
+      {/* Number */}
+      <div 
+        className="text-[11px] uppercase tracking-[3px] text-[#475569] mb-6"
+        style={{ fontFamily: 'var(--font-mono)' }}
+      >
+        {number}
       </div>
 
       {/* Icon */}
-      <div className={`${colors.iconBg} ${colors.iconText} w-16 h-16 rounded-xl flex items-center justify-center mb-6 relative z-10`}>
-        <Icon className="w-8 h-8" />
+      <div 
+        className="w-12 h-12 rounded-lg flex items-center justify-center mb-6 transition-all duration-200"
+        style={{
+          background: strandColor,
+          boxShadow: `0 0 20px ${strandColor.replace('0.2', '0.15')}`,
+        }}
+      >
+        <div className="text-[#F1F5F9]">
+          {icon}
+        </div>
       </div>
 
       {/* Content */}
-      <h3 className="text-2xl font-display font-bold text-foreground mb-4 relative z-10">
-        {step.title}
+      <h3 className="text-xl font-display font-bold text-[#F1F5F9] mb-3">
+        {title}
       </h3>
-      <p className="text-void-300 leading-relaxed relative z-10">
-        {step.description}
+      <p className="text-sm text-[#94A3B8] leading-relaxed">
+        {description}
       </p>
-
-      {/* Hover Glow */}
-      <div className={`absolute inset-0 ${colors.border} border opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none`} />
     </div>
   )
 }
