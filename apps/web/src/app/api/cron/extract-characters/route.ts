@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@voidborne/database';
+import { logger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300; // 5 minutes
@@ -42,7 +43,7 @@ export async function POST(request: NextRequest) {
       take: 50, // Process up to 50 chapters at a time
     });
 
-    console.log(`Found ${recentChapters.length} recent chapters to process`);
+    logger.info(`Found ${recentChapters.length} recent chapters to process`);
 
     const results = {
       processed: 0,
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest) {
         });
 
         if (existingCharacters.length > 0) {
-          console.log(`Skipping chapter ${chapter.id} - characters already extracted`);
+          logger.debug(`Skipping chapter ${chapter.id} - characters already extracted`);
           results.skipped++;
           continue;
         }
@@ -81,13 +82,13 @@ export async function POST(request: NextRequest) {
         );
 
         if (!extractResponse.ok) {
-          console.error(`Failed to extract characters from chapter ${chapter.id}`);
+          logger.error(`Failed to extract characters from chapter ${chapter.id}`);
           results.errors++;
           continue;
         }
 
         const extractResult = await extractResponse.json();
-        console.log(
+        logger.info(
           `Extracted ${extractResult.charactersExtracted} characters from chapter ${chapter.id}`
         );
         results.processed++;
@@ -95,7 +96,7 @@ export async function POST(request: NextRequest) {
         // Add small delay to avoid rate limits
         await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (error) {
-        console.error(`Error processing chapter ${chapter.id}:`, error);
+        logger.error(`Error processing chapter ${chapter.id}:`, error);
         results.errors++;
       }
     }
@@ -106,7 +107,7 @@ export async function POST(request: NextRequest) {
       message: `Processed ${results.processed} chapters, ${results.errors} errors, ${results.skipped} skipped`,
     });
   } catch (error) {
-    console.error('Error in character extraction cron:', error);
+    logger.error('Error in character extraction cron:', error);
     return NextResponse.json(
       { error: 'Failed to run character extraction cron' },
       { status: 500 }
@@ -140,7 +141,7 @@ export async function GET(request: NextRequest) {
       message: 'Character extraction cron is ready',
     });
   } catch (error) {
-    console.error('Error checking cron status:', error);
+    logger.error('Error checking cron status:', error);
     return NextResponse.json(
       { error: 'Failed to check cron status' },
       { status: 500 }

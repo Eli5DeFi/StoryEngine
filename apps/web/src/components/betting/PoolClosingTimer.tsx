@@ -102,6 +102,7 @@ export function PoolClosingTimer({
       text: 'text-green-400',
       glow: 'shadow-green-500/20',
       pulse: false,
+      pulseSpeed: 2, // Not used, but needed for type consistency
       icon: Clock
     },
     moderate: {

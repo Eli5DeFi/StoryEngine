@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma, Prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * POST /api/cron/capture-odds
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
       },
     })
 
-    console.log(`[Cron] Found ${openPools.length} open pools`)
+    logger.info(`[Cron] Found ${openPools.length} open pools`)
 
     const snapshots = []
 
@@ -73,7 +74,7 @@ export async function POST(request: Request) {
         timestamp: snapshot.createdAt,
       })
 
-      console.log(`[Cron] Captured odds snapshot for pool ${pool.id}`)
+      logger.debug(`[Cron] Captured odds snapshot for pool ${pool.id}`)
     }
 
     // Clean up old snapshots (keep last 30 days)
@@ -88,7 +89,7 @@ export async function POST(request: Request) {
       },
     })
 
-    console.log(`[Cron] Deleted ${deletedCount.count} old snapshots`)
+    logger.info(`[Cron] Deleted ${deletedCount.count} old snapshots`)
 
     return NextResponse.json({
       success: true,
@@ -98,7 +99,7 @@ export async function POST(request: Request) {
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    console.error('[Cron] Capture odds error:', error)
+    logger.error('[Cron] Capture odds error:', error)
     return NextResponse.json(
       { error: 'Failed to capture odds' },
       { status: 500 }
