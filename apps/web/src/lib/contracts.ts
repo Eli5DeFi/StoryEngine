@@ -1,118 +1,237 @@
-/**
- * Smart contract utilities and ABIs
- */
+// Contract addresses (Base Sepolia Testnet)
+export const BETTING_POOL_ADDRESS = '0x0000000000000000000000000000000000000000' as `0x${string}` // TODO: Deploy
+export const USDC_ADDRESS = '0x036CbD53842c5426634e7929541eC2318f3dCF7e' as `0x${string}` // Base Sepolia USDC
 
-import { Address } from 'viem'
-
-// Contract addresses (set from environment)
+// Legacy CONTRACTS object for backward compatibility
+// TODO: Remove after migrating all hooks to named exports
 export const CONTRACTS = {
-  // Betting currency (USDC on Base)
-  usdc: (process.env.NEXT_PUBLIC_USDC_ADDRESS || '') as Address,
-  
-  // $FORGE token (for trading fees → AI compute funding)
-  forgeToken: (process.env.NEXT_PUBLIC_FORGE_TOKEN_ADDRESS || '') as Address,
-  
-  // Betting pool contract
-  bettingPool: (process.env.NEXT_PUBLIC_BETTING_POOL_ADDRESS || '') as Address,
-} as const
+  usdc: USDC_ADDRESS,
+  forgeToken: '0x0000000000000000000000000000000000000000' as `0x${string}`, // TODO: Deploy
+  bettingPool: BETTING_POOL_ADDRESS,
+}
 
-// ChapterBettingPool ABI (updated for constructor params)
+// Utility functions for token formatting
+export function formatUSDC(value: bigint): string {
+  // USDC has 6 decimals
+  const formatted = Number(value) / 1_000_000
+  return formatted.toFixed(2)
+}
+
+export function formatForge(value: bigint): string {
+  // FORGE has 18 decimals (standard ERC20)
+  const formatted = Number(value) / 1e18
+  return formatted.toFixed(4)
+}
+
+export function parseUSDC(value: string): bigint {
+  // USDC has 6 decimals
+  const num = parseFloat(value)
+  return BigInt(Math.floor(num * 1_000_000))
+}
+
+// ABIs
 export const BETTING_POOL_ABI = [
+  // Read Functions
+  {
+    inputs: [{ name: 'chapterId', type: 'uint256' }],
+    name: 'isBettingOpen',
+    outputs: [{ name: 'isOpen', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'chapterId', type: 'uint256' }],
+    name: 'getTimeUntilDeadline',
+    outputs: [{ name: 'timeRemaining', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'chapterId', type: 'uint256' }],
+    name: 'getChapterSchedule',
+    outputs: [
+      { name: 'generationTime', type: 'uint256' },
+      { name: 'bettingDeadline', type: 'uint256' },
+      { name: 'published', type: 'bool' },
+      { name: 'bettingOpen', type: 'bool' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'outcomeIds', type: 'uint256[]' }],
+    name: 'calculateCombinedOdds',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'outcomeId', type: 'uint256' }],
+    name: 'getOddsForOutcome',
+    outputs: [{ name: '', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'outcomeId', type: 'uint256' }],
+    name: 'getOutcome',
+    outputs: [
+      { name: 'outcomeType', type: 'uint8' },
+      { name: 'description', type: 'string' },
+      { name: 'chapterId', type: 'uint256' },
+      { name: 'status', type: 'uint8' },
+      { name: 'totalBets', type: 'uint256' },
+      { name: 'numBets', type: 'uint256' },
+      { name: 'bettingDeadline', type: 'uint256' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'user', type: 'address' }],
+    name: 'getUserBets',
+    outputs: [{ name: '', type: 'uint256[]' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ name: 'betId', type: 'uint256' }],
+    name: 'getBet',
+    outputs: [
+      { name: 'bettor', type: 'address' },
+      { name: 'outcomeIds', type: 'uint256[]' },
+      { name: 'amount', type: 'uint256' },
+      { name: 'combinedOdds', type: 'uint256' },
+      { name: 'betType', type: 'uint8' },
+      { name: 'settled', type: 'bool' },
+      { name: 'won', type: 'bool' },
+      { name: 'payout', type: 'uint256' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  // Write Functions
   {
     inputs: [
-      { name: '_branchIndex', type: 'uint8' },
-      { name: '_amount', type: 'uint256' },
-      { name: '_isAgent', type: 'bool' },
+      { name: 'chapterId', type: 'uint256' },
+      { name: 'generationTime', type: 'uint256' },
     ],
-    name: 'placeBet',
+    name: 'scheduleChapter',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'claimReward',
+    inputs: [
+      { name: 'outcomeType', type: 'uint8' },
+      { name: 'description', type: 'string' },
+      { name: 'chapterId', type: 'uint256' },
+      { name: 'choiceId', type: 'uint256' },
+    ],
+    name: 'createOutcome',
+    outputs: [{ name: 'outcomeId', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { name: 'outcomeIds', type: 'uint256[]' },
+      { name: 'amount', type: 'uint256' },
+      { name: 'betType', type: 'uint8' },
+    ],
+    name: 'placeCombiBet',
+    outputs: [{ name: 'betId', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { name: 'outcomeId', type: 'uint256' },
+      { name: 'occurred', type: 'bool' },
+    ],
+    name: 'resolveOutcome',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [{ name: '_user', type: 'address' }],
-    name: 'getPendingReward',
-    outputs: [{ name: '', type: 'uint256' }],
-    stateMutability: 'view',
+    inputs: [{ name: 'betId', type: 'uint256' }],
+    name: 'settleBet',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [{ name: '_branchIndex', type: 'uint8' }],
-    name: 'getBranchOdds',
-    outputs: [{ name: 'impliedOdds', type: 'uint256' }],
-    stateMutability: 'view',
+    inputs: [{ name: 'betIds', type: 'uint256[]' }],
+    name: 'settleBetBatch',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [{ name: '_branchIndex', type: 'uint8' }],
-    name: 'getBranchInfo',
-    outputs: [
-      { name: 'hash', type: 'string' },
-      { name: 'total', type: 'uint256' },
-      { name: 'count', type: 'uint256' },
+    inputs: [
+      { name: 'chapterId', type: 'uint256' },
+      { name: 'newGenerationTime', type: 'uint256' },
     ],
-    stateMutability: 'view',
+    name: 'extendDeadline',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'totalPoolAmount',
-    outputs: [{ name: '', type: 'uint256' }],
-    stateMutability: 'view',
+    inputs: [{ name: 'chapterId', type: 'uint256' }],
+    name: 'markChapterPublished',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
+  // Events
   {
-    inputs: [],
-    name: 'state',
-    outputs: [{ name: '', type: 'uint8' }],
-    stateMutability: 'view',
-    type: 'function',
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: 'chapterId', type: 'uint256' },
+      { indexed: false, name: 'generationTime', type: 'uint256' },
+      { indexed: false, name: 'bettingDeadline', type: 'uint256' },
+    ],
+    name: 'ChapterScheduled',
+    type: 'event',
   },
   {
-    inputs: [],
-    name: 'bettingDeadline',
-    outputs: [{ name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function',
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: 'betId', type: 'uint256' },
+      { indexed: true, name: 'bettor', type: 'address' },
+      { indexed: false, name: 'outcomeIds', type: 'uint256[]' },
+      { indexed: false, name: 'amount', type: 'uint256' },
+      { indexed: false, name: 'combinedOdds', type: 'uint256' },
+      { indexed: false, name: 'betType', type: 'uint8' },
+    ],
+    name: 'CombiBetPlaced',
+    type: 'event',
   },
   {
-    inputs: [],
-    name: 'winningBranch',
-    outputs: [{ name: '', type: 'uint8' }],
-    stateMutability: 'view',
-    type: 'function',
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: 'outcomeId', type: 'uint256' },
+      { indexed: false, name: 'occurred', type: 'bool' },
+      { indexed: false, name: 'timestamp', type: 'uint256' },
+    ],
+    name: 'OutcomeResolved',
+    type: 'event',
   },
   {
-    inputs: [],
-    name: 'branchCount',
-    outputs: [{ name: '', type: 'uint8' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'minBet',
-    outputs: [{ name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'maxBet',
-    outputs: [{ name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function',
+    anonymous: false,
+    inputs: [
+      { indexed: true, name: 'betId', type: 'uint256' },
+      { indexed: true, name: 'bettor', type: 'address' },
+      { indexed: false, name: 'won', type: 'bool' },
+      { indexed: false, name: 'payout', type: 'uint256' },
+    ],
+    name: 'BetSettled',
+    type: 'event',
   },
 ] as const
 
-// ERC-20 ABI (for USDC and $FORGE)
 export const ERC20_ABI = [
   {
     inputs: [{ name: 'account', type: 'address' }],
@@ -151,44 +270,4 @@ export const ERC20_ABI = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-  {
-    inputs: [],
-    name: 'decimals',
-    outputs: [{ name: '', type: 'uint8' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
 ] as const
-
-// Pool states (matches Solidity enum)
-export enum PoolState {
-  OPEN = 0,
-  LOCKED = 1,
-  SETTLED = 2,
-  CANCELLED = 3,
-}
-
-// Helper to format USDC amounts (6 decimals)
-export function formatUSDC(amount: bigint): string {
-  return (Number(amount) / 1e6).toFixed(2)
-}
-
-// Helper to parse USDC amounts (6 decimals)
-export function parseUSDC(amount: string): bigint {
-  return BigInt(Math.floor(parseFloat(amount) * 1e6))
-}
-
-// Helper to format FORGE amounts (18 decimals)
-export function formatForge(amount: bigint): string {
-  return (Number(amount) / 1e18).toFixed(6)
-}
-
-// Helper to parse FORGE amounts (18 decimals)
-export function parseForge(amount: string): bigint {
-  return BigInt(Math.floor(parseFloat(amount) * 1e18))
-}
-
-// Helper to format odds (basis points → percentage)
-export function formatOdds(bps: bigint): string {
-  return (Number(bps) / 100).toFixed(1) + '%'
-}
