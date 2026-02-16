@@ -1,6 +1,6 @@
-// Contract addresses (Base Sepolia Testnet)
-export const BETTING_POOL_ADDRESS = '0x0000000000000000000000000000000000000000' as `0x${string}` // TODO: Deploy
-export const USDC_ADDRESS = '0x036CbD53842c5426634e7929541eC2318f3dCF7e' as `0x${string}` // Base Sepolia USDC
+// Contract addresses (Local Anvil - Chain ID 31337)
+export const BETTING_POOL_ADDRESS = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512' as `0x${string}` // Local deployment
+export const USDC_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3' as `0x${string}` // Local MockUSDC
 
 // Legacy CONTRACTS object for backward compatibility
 // TODO: Remove after migrating all hooks to named exports
