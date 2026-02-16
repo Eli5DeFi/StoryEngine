@@ -5,11 +5,6 @@
   "installCommand": "pnpm install",
   "framework": "nextjs",
   "outputDirectory": "apps/web/.next",
-  "env": {
-    "NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID": "@wallet-connect-project-id",
-    "NEXT_PUBLIC_API_URL": "@api-url",
-    "NEXT_PUBLIC_CHAIN_ID": "@chain-id"
-  },
   "build": {
     "env": {
       "NODE_OPTIONS": "--max_old_space_size=4096"
