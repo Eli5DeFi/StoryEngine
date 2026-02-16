@@ -2,6 +2,33 @@
 export const BETTING_POOL_ADDRESS = '0x0000000000000000000000000000000000000000' as `0x${string}` // TODO: Deploy
 export const USDC_ADDRESS = '0x036CbD53842c5426634e7929541eC2318f3dCF7e' as `0x${string}` // Base Sepolia USDC
 
+// Legacy CONTRACTS object for backward compatibility
+// TODO: Remove after migrating all hooks to named exports
+export const CONTRACTS = {
+  usdc: USDC_ADDRESS,
+  forgeToken: '0x0000000000000000000000000000000000000000' as `0x${string}`, // TODO: Deploy
+  bettingPool: BETTING_POOL_ADDRESS,
+}
+
+// Utility functions for token formatting
+export function formatUSDC(value: bigint): string {
+  // USDC has 6 decimals
+  const formatted = Number(value) / 1_000_000
+  return formatted.toFixed(2)
+}
+
+export function formatForge(value: bigint): string {
+  // FORGE has 18 decimals (standard ERC20)
+  const formatted = Number(value) / 1e18
+  return formatted.toFixed(4)
+}
+
+export function parseUSDC(value: string): bigint {
+  // USDC has 6 decimals
+  const num = parseFloat(value)
+  return BigInt(Math.floor(num * 1_000_000))
+}
+
 // ABIs
 export const BETTING_POOL_ABI = [
   // Read Functions

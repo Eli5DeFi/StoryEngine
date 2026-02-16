@@ -68,11 +68,13 @@ export function usePlaceBet(poolAddress: Address) {
       // Step 2: Place bet
       setIsPlacing(true)
 
+      // For now, use placeCombiBet with a single outcome
+      // TODO: Update when actual betting UI is implemented
       const betHash = await writeContractAsync({
         address: poolAddress,
         abi: BETTING_POOL_ABI,
-        functionName: 'placeBet',
-        args: [branchIndex, amountWei, isAgent],
+        functionName: 'placeCombiBet',
+        args: [[BigInt(branchIndex)], amountWei, 0], // 0 = BetType.SINGLE
       })
 
       // Wait for transaction to be mined
@@ -91,9 +93,9 @@ export function usePlaceBet(poolAddress: Address) {
   }
 
   /**
-   * Claim rewards for winning bets
+   * Settle and claim rewards for winning bets
    */
-  async function claimReward(poolAddress: Address): Promise<string> {
+  async function claimReward(betId: bigint): Promise<string> {
     if (!address) {
       throw new Error('Wallet not connected')
     }
@@ -104,8 +106,8 @@ export function usePlaceBet(poolAddress: Address) {
       const hash = await writeContractAsync({
         address: poolAddress,
         abi: BETTING_POOL_ABI,
-        functionName: 'claimReward',
-        args: [],
+        functionName: 'settleBet',
+        args: [betId],
       })
 
       await waitForTransaction(hash)
