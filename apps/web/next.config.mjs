@@ -2,18 +2,37 @@
 const nextConfig = {
   reactStrictMode: true,
   
-  // Image optimization
+  // Image optimization  
   images: {
     domains: ['localhost'],
-    formats: ['image/avif', 'image/webp'],
+    formats: ['image/webp', 'image/avif'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 60,
   },
   
   // Performance optimizations
   swcMinify: true,
+  poweredByHeader: false,
   
-  // Compiler options
+  // Compiler options (preserve error/warn in production)
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
+  },
+  
+  // Bundle optimization
+  experimental: {
+    optimizePackageImports: [
+      'lucide-react',
+      'recharts', 
+      'date-fns',
+      'framer-motion',
+      '@rainbow-me/rainbowkit',
+      'wagmi',
+      'viem'
+    ],
   },
   
   // Headers for security

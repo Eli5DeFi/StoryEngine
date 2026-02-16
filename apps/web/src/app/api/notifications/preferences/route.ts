@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
 
+// Mark as dynamic due to search params
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 /**
  * GET /api/notifications/preferences
  * Get notification preferences for a user
