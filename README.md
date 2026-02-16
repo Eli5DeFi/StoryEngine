@@ -85,6 +85,13 @@ pnpm dev
 - 5% platform fee
 - Instant payouts
 
+### 4. **Character Chat** ⚡ NEW
+- Chat with AI-powered character agents 24/7
+- Build relationships from Stranger to Soulbound
+- Unlock secrets as trust grows
+- Influence the narrative through conversations
+- **Try it:** `/characters`
+
 ---
 
 ## 🏗️ Architecture
