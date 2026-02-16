@@ -1,44 +1,25 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.23;
+pragma solidity 0.8.23;
 
-import "forge-std/Script.sol";
-import "../CombinatorialPool_v2.sol";
+import {Script, console} from "forge-std/Script.sol";
+import {CombinatorialBettingPool} from "../src/CombinatorialPool_v2_FIXED.sol";
 
-contract DeployScript is Script {
+contract DeployPool is Script {
     function run() external {
-        // Load environment variables
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        address treasury = vm.envAddress("TREASURY_ADDRESS");
-        address opsWallet = vm.envAddress("OPS_WALLET_ADDRESS");
-        address usdcAddress = vm.envAddress("USDC_ADDRESS");
-
-        // Start broadcasting transactions
-        vm.startBroadcast(deployerPrivateKey);
-
-        // Deploy CombinatorialBettingPool
+        address usdc = 0x5FbDB2315678afecb367f032d93F642f64180aa3;
+        address treasury = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
+        address ops = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
+        
+        vm.startBroadcast();
+        
         CombinatorialBettingPool pool = new CombinatorialBettingPool(
-            usdcAddress,
+            usdc,
             treasury,
-            opsWallet
+            ops
         );
-
-        console.log("===========================================");
-        console.log("CombinatorialBettingPool deployed to:");
-        console.log(address(pool));
-        console.log("===========================================");
-        console.log("Constructor params:");
-        console.log("- USDC:", usdcAddress);
-        console.log("- Treasury:", treasury);
-        console.log("- Ops Wallet:", opsWallet);
-        console.log("===========================================");
-
+        
         vm.stopBroadcast();
-
-        // Verify configuration
-        require(pool.treasury() == treasury, "Treasury mismatch");
-        require(pool.operationalWallet() == opsWallet, "Ops wallet mismatch");
-        require(address(pool.bettingToken()) == usdcAddress, "USDC mismatch");
-
-        console.log("Deployment verified successfully!");
+        
+        console.log("CombinatorialBettingPool deployed to:", address(pool));
     }
 }
