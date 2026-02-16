@@ -46,6 +46,7 @@ model User {
   notifications Notification[]
   notificationPreference NotificationPreference?
   userHouses    UserHouse[] // House affiliations
+  characterHoldings CharacterHolder[] // Character SBTs owned
   
   @@index([walletAddress])
   @@map("users")
@@ -132,6 +133,7 @@ model Chapter {
   // Relationships
   choices       Choice[]
   bettingPool   BettingPool?
+  characterAppearances CharacterSBTAppearance[] // SBT revenue distributions
   
   @@unique([storyId, chapterNumber])
   @@index([storyId, chapterNumber])
@@ -462,6 +464,7 @@ model Character {
   memories      CharacterMemory[]
   relationships CharacterRelationship[] @relation("CharacterA")
   relatedTo     CharacterRelationship[] @relation("CharacterB")
+  sbt           CharacterSBT? // Soul-Bound Token (if mintable)
   
   @@unique([storyId, name])
   @@index([storyId])
@@ -759,4 +762,105 @@ model NotificationPreference {
   system          Boolean @default(true)
   
   @@map("notification_preferences")
+}
+
+// ============================================================================
+// CHARACTER SOUL-BOUND TOKENS (Innovation Cycle #44)
+// ============================================================================
+
+model CharacterSBT {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Reference to story character
+  characterId   String   @unique
+  character     Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  
+  // Blockchain data
+  contractAddress String?
+  onChainId     Int?     @unique // Character ID on smart contract
+  
+  // SBT Configuration
+  maxSupply     Int      @default(100)
+  mintPrice     Decimal  @default(0.05) @db.Decimal(20, 6) // ETH
+  mintingOpen   Boolean  @default(true)
+  
+  // Stats
+  totalSupply   Int      @default(0) // Current holders
+  totalEarnings Decimal  @default(0) @db.Decimal(20, 6) // USDC distributed
+  
+  // Leveling
+  xp            Int      @default(0) // Appearances
+  level         Int      @default(1) // 1 + (xp / 5)
+  
+  // Status
+  isAlive       Boolean  @default(true)
+  
+  // Metadata
+  metadataURI   String?  // IPFS URI
+  imageURL      String?  // Display image
+  
+  // Relationships
+  holders       CharacterHolder[]
+  appearances   CharacterSBTAppearance[]
+  
+  @@index([onChainId])
+  @@index([mintingOpen])
+  @@map("character_sbts")
+}
+
+model CharacterHolder {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Holder info
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  characterSBTId String
+  characterSBT  CharacterSBT @relation(fields: [characterSBTId], references: [id], onDelete: Cascade)
+  
+  // Blockchain
+  tokenId       Int?     // NFT token ID
+  
+  // Earnings tracking
+  claimedEarnings Decimal @default(0) @db.Decimal(20, 6) // USDC claimed
+  lastClaimDate   DateTime?
+  
+  // Metadata
+  mintedAt      DateTime @default(now())
+  mintPrice     Decimal  @db.Decimal(20, 6) // Price paid
+  
+  @@unique([userId, characterSBTId])
+  @@index([userId])
+  @@index([characterSBTId])
+  @@map("character_holders")
+}
+
+model CharacterSBTAppearance {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  
+  // Character
+  characterSBTId String
+  characterSBT  CharacterSBT @relation(fields: [characterSBTId], references: [id], onDelete: Cascade)
+  
+  // Chapter appearance
+  chapterId     String
+  chapter       Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  
+  // Revenue distributed
+  poolAmount    Decimal  @db.Decimal(20, 6) // Total betting pool (USDC)
+  revenueShare  Decimal  @db.Decimal(20, 6) // Amount distributed (5% of pool)
+  holderCount   Int      // Number of holders at time of distribution
+  
+  // Metadata
+  importance    Int      @default(1) // 1-10 (could affect XP in future)
+  
+  @@unique([characterSBTId, chapterId])
+  @@index([characterSBTId])
+  @@index([chapterId])
+  @@map("character_sbt_appearances")
 }
