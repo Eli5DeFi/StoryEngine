@@ -47,191 +47,306 @@ export default async function HouseDetailPage({
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Back Navigation */}
-      <Link
-        href="/lore/houses-dynamic"
-        className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Houses
-      </Link>
-
-      {/* House Header */}
-      <div
-        className="relative mb-8 overflow-hidden rounded-lg border p-8"
-        style={{
-          borderColor: house.primaryColor,
-          background: `linear-gradient(135deg, ${house.primaryColor}10 0%, transparent 100%)`,
-        }}
-      >
-        <div
-          className="absolute left-0 top-0 h-full w-2"
-          style={{ backgroundColor: house.primaryColor }}
+    <main className="min-h-screen bg-[#0F172A]">
+      {/* Ambient Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0F172A] via-[#1E1B3A] to-[#0F172A]" />
+        <div 
+          className="absolute w-[800px] h-[800px] top-1/4 right-1/4 opacity-20"
+          style={{
+            background: `radial-gradient(ellipse, ${house.primaryColor}30 0%, transparent 60%)`,
+            animation: 'drift 25s ease-in-out infinite',
+          }}
         />
-
-        <div className="flex items-start gap-4">
-          <span className="text-6xl">{house.icon || '🏛️'}</span>
-          <div className="flex-1">
-            <h1 className="mb-2 text-4xl font-bold">{house.name}</h1>
-            <p className="mb-4 text-lg text-muted-foreground">
-              {house.description}
-            </p>
-            <div className="flex flex-wrap gap-4 text-sm">
-              <div>
-                <span className="text-muted-foreground">Strand Type:</span>{' '}
-                <span className="font-bold" style={{ color: house.primaryColor }}>
-                  {house.strandType}-Strand
-                </span>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Territory:</span>{' '}
-                <span className="font-medium">{house.territory || 'Unknown'}</span>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Population:</span>{' '}
-                <span className="font-medium">
-                  {house.population?.toLocaleString() || 'Unknown'}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-3">
-        {/* Main Content */}
-        <div className="lg:col-span-2">
-          {/* Lore */}
-          <section className="mb-8">
-            <h2 className="mb-4 text-2xl font-bold">Lore</h2>
-            <div className="prose prose-invert max-w-none rounded-lg border border-border bg-card p-6">
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: house.lore.replace(/\n/g, '<br />'),
-                }}
-              />
-            </div>
-          </section>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-24">
+        {/* Back Navigation */}
+        <Link
+          href="/lore/houses-dynamic"
+          className="inline-flex items-center gap-2 text-sm text-[#94A3B8] transition-colors hover:text-[#6366F1] mb-8 animate-fadeIn"
+          style={{ fontFamily: 'var(--font-mono)', letterSpacing: '1px' }}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          BACK TO HOUSES
+        </Link>
 
-          {/* Strand Description */}
-          <section className="mb-8">
-            <h2 className="mb-4 text-2xl font-bold">Strand Mastery</h2>
-            <div
-              className="rounded-lg border p-6"
-              style={{
-                borderColor: house.primaryColor,
-                backgroundColor: `${house.primaryColor}15`,
-              }}
-            >
-              <p className="text-lg">{house.strandDescription}</p>
-            </div>
-          </section>
+        {/* House Header */}
+        <div
+          className="relative mb-12 overflow-hidden rounded-[20px] p-8 sm:p-12 animate-fadeIn"
+          style={{
+            background: 'rgba(30, 41, 59, 0.5)',
+            backdropFilter: 'blur(16px)',
+            border: `1px solid ${house.primaryColor}60`,
+            boxShadow: `0 0 40px ${house.primaryColor}20`,
+            animationDelay: '0.1s',
+          }}
+        >
+          {/* Accent Glow */}
+          <div 
+            className="absolute inset-0 opacity-30 pointer-events-none"
+            style={{
+              background: `radial-gradient(circle at 20% 30%, ${house.primaryColor}20, transparent 60%)`,
+            }}
+          />
 
-          {/* Protocols */}
-          <section>
-            <h2 className="mb-4 text-2xl font-bold">
-              House Protocols ({house.protocolCount})
-            </h2>
-            {house.protocols && house.protocols.length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-2">
-                {house.protocols.map((protocol) => (
-                  <Link
-                    key={protocol.id}
-                    href={`/lore/protocols/${protocol.slug}`}
-                    className="group rounded-lg border border-border bg-card p-4 transition-all hover:border-primary hover:shadow-lg"
-                  >
-                    <div className="mb-2 flex items-start justify-between">
-                      <span
-                        className="rounded bg-primary/10 px-2 py-1 font-mono text-xs font-bold"
-                        style={{ color: house.primaryColor }}
-                      >
-                        {protocol.code}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {protocol.rarity}
-                      </span>
-                    </div>
-                    <h3 className="mb-1 font-bold group-hover:text-primary">
-                      {protocol.name}
-                    </h3>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span>Power: {protocol.powerLevel}/10</span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground">
-                No protocols recorded for this house yet.
+          {/* Color Accent Bar */}
+          <div
+            className="absolute left-0 top-0 h-full w-2"
+            style={{ backgroundColor: house.primaryColor }}
+          />
+
+          <div className="relative flex items-start gap-6">
+            <span className="text-7xl sm:text-8xl filter drop-shadow-2xl">{house.icon || '🏛️'}</span>
+            <div className="flex-1">
+              <h1 className="font-display font-extrabold text-5xl sm:text-6xl text-[#F1F5F9] mb-4" style={{ letterSpacing: '-1px' }}>
+                {house.name}
+              </h1>
+              <p className="text-lg sm:text-xl text-[#E2E8F0] mb-6 leading-relaxed">
+                {house.description}
               </p>
-            )}
-          </section>
-        </div>
-
-        {/* Sidebar Stats */}
-        <div className="lg:col-span-1">
-          <div className="sticky top-4 space-y-4">
-            {/* House Stats */}
-            <div className="rounded-lg border border-border bg-card p-6">
-              <h3 className="mb-4 text-lg font-bold">House Statistics</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Influence</span>
-                  <span className="font-bold">{house.influence}/1000</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Reputation</span>
-                  <span className="font-bold">{house.reputation}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Members</span>
-                  <span className="font-bold">{house.memberCount}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Protocols</span>
-                  <span className="font-bold">{house.protocolCount}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total Bets</span>
-                  <span className="font-bold">
-                    ${house.totalBets.toLocaleString()}
+              <div className="flex flex-wrap gap-6 text-sm">
+                <div>
+                  <span 
+                    className="text-[10px] uppercase tracking-[2px] text-[#64748B] block mb-1"
+                    style={{ fontFamily: 'var(--font-mono)' }}
+                  >
+                    STRAND TYPE
+                  </span>
+                  <span className="font-bold text-lg" style={{ color: house.primaryColor }}>
+                    {house.strandType}-Strand
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Wins</span>
-                  <span className="font-bold">{house.totalWins}</span>
+                <div>
+                  <span 
+                    className="text-[10px] uppercase tracking-[2px] text-[#64748B] block mb-1"
+                    style={{ fontFamily: 'var(--font-mono)' }}
+                  >
+                    TERRITORY
+                  </span>
+                  <span className="font-medium text-[#F1F5F9]">{house.territory || 'Unknown'}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Win Rate</span>
-                  <span className="font-bold">{house.winRate.toFixed(1)}%</span>
+                <div>
+                  <span 
+                    className="text-[10px] uppercase tracking-[2px] text-[#64748B] block mb-1"
+                    style={{ fontFamily: 'var(--font-mono)' }}
+                  >
+                    POPULATION
+                  </span>
+                  <span className="font-medium text-[#F1F5F9]">
+                    {house.population?.toLocaleString() || 'Unknown'}
+                  </span>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Join House CTA */}
-            <div
-              className="rounded-lg border p-6 text-center"
-              style={{
-                borderColor: house.primaryColor,
-                backgroundColor: `${house.primaryColor}10`,
-              }}
-            >
-              <h3 className="mb-2 text-lg font-bold">Join {house.name}</h3>
-              <p className="mb-4 text-sm text-muted-foreground">
-                Align yourself with this house and earn reputation
-              </p>
-              <button
-                className="w-full rounded-lg px-4 py-2 font-bold text-white transition-all hover:opacity-90"
-                style={{ backgroundColor: house.primaryColor }}
-                disabled
+        <div className="grid gap-8 lg:grid-cols-3">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Lore Section */}
+            <section className="animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+              <h2 
+                className="text-[12px] uppercase tracking-[3px] text-[#64748B] mb-4"
+                style={{ fontFamily: 'var(--font-mono)' }}
               >
-                Coming Soon
-              </button>
+                LORE
+              </h2>
+              <div
+                className="rounded-[14px] p-6 sm:p-8"
+                style={{
+                  background: 'rgba(30, 41, 59, 0.5)',
+                  backdropFilter: 'blur(16px)',
+                  border: '1px solid rgba(100, 116, 139, 0.2)',
+                }}
+              >
+                <div
+                  className="prose prose-invert prose-lg max-w-none text-[#E2E8F0] leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html: house.lore.replace(/\n/g, '<br />'),
+                  }}
+                />
+              </div>
+            </section>
+
+            {/* Strand Mastery */}
+            <section className="animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+              <h2 
+                className="text-[12px] uppercase tracking-[3px] text-[#64748B] mb-4"
+                style={{ fontFamily: 'var(--font-mono)' }}
+              >
+                STRAND MASTERY
+              </h2>
+              <div
+                className="rounded-[14px] p-6 sm:p-8"
+                style={{
+                  background: 'rgba(30, 41, 59, 0.5)',
+                  backdropFilter: 'blur(16px)',
+                  border: `1px solid ${house.primaryColor}40`,
+                  boxShadow: `0 0 30px ${house.primaryColor}15`,
+                }}
+              >
+                <p className="text-lg text-[#E2E8F0] leading-relaxed">{house.strandDescription}</p>
+              </div>
+            </section>
+
+            {/* Protocols */}
+            <section className="animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+              <h2 
+                className="text-[12px] uppercase tracking-[3px] text-[#64748B] mb-4"
+                style={{ fontFamily: 'var(--font-mono)' }}
+              >
+                HOUSE PROTOCOLS ({house.protocolCount})
+              </h2>
+              {house.protocols && house.protocols.length > 0 ? (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {house.protocols.map((protocol) => (
+                    <Link
+                      key={protocol.id}
+                      href={`/lore/protocols/${protocol.slug}`}
+                      className="group rounded-[14px] p-4 transition-all duration-200 hover:scale-[1.02]"
+                      style={{
+                        background: 'rgba(30, 41, 59, 0.5)',
+                        backdropFilter: 'blur(16px)',
+                        border: `1px solid ${house.primaryColor}30`,
+                      }}
+                    >
+                      <div className="mb-3 flex items-start justify-between">
+                        <span
+                          className="rounded-full px-3 py-1 font-mono text-xs font-bold"
+                          style={{ 
+                            background: `${house.primaryColor}20`,
+                            color: house.primaryColor,
+                            border: `1px solid ${house.primaryColor}40`,
+                          }}
+                        >
+                          {protocol.code}
+                        </span>
+                        <span className="text-xs text-[#64748B]">
+                          {protocol.rarity}
+                        </span>
+                      </div>
+                      <h3 className="mb-2 font-bold text-[#F1F5F9] group-hover:text-[#E2E8F0]">
+                        {protocol.name}
+                      </h3>
+                      <div className="flex items-center gap-2 text-xs text-[#94A3B8]">
+                        <span>Power: {protocol.powerLevel}/10</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div
+                  className="rounded-[14px] p-6 text-center"
+                  style={{
+                    background: 'rgba(30, 41, 59, 0.5)',
+                    backdropFilter: 'blur(16px)',
+                    border: '1px solid rgba(100, 116, 139, 0.2)',
+                  }}
+                >
+                  <p className="text-[#64748B]">
+                    No protocols recorded for this house yet.
+                  </p>
+                </div>
+              )}
+            </section>
+          </div>
+
+          {/* Sidebar Stats */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-4 space-y-6">
+              {/* House Statistics */}
+              <div 
+                className="rounded-[14px] p-6 animate-fadeIn"
+                style={{
+                  background: 'rgba(30, 41, 59, 0.5)',
+                  backdropFilter: 'blur(16px)',
+                  border: `1px solid ${house.primaryColor}40`,
+                  boxShadow: `0 0 20px ${house.primaryColor}15`,
+                  animationDelay: '0.5s',
+                }}
+              >
+                <h3 
+                  className="text-[12px] uppercase tracking-[3px] text-[#64748B] mb-6"
+                  style={{ fontFamily: 'var(--font-mono)' }}
+                >
+                  STATISTICS
+                </h3>
+                <div className="space-y-4">
+                  <StatRow label="Influence" value={`${house.influence}/1000`} />
+                  <StatRow label="Reputation" value={house.reputation} />
+                  <StatRow label="Members" value={house.memberCount.toLocaleString()} />
+                  <StatRow label="Protocols" value={house.protocolCount.toString()} />
+                  <StatRow label="Total Bets" value={`$${house.totalBets.toLocaleString()}`} />
+                  <StatRow label="Wins" value={house.totalWins.toString()} />
+                  <StatRow label="Win Rate" value={`${house.winRate.toFixed(1)}%`} />
+                </div>
+              </div>
+
+              {/* Join House CTA */}
+              <div
+                className="rounded-[14px] p-6 text-center animate-fadeIn"
+                style={{
+                  background: 'rgba(30, 41, 59, 0.5)',
+                  backdropFilter: 'blur(16px)',
+                  border: `1px solid ${house.primaryColor}60`,
+                  boxShadow: `0 0 30px ${house.primaryColor}20`,
+                  animationDelay: '0.6s',
+                }}
+              >
+                <h3 className="font-display text-xl font-bold text-[#F1F5F9] mb-2">
+                  Join {house.name}
+                </h3>
+                <p className="text-sm text-[#94A3B8] mb-4">
+                  Align yourself with this house and earn reputation
+                </p>
+                <button
+                  className="w-full rounded-lg px-6 py-3 font-bold text-white transition-all hover:opacity-90 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ backgroundColor: house.primaryColor }}
+                  disabled
+                >
+                  Coming Soon
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes drift {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(20px, -10px) scale(1.05); }
+          66% { transform: translate(-15px, 10px) scale(0.95); }
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fadeIn {
+          animation: fadeIn 0.6s ease-out forwards;
+          opacity: 0;
+        }
+      `}</style>
+    </main>
+  )
+}
+
+function StatRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between items-center">
+      <span 
+        className="text-[10px] uppercase tracking-[2px] text-[#64748B]"
+        style={{ fontFamily: 'var(--font-mono)' }}
+      >
+        {label}
+      </span>
+      <span className="font-display font-bold text-[#F1F5F9] tabular-nums">
+        {value}
+      </span>
     </div>
   )
 }
