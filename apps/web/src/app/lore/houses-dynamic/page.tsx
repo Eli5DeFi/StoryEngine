@@ -40,25 +40,23 @@ export default async function HousesPage() {
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0F172A] via-[#1E1B3A] to-[#0F172A]" />
         <div 
-          className="absolute w-[800px] h-[800px] top-1/4 left-1/4 opacity-30"
+          className="absolute w-[800px] h-[800px] top-1/4 left-1/4 opacity-30 animate-pulse"
           style={{
             background: 'radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 60%)',
-            animation: 'drift 25s ease-in-out infinite',
           }}
         />
         <div 
-          className="absolute w-[600px] h-[600px] bottom-1/3 right-1/3 opacity-30"
+          className="absolute w-[600px] h-[600px] bottom-1/3 right-1/3 opacity-30 animate-pulse"
           style={{
             background: 'radial-gradient(ellipse, rgba(167,139,250,0.08) 0%, transparent 60%)',
-            animation: 'drift 20s ease-in-out infinite',
-            animationDelay: '5s',
+            animationDelay: '1s',
           }}
         />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-24">
         {/* Section Header */}
-        <div className="mb-16 text-center animate-fadeIn">
+        <div className="mb-16 text-center opacity-0 animate-fade-in">
           <div className="mb-8" style={{ fontFamily: 'var(--font-mono)', letterSpacing: '4px' }}>
             <div className="text-[10px] uppercase text-[#64748B] tracking-[4px] mb-6">
               The Grand Conclave
@@ -103,7 +101,7 @@ export default async function HousesPage() {
             </p>
           </div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 opacity-0 animate-fade-in [animation-delay:0.2s]">
             {houses.map((house) => (
               <DynamicHouseCard key={house.id} house={house} />
             ))}
@@ -113,13 +111,12 @@ export default async function HousesPage() {
         {/* Database Status Indicator */}
         {houses.length > 0 && (
           <div 
-            className="mt-12 rounded-[14px] p-4 animate-fadeIn"
+            className="mt-12 rounded-[14px] p-4 opacity-0 animate-fade-in [animation-delay:0.3s]"
             style={{
               background: 'rgba(30, 41, 59, 0.5)',
               backdropFilter: 'blur(16px)',
               border: '1px solid rgba(99, 102, 241, 0.2)',
               boxShadow: '0 0 20px rgba(99,102,241,0.08)',
-              animationDelay: '0.3s',
             }}
           >
             <p className="text-sm text-[#6366F1]">
@@ -130,23 +127,6 @@ export default async function HousesPage() {
         )}
       </div>
 
-      <style jsx>{`
-        @keyframes drift {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(20px, -10px) scale(1.05); }
-          66% { transform: translate(-15px, 10px) scale(0.95); }
-        }
-        
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(12px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-fadeIn {
-          animation: fadeIn 0.6s ease-out forwards;
-          opacity: 0;
-        }
-      `}</style>
     </main>
   )
 }

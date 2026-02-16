@@ -52,10 +52,9 @@ export default async function HouseDetailPage({
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0F172A] via-[#1E1B3A] to-[#0F172A]" />
         <div 
-          className="absolute w-[800px] h-[800px] top-1/4 right-1/4 opacity-20"
+          className="absolute w-[800px] h-[800px] top-1/4 right-1/4 opacity-20 animate-pulse"
           style={{
             background: `radial-gradient(ellipse, ${house.primaryColor}30 0%, transparent 60%)`,
-            animation: 'drift 25s ease-in-out infinite',
           }}
         />
       </div>
@@ -64,7 +63,7 @@ export default async function HouseDetailPage({
         {/* Back Navigation */}
         <Link
           href="/lore/houses-dynamic"
-          className="inline-flex items-center gap-2 text-sm text-[#94A3B8] transition-colors hover:text-[#6366F1] mb-8 animate-fadeIn"
+          className="inline-flex items-center gap-2 text-sm text-[#94A3B8] transition-colors hover:text-[#6366F1] mb-8 opacity-0 animate-fade-in"
           style={{ fontFamily: 'var(--font-mono)', letterSpacing: '1px' }}
         >
           <ArrowLeft className="h-4 w-4" />
@@ -73,13 +72,12 @@ export default async function HouseDetailPage({
 
         {/* House Header */}
         <div
-          className="relative mb-12 overflow-hidden rounded-[20px] p-8 sm:p-12 animate-fadeIn"
+          className="relative mb-12 overflow-hidden rounded-[20px] p-8 sm:p-12 opacity-0 animate-fade-in [animation-delay:0.1s]"
           style={{
             background: 'rgba(30, 41, 59, 0.5)',
             backdropFilter: 'blur(16px)',
             border: `1px solid ${house.primaryColor}60`,
             boxShadow: `0 0 40px ${house.primaryColor}20`,
-            animationDelay: '0.1s',
           }}
         >
           {/* Accent Glow */}
@@ -146,7 +144,7 @@ export default async function HouseDetailPage({
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Lore Section */}
-            <section className="animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+            <section className="opacity-0 animate-fade-in [animation-delay:0.2s]">
               <h2 
                 className="text-[12px] uppercase tracking-[3px] text-[#64748B] mb-4"
                 style={{ fontFamily: 'var(--font-mono)' }}
@@ -171,7 +169,7 @@ export default async function HouseDetailPage({
             </section>
 
             {/* Strand Mastery */}
-            <section className="animate-fadeIn" style={{ animationDelay: '0.3s' }}>
+            <section className="opacity-0 animate-fade-in [animation-delay:0.3s]">
               <h2 
                 className="text-[12px] uppercase tracking-[3px] text-[#64748B] mb-4"
                 style={{ fontFamily: 'var(--font-mono)' }}
@@ -192,7 +190,7 @@ export default async function HouseDetailPage({
             </section>
 
             {/* Protocols */}
-            <section className="animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+            <section className="opacity-0 animate-fade-in [animation-delay:0.4s]">
               <h2 
                 className="text-[12px] uppercase tracking-[3px] text-[#64748B] mb-4"
                 style={{ fontFamily: 'var(--font-mono)' }}
@@ -258,13 +256,12 @@ export default async function HouseDetailPage({
             <div className="sticky top-4 space-y-6">
               {/* House Statistics */}
               <div 
-                className="rounded-[14px] p-6 animate-fadeIn"
+                className="rounded-[14px] p-6 opacity-0 animate-fade-in [animation-delay:0.5s]"
                 style={{
                   background: 'rgba(30, 41, 59, 0.5)',
                   backdropFilter: 'blur(16px)',
                   border: `1px solid ${house.primaryColor}40`,
                   boxShadow: `0 0 20px ${house.primaryColor}15`,
-                  animationDelay: '0.5s',
                 }}
               >
                 <h3 
@@ -275,7 +272,7 @@ export default async function HouseDetailPage({
                 </h3>
                 <div className="space-y-4">
                   <StatRow label="Influence" value={`${house.influence}/1000`} />
-                  <StatRow label="Reputation" value={house.reputation} />
+                  <StatRow label="Reputation" value={house.reputation.toString()} />
                   <StatRow label="Members" value={house.memberCount.toLocaleString()} />
                   <StatRow label="Protocols" value={house.protocolCount.toString()} />
                   <StatRow label="Total Bets" value={`$${house.totalBets.toLocaleString()}`} />
@@ -286,13 +283,12 @@ export default async function HouseDetailPage({
 
               {/* Join House CTA */}
               <div
-                className="rounded-[14px] p-6 text-center animate-fadeIn"
+                className="rounded-[14px] p-6 text-center opacity-0 animate-fade-in [animation-delay:0.6s]"
                 style={{
                   background: 'rgba(30, 41, 59, 0.5)',
                   backdropFilter: 'blur(16px)',
                   border: `1px solid ${house.primaryColor}60`,
                   boxShadow: `0 0 30px ${house.primaryColor}20`,
-                  animationDelay: '0.6s',
                 }}
               >
                 <h3 className="font-display text-xl font-bold text-[#F1F5F9] mb-2">
@@ -314,23 +310,6 @@ export default async function HouseDetailPage({
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes drift {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(20px, -10px) scale(1.05); }
-          66% { transform: translate(-15px, 10px) scale(0.95); }
-        }
-        
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(12px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-fadeIn {
-          animation: fadeIn 0.6s ease-out forwards;
-          opacity: 0;
-        }
-      `}</style>
     </main>
   )
 }

@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { User } from 'lucide-react';
 import { useState } from 'react';
+import Image from 'next/image';
 import { CharacterProfile } from './CharacterProfile';
 
 interface Character {
@@ -51,10 +52,14 @@ export function CharacterGrid({ characters }: CharacterGridProps) {
             {/* Portrait */}
             <div className="relative w-16 h-16 rounded-full bg-gray-800 border-2 border-gray-700 group-hover:border-neon-blue overflow-hidden mb-3 transition-colors">
               {character.portrait ? (
-                <img
+                <Image
                   src={character.portrait}
                   alt={character.name}
+                  width={64}
+                  height={64}
                   className="w-full h-full object-cover"
+                  quality={75}
+                  priority={index < 3}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">

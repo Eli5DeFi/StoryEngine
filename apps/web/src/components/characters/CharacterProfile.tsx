@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import Image from 'next/image';
 import { User, Heart, Zap, Eye, Calendar } from 'lucide-react';
 
 interface CharacterTrait {
@@ -89,10 +90,14 @@ export function CharacterProfile({
         {/* Portrait */}
         <div className="relative w-20 h-20 rounded-full bg-gray-800 border-2 border-neon-blue overflow-hidden flex-shrink-0">
           {character.portrait ? (
-            <img
+            <Image
               src={character.portrait}
               alt={character.name}
+              width={80}
+              height={80}
               className="w-full h-full object-cover"
+              quality={80}
+              priority
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
