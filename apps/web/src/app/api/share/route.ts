@@ -1,7 +1,7 @@
+import { logger } from '@/lib/logger'
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@voidborne/database'
+import { prisma } from '@/lib/prisma'
 
-const prisma = new PrismaClient()
 
 export const dynamic = 'force-dynamic'
 
@@ -140,13 +140,11 @@ export async function POST(request: Request) {
       data: shareData,
     })
   } catch (error) {
-    console.error('Share API error:', error)
+    logger.error('Share API error:', error)
     return NextResponse.json(
       { error: 'Failed to generate share link' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
 

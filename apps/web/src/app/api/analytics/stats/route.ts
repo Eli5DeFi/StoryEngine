@@ -1,8 +1,8 @@
+import { logger } from '@/lib/logger'
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@voidborne/database'
+import { prisma } from '@/lib/prisma'
 import { cache, CacheTTL } from '@/lib/cache'
 
-const prisma = new PrismaClient()
 
 // Revalidate every 60 seconds (stats change less frequently)
 export const revalidate = 60
@@ -105,46 +105,36 @@ export async function GET(request: Request) {
       avgBetSize: '0',
     }
 
-    // Get most popular story
-    const popularStory = await prisma.bet.groupBy({
-      by: ['choiceId'],
-      _count: true,
-      orderBy: {
-        _count: {
-          choiceId: 'desc',
-        },
-      },
-      take: 1,
-    })
-
-    let mostPopularStory = null
-    if (popularStory.length > 0) {
-      const choice = await prisma.choice.findUnique({
-        where: { id: popularStory[0].choiceId },
-        include: {
-          chapter: {
-            include: {
-              story: {
-                select: {
-                  id: true,
-                  title: true,
-                  genre: true,
-                },
-              },
-            },
-          },
-        },
-      })
-
-      if (choice?.chapter?.story) {
-        mostPopularStory = {
-          id: choice.chapter.story.id,
-          title: choice.chapter.story.title,
-          genre: choice.chapter.story.genre,
-          totalBets: popularStory[0]._count,
-        }
-      }
+    // Get most popular story — single JOIN query (eliminates N+1)
+    type PopularStoryRow = {
+      storyId: string
+      storyTitle: string
+      genre: string
+      totalBets: bigint
     }
+    const popularStoryResult = await prisma.$queryRaw<PopularStoryRow[]>`
+      SELECT
+        s.id        AS "storyId",
+        s.title     AS "storyTitle",
+        s.genre     AS genre,
+        COUNT(b.id)::bigint AS "totalBets"
+      FROM bets b
+      JOIN choices c  ON b."choiceId" = c.id
+      JOIN chapters ch ON c."chapterId" = ch.id
+      JOIN stories s   ON ch."storyId"  = s.id
+      GROUP BY s.id, s.title, s.genre
+      ORDER BY COUNT(b.id) DESC
+      LIMIT 1
+    `
+
+    const mostPopularStory = popularStoryResult.length > 0
+      ? {
+          id: popularStoryResult[0].storyId,
+          title: popularStoryResult[0].storyTitle,
+          genre: popularStoryResult[0].genre,
+          totalBets: Number(popularStoryResult[0].totalBets),
+        }
+      : null
 
     // Calculate story status breakdown
     const storyStatusBreakdown = storiesData.reduce((acc: Record<string, number>, item: { status: string; _count: number }) => {
@@ -185,13 +175,11 @@ export async function GET(request: Request) {
       },
     })
   } catch (error) {
-    console.error('Stats API error:', error)
+    logger.error('Stats API error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch stats' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
 

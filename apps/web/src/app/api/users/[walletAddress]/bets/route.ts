@@ -1,7 +1,7 @@
+import { logger } from '@/lib/logger'
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@voidborne/database'
+import { prisma } from '@/lib/prisma'
 
-const prisma = new PrismaClient()
 
 export const dynamic = 'force-dynamic'
 
@@ -253,13 +253,11 @@ export async function GET(
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    console.error('User bets API error:', error)
+    logger.error('User bets API error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch user bets' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
 
