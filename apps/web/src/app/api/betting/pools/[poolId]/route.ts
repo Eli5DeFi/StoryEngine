@@ -1,15 +1,31 @@
 import { NextResponse } from 'next/server'
 import { prisma, calculateOdds } from '@voidborne/database'
+import { cache, CacheTTL } from '@/lib/cache'
+
+// Pool details are semi-static — revalidate every 30 s on the CDN edge
+export const revalidate = 30
 
 /**
  * GET /api/betting/pools/[poolId]
- * Get betting pool details with current odds
+ * Get betting pool details with current odds.
+ *
+ * Optimisations:
+ * - 30 s in-memory cache to avoid repeated DB hits for the same pool
+ * - CDN stale-while-revalidate for edge caching
  */
 export async function GET(
   request: Request,
   { params }: { params: { poolId: string } }
 ) {
   try {
+    const cacheKey = `pool:${params.poolId}`
+    const cached = cache.get(cacheKey, CacheTTL.SHORT)
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60' },
+      })
+    }
+
     const pool = await prisma.bettingPool.findUnique({
       where: { id: params.poolId },
       include: {
@@ -60,12 +76,18 @@ export async function GET(
         : 0,
     }))
 
-    return NextResponse.json({
+    const response = {
       ...pool,
       chapter: {
         ...pool.chapter,
         choices: choicesWithOdds,
       },
+    }
+
+    cache.set(cacheKey, response)
+
+    return NextResponse.json(response, {
+      headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60' },
     })
   } catch (error) {
     console.error('Error fetching betting pool:', error)

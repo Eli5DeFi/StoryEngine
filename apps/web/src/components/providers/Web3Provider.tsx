@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RainbowKitProvider, darkTheme, getDefaultConfig } from '@rainbow-me/rainbowkit'
@@ -34,24 +34,47 @@ const anvilLocal = defineChain({
   testnet: true,
 })
 
-const config = getDefaultConfig({
+/** Module-level wagmi config (stable, never recreated) */
+const wagmiConfig = getDefaultConfig({
   appName: 'Voidborne',
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'a3c3e8f5e8f3a7c5e8f3a7c5e8f3a7c5',
   chains: [anvilLocal, baseSepolia],
   ssr: false,
 })
 
-const queryClient = new QueryClient()
-
+/**
+ * Web3Provider wraps wagmi + react-query + RainbowKit.
+ *
+ * QueryClient is created with useState so React guarantees a stable
+ * instance per component tree, avoiding the "new client on every render"
+ * pitfall when the provider is used inside Strict Mode or fast-refresh.
+ */
 export function Web3Provider({ children }: { children: ReactNode }) {
+  // useState ensures a single QueryClient per provider instance
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            // Keep stale data for 60 s before background refetch
+            staleTime: 60_000,
+            // Retry failed queries up to 2 times
+            retry: 2,
+          },
+        },
+      })
+  )
+
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={darkTheme({
-          accentColor: '#d4a853',
-          accentColorForeground: '#05060b',
-          borderRadius: 'medium',
-        })}>
+        <RainbowKitProvider
+          theme={darkTheme({
+            accentColor: '#d4a853',
+            accentColorForeground: '#05060b',
+            borderRadius: 'medium',
+          })}
+        >
           {children}
         </RainbowKitProvider>
       </QueryClientProvider>

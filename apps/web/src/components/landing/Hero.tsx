@@ -1,17 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 export function Hero() {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) return null
-
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Primary Gradient Background */}

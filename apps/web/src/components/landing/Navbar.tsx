@@ -24,13 +24,14 @@ export function Navbar() {
       setIsScrolled(window.scrollY > 20)
     }
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   return (
     <>
       <nav
+        aria-label="Main navigation"
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isScrolled
             ? 'bg-background/80 backdrop-blur-xl border-b border-void-800 shadow-lg'
@@ -78,7 +79,9 @@ export function Navbar() {
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="lg:hidden text-foreground hover:text-gold transition-colors duration-500"
-              aria-label="Toggle menu"
+              aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-nav"
             >
               {isMobileMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -92,7 +95,7 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
+        <div id="mobile-nav" className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-label="Navigation menu">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-background/95 backdrop-blur-xl"

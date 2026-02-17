@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@voidborne/database'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
@@ -130,8 +128,6 @@ export async function GET(request: Request) {
       { error: 'Failed to fetch leaderboard' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
 

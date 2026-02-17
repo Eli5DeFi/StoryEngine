@@ -43,7 +43,7 @@ export function Starfield() {
       speedX: Math.random() * 0.1 - 0.05,
     }))
 
-    let frame = 0
+    let rafId: number
 
     // Animation loop
     const animate = () => {
@@ -109,14 +109,14 @@ export function Starfield() {
         }
       })
 
-      frame++
-      requestAnimationFrame(animate)
+      rafId = requestAnimationFrame(animate)
     }
 
     animate()
 
     return () => {
       window.removeEventListener('resize', resize)
+      cancelAnimationFrame(rafId)
     }
   }, [])
 

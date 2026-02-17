@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { TrendingUp, Clock } from 'lucide-react'
 import Link from 'next/link'
@@ -27,7 +27,7 @@ type RecentActivityResponse = {
   timestamp: string
 }
 
-export function RecentActivityFeed() {
+export const RecentActivityFeed = memo(function RecentActivityFeed() {
   const [bets, setBets] = useState<RecentBet[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -197,3 +197,4 @@ export function RecentActivityFeed() {
     </div>
   )
 }
+)
