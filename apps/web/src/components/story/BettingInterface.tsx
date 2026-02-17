@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger'
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -105,7 +106,7 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
       setSelectedChoice(null)
       onBetPlaced()
     } catch (err) {
-      console.error('Bet placement error:', err)
+      logger.error('Bet placement error:', err)
     }
   }
 
@@ -181,6 +182,8 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
               key={choice.id}
               onClick={() => isOpen && isConnected && setSelectedChoice(index)}
               disabled={!isOpen || !isConnected}
+              aria-pressed={isSelected}
+              aria-label={`Choose: ${choice.text}${odds > 0 ? ` — ${odds.toFixed(2)}x odds` : ''}`}
               whileHover={isOpen && isConnected ? { scale: 1.01 } : {}}
               whileTap={isOpen && isConnected ? { scale: 0.99 } : {}}
               className={`w-full glass-card p-6 rounded-xl transition-all duration-500 ${
@@ -243,10 +246,12 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
               max={pool.maxBet ? Number(pool.maxBet) : undefined}
               step="1"
               className="w-full px-6 py-4 pl-12 glass-card rounded-xl border border-void-800 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/50 transition-all duration-500 font-ui text-lg tabular-nums"
+              aria-label="Bet amount in USDC"
+              aria-describedby="bet-amount-hint"
             />
             <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-drift-teal" />
           </div>
-          <div className="flex justify-between mt-3 text-xs text-void-500 font-ui">
+          <div id="bet-amount-hint" className="flex justify-between mt-3 text-xs text-void-500 font-ui">
             <span>Min: ${Number(pool.minBet).toFixed(2)}</span>
             <span>Balance: ${balance}</span>
             {pool.maxBet && <span>Max: ${Number(pool.maxBet).toFixed(2)}</span>}
@@ -262,6 +267,8 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             className="mb-6 p-4 glass-card rounded-xl border border-error/30 bg-error/10 flex items-start gap-3"
+            role="alert"
+            aria-live="assertive"
           >
             <AlertCircle className="w-5 h-5 text-error flex-shrink-0 mt-0.5" />
             <span className="text-sm text-error font-ui">{error}</span>

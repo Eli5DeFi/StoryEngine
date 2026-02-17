@@ -1,6 +1,4 @@
-import { PrismaClient } from '@voidborne/database'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 /**
  * Check and award badges for a user after placing a bet
@@ -91,7 +89,6 @@ export async function checkAndAwardBadges(userId: string) {
   } catch (error) {
     console.error('Badge check error:', error)
   } finally {
-    await prisma.$disconnect()
   }
 }
 
@@ -140,6 +137,5 @@ export async function updateUserStreak(userId: string, won: boolean) {
   } catch (error) {
     console.error('Streak update error:', error)
   } finally {
-    await prisma.$disconnect()
   }
 }
