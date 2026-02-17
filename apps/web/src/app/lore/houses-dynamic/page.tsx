@@ -6,12 +6,15 @@ export const metadata = {
   description: 'The political powers of the Covenant',
 }
 
+// Revalidate every 60 seconds (ISR)
+export const revalidate = 60
+
 async function getHouses(): Promise<House[]> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
   
   try {
     const res = await fetch(`${baseUrl}/api/lore/houses`, {
-      cache: 'no-store',
+      next: { revalidate: 60 }, // ISR: revalidate every 60 seconds
     })
     
     if (!res.ok) {
@@ -26,7 +29,9 @@ async function getHouses(): Promise<House[]> {
     
     return json.data
   } catch (error) {
-    console.error('Error fetching houses:', error)
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching houses:', error)
+    }
     return []
   }
 }

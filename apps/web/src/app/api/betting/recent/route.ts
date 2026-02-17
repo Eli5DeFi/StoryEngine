@@ -4,6 +4,9 @@ import { cache, CacheTTL } from '@/lib/cache'
 
 const prisma = new PrismaClient()
 
+// Explicitly mark as dynamic (uses request.url for search params)
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 // Revalidate every 30 seconds
 export const revalidate = 30
 
@@ -98,7 +101,10 @@ export async function GET(request: Request) {
       },
     })
   } catch (error) {
-    console.error('Recent bets API error:', error)
+    // Log to server console only
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Recent bets API error:', error)
+    }
     return NextResponse.json(
       { error: 'Failed to fetch recent bets' },
       { status: 500 }

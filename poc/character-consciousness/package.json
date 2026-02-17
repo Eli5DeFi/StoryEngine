@@ -1,0 +1,29 @@
+{
+  "name": "@voidborne/character-consciousness-poc",
+  "version": "1.0.0",
+  "description": "Character Consciousness Protocol - AI agents for 24/7 character interaction",
+  "main": "src/character-agent.ts",
+  "scripts": {
+    "demo": "ts-node src/demo.ts interactive",
+    "demo:scripted": "ts-node src/demo.ts scripted",
+    "test": "ts-node src/test.ts"
+  },
+  "keywords": [
+    "voidborne",
+    "ai",
+    "narrative",
+    "character",
+    "chatbot",
+    "claude"
+  ],
+  "author": "Voidborne Team",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.34.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}

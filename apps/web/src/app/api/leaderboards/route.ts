@@ -15,6 +15,9 @@ type Decimal = Prisma.Decimal
  * - limit: number of results (default 10, max 100)
  * - timeframe: all | 30d | 7d | 24h
  */
+// Mark as dynamic due to search params
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 // Cache for 5 minutes
 export const revalidate = 300
 

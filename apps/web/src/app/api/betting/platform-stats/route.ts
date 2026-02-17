@@ -4,6 +4,9 @@ import { cache, CacheTTL } from '@/lib/cache'
 
 const prisma = new PrismaClient()
 
+// Mark as dynamic due to search params
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 // Revalidate every 60 seconds
 export const revalidate = 60
 
