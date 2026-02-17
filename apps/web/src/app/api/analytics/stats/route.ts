@@ -1,15 +1,11 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@voidborne/database'
-import { cache, CacheTTL } from '@/lib/cache'
+import { prisma } from '@/lib/prisma'
 
-const prisma = new PrismaClient()
+import { cache, CacheTTL } from '@/lib/cache'
 
 // Mark as dynamic due to search params
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
-
-// Revalidate every 60 seconds (stats change less frequently)
-export const revalidate = 60
 
 /**
  * GET /api/analytics/stats
@@ -194,8 +190,6 @@ export async function GET(request: Request) {
       { error: 'Failed to fetch stats' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
 

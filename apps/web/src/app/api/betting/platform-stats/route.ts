@@ -1,14 +1,11 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@voidborne/database'
-import { cache, CacheTTL } from '@/lib/cache'
+import { prisma } from '@/lib/prisma'
 
-const prisma = new PrismaClient()
+import { cache, CacheTTL } from '@/lib/cache'
 
 // Mark as dynamic due to search params
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
-// Revalidate every 60 seconds
-export const revalidate = 60
 
 /**
  * GET /api/betting/platform-stats
@@ -144,8 +141,6 @@ export async function GET(request: Request) {
       { error: 'Failed to fetch platform stats' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
 

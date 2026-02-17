@@ -43,7 +43,7 @@ export function Starfield() {
       speedX: Math.random() * 0.1 - 0.05,
     }))
 
-    let frame = 0
+    let animationId: number
 
     // Animation loop
     const animate = () => {
@@ -109,13 +109,14 @@ export function Starfield() {
         }
       })
 
-      frame++
-      requestAnimationFrame(animate)
+      animationId = requestAnimationFrame(animate)
     }
 
     animate()
 
     return () => {
+      // Cancel animation frame to prevent memory leak on unmount
+      cancelAnimationFrame(animationId)
       window.removeEventListener('resize', resize)
     }
   }, [])

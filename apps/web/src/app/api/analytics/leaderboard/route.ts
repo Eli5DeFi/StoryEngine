@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@voidborne/database'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
+import { cache, CacheTTL } from '@/lib/cache'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,6 +20,18 @@ export async function GET(request: Request) {
     const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 100)
     const sortBy = (searchParams.get('sortBy') || 'profit') as 'wagered' | 'winRate' | 'profit'
     const timeframe = (searchParams.get('timeframe') || 'all') as 'all' | '30d' | '7d' | '24h'
+
+    // Check in-memory cache (leaderboard updates at most every 2 minutes)
+    const cacheKey = `leaderboard:${sortBy}:${timeframe}:${limit}`
+    const cached = cache.get(cacheKey, CacheTTL.MEDIUM)
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+          'X-Cache': 'HIT',
+        },
+      })
+    }
 
     // Calculate timeframe cutoff
     const timeframeCutoff = getTimeframeCutoff(timeframe)
@@ -118,11 +129,21 @@ export async function GET(request: Request) {
       }
     })
 
-    return NextResponse.json({
+    const responseData = {
       leaderboard,
       sortBy,
       timeframe,
       timestamp: new Date().toISOString(),
+    }
+
+    // Cache for 2 minutes (leaderboard is expensive to compute)
+    cache.set(cacheKey, responseData)
+
+    return NextResponse.json(responseData, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+        'X-Cache': 'MISS',
+      },
     })
   } catch (error) {
     console.error('Leaderboard API error:', error)
@@ -130,8 +151,6 @@ export async function GET(request: Request) {
       { error: 'Failed to fetch leaderboard' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
 
