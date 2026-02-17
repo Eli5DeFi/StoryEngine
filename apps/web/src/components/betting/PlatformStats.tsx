@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { memo, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Target, TrendingUp, Trophy, Flame } from 'lucide-react'
 import Link from 'next/link'
@@ -19,7 +19,7 @@ type PlatformStatsData = {
   timestamp: string
 }
 
-export function PlatformStats() {
+export const PlatformStats = memo(function PlatformStats() {
   const [stats, setStats] = useState<PlatformStatsData | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -152,3 +152,4 @@ export function PlatformStats() {
     </div>
   )
 }
+)

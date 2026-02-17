@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@voidborne/database'
+import { prisma } from '@/lib/prisma'
 import { cache, CacheTTL } from '@/lib/cache'
-
-const prisma = new PrismaClient()
 
 // Revalidate every 60 seconds
 export const revalidate = 60
@@ -141,8 +139,6 @@ export async function GET(request: Request) {
       { error: 'Failed to fetch platform stats' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
 

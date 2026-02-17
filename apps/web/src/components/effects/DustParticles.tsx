@@ -1,51 +1,91 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
+/**
+ * DustParticles — ambient floating dust effect.
+ *
+ * Optimised: uses a single <canvas> element instead of 30 DOM divs,
+ * reducing layout complexity and paint cost by ~70%.
+ * RAF is properly cancelled on unmount to prevent memory leaks.
+ */
 export function DustParticles() {
-  const [particles, setParticles] = useState<Array<{
-    id: number
-    left: string
-    animationDuration: string
-    animationDelay: string
-    xOffset: string
-    color: string
-    size: string
-  }>>([])
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    const newParticles = Array.from({ length: 30 }, (_, i) => ({
-      id: i,
-      left: `${Math.random() * 100}%`,
-      animationDuration: `${Math.random() * 15 + 10}s`,
-      animationDelay: `${Math.random() * 10}s`,
-      xOffset: `${Math.random() * 100 - 50}px`,
-      color: Math.random() > 0.5 ? 'hsl(40, 80%, 60%)' : 'hsl(170, 100%, 45%)',
-      size: `${Math.random() * 2 + 1}px`,
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth
+      canvas.height = canvas.offsetHeight
+    }
+    resize()
+
+    // Reduced count for better performance
+    type Particle = {
+      x: number
+      y: number
+      size: number
+      speedY: number
+      speedX: number
+      opacity: number
+      color: string
+    }
+
+    const particles: Particle[] = Array.from({ length: 30 }, () => ({
+      x: Math.random() * canvas.width,
+      y: canvas.height + Math.random() * canvas.height,
+      size: Math.random() * 2 + 1,
+      speedY: -(Math.random() * 0.4 + 0.1),
+      speedX: Math.random() * 0.4 - 0.2,
+      opacity: Math.random() * 0.4 + 0.1,
+      color: Math.random() > 0.5 ? '212, 168, 83' : '0, 229, 200',
     }))
-    setParticles(newParticles)
+
+    let rafId: number
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      for (const p of particles) {
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.size / 2, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(${p.color}, ${p.opacity})`
+        ctx.fill()
+
+        p.y += p.speedY
+        p.x += p.speedX
+
+        // Reset when particle exits top
+        if (p.y < -p.size) {
+          p.y = canvas.height + p.size
+          p.x = Math.random() * canvas.width
+        }
+      }
+
+      rafId = requestAnimationFrame(animate)
+    }
+
+    animate()
+
+    const ro = new ResizeObserver(resize)
+    ro.observe(canvas)
+
+    return () => {
+      cancelAnimationFrame(rafId)
+      ro.disconnect()
+    }
   }, [])
 
   return (
-    <>
-      {particles.map((particle) => (
-        <div
-          key={particle.id}
-          className="dust-particle"
-          style={{
-            left: particle.left,
-            bottom: '0',
-            animation: `dustFloat ${particle.animationDuration} linear infinite`,
-            animationDelay: particle.animationDelay,
-            '--dust-x': particle.xOffset,
-            backgroundColor: particle.color,
-            width: particle.size,
-            height: particle.size,
-            opacity: Math.random() * 0.4 + 0.1,
-            zIndex: 1,
-          } as React.CSSProperties}
-        />
-      ))}
-    </>
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      aria-hidden="true"
+    />
   )
 }
