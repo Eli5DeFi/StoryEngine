@@ -8,11 +8,22 @@ import { ChapterReader } from '@/components/story/ChapterReader'
 import { BettingInterface } from '@/components/story/BettingInterface'
 import { ChapterNavigation } from '@/components/story/ChapterNavigation'
 import { ClientOnly } from '@/components/ClientOnly'
+import { PsychicConsensusPanel } from '@/components/psychic/PsychicConsensusPanel'
+
+/**
+ * Extended pool type that includes PCO fields (Cycle 48).
+ * pcoContractAddress → show PsychicConsensusPanel instead of legacy BettingInterface
+ */
+type ExtendedBettingPool = BettingPool & {
+  _count: { bets: number }
+  pcoContractAddress?: string | null
+  pcoPoolId?: string | null
+}
 
 type StoryWithChapters = Story & {
   chapters: (Chapter & {
     choices: (Choice & { _count: { bets: number } })[]
-    bettingPool?: BettingPool & { _count: { bets: number } } | null
+    bettingPool?: ExtendedBettingPool | null
   })[]
 }
 
@@ -29,14 +40,14 @@ export default function StoryPage() {
     try {
       setLoading(true)
       const response = await fetch(`/api/stories/${storyId}`)
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch story')
       }
 
       const data = await response.json()
       setStory(data)
-      
+
       // Start at latest chapter
       if (data.chapters.length > 0) {
         setCurrentChapterIndex(data.chapters.length - 1)
@@ -52,6 +63,8 @@ export default function StoryPage() {
     fetchStory()
   }, [fetchStory])
 
+  // ── Loading ────────────────────────────────────────────────────────────────
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -62,6 +75,8 @@ export default function StoryPage() {
       </div>
     )
   }
+
+  // ── Error ──────────────────────────────────────────────────────────────────
 
   if (error || !story) {
     return (
@@ -75,6 +90,45 @@ export default function StoryPage() {
   }
 
   const currentChapter = story.chapters[currentChapterIndex]
+  const pool = currentChapter.bettingPool
+
+  // ── Sidebar rendering logic ────────────────────────────────────────────────
+  // Priority:
+  //   1. PCO panel (Cycle 48) — if pcoContractAddress + pcoPoolId set
+  //   2. Legacy BettingInterface — if contractAddress set
+  //   3. Nothing — no pool configured
+
+  const hasPCO = pool?.pcoContractAddress && pool?.pcoPoolId
+  const hasLegacy = pool?.contractAddress
+
+  const sidebarContent = (() => {
+    if (hasPCO) {
+      return (
+        <PsychicConsensusPanel
+          contractAddress={pool!.pcoContractAddress! as `0x${string}`}
+          poolId={BigInt(pool!.pcoPoolId!)}
+          choiceTexts={currentChapter.choices.map(c => c.description ?? c.text)}
+          onBetPlaced={fetchStory}
+        />
+      )
+    }
+
+    if (hasLegacy) {
+      return (
+        <BettingInterface
+          poolId={pool!.id}
+          contractAddress={pool!.contractAddress as `0x${string}`}
+          pool={pool!}
+          choices={currentChapter.choices}
+          onBetPlaced={fetchStory}
+        />
+      )
+    }
+
+    return null
+  })()
+
+  // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
     <div className="min-h-screen bg-background">
@@ -83,7 +137,8 @@ export default function StoryPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content - Chapter Reader */}
+
+          {/* Main Content — Chapter Reader */}
           <div className="lg:col-span-2">
             <ChapterReader
               chapter={currentChapter}
@@ -100,22 +155,17 @@ export default function StoryPage() {
             )}
           </div>
 
-          {/* Sidebar - Betting Interface */}
+          {/* Sidebar — Betting / PCO */}
           <div className="lg:col-span-1">
-            <div className="sticky top-8">
-              {currentChapter.bettingPool && currentChapter.bettingPool.contractAddress && (
+            <div className="sticky top-8 space-y-4">
+              {sidebarContent && (
                 <ClientOnly>
-                  <BettingInterface
-                    poolId={currentChapter.bettingPool.id}
-                    contractAddress={currentChapter.bettingPool.contractAddress as `0x${string}`}
-                    pool={currentChapter.bettingPool}
-                    choices={currentChapter.choices}
-                    onBetPlaced={fetchStory}
-                  />
+                  {sidebarContent}
                 </ClientOnly>
               )}
             </div>
           </div>
+
         </div>
       </div>
     </div>

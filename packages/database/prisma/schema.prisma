@@ -213,9 +213,14 @@ model BettingPool {
   totalBets     Int      @default(0)
   uniqueBettors Int      @default(0)
   
-  // Smart contract
+  // Smart contract (Legacy parimutuel pool)
   contractAddress String?
   contractTxHash  String?
+  
+  // Psychic Consensus Oracle (PCO) — Innovation Cycle 48
+  // When set, the PsychicConsensusPanel is shown instead of BettingInterface
+  pcoContractAddress String?  // PCO contract address on-chain
+  pcoPoolId          String?  // PCO pool ID (BigInt as string)
   
   // Winner info (after resolution)
   winningChoiceId String?
