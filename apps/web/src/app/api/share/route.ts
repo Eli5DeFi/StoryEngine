@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@voidborne/database'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
@@ -145,8 +143,6 @@ export async function POST(request: Request) {
       { error: 'Failed to generate share link' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
 

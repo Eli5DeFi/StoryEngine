@@ -1,14 +1,11 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@voidborne/database'
-import { cache, CacheTTL } from '@/lib/cache'
+import { prisma } from '@/lib/prisma'
 
-const prisma = new PrismaClient()
+import { cache, CacheTTL } from '@/lib/cache'
 
 // Explicitly mark as dynamic (uses request.url for search params)
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
-// Revalidate every 30 seconds
-export const revalidate = 30
 
 /**
  * GET /api/betting/recent
@@ -109,8 +106,6 @@ export async function GET(request: Request) {
       { error: 'Failed to fetch recent bets' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
 

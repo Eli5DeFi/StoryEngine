@@ -127,7 +127,15 @@ const nextConfig = {
       fs: false,
       net: false,
       tls: false,
+      // MetaMask SDK optional React Native dep
+      '@react-native-async-storage/async-storage': false,
     };
+    
+    // Suppress optional peer dependency warnings from WalletConnect/pino
+    config.externals = config.externals || []
+    if (Array.isArray(config.externals)) {
+      config.externals.push({ 'pino-pretty': 'pino-pretty' })
+    }
     
     // Production optimizations
     if (!dev && !isServer) {
@@ -197,8 +205,13 @@ const nextConfig = {
 };
 
 // Bundle analyzer - only in analyze mode
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-});
+// Conditional: only wrap when ANALYZE=true to avoid top-level-await overhead
+let exportedConfig = nextConfig
 
-export default withBundleAnalyzer(nextConfig);
+if (process.env.ANALYZE === 'true') {
+  const { default: BundleAnalyzer } = await import('@next/bundle-analyzer')
+  const withBundleAnalyzer = BundleAnalyzer({ enabled: true })
+  exportedConfig = withBundleAnalyzer(nextConfig)
+}
+
+export default exportedConfig

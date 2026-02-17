@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { BettingPool, Choice } from '@voidborne/database'
 import { TrendingUp, Users, Clock, Trophy, AlertCircle, DollarSign } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -105,16 +105,34 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
       setSelectedChoice(null)
       onBetPlaced()
     } catch (err) {
-      console.error('Bet placement error:', err)
+      // Error is already surfaced via the `error` state from usePlaceBet hook
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Bet placement error:', err)
+      }
     }
   }
 
-  const selectedBranchOdds = selectedChoice !== null ? (() => {
+  // Memoize odds/payout calculations to avoid re-running on every render
+  const selectedBranchOdds = useMemo(() => {
+    if (selectedChoice === null) return 0
     const choice = choices[selectedChoice]
     const totalPool = pool.totalPool.toNumber()
     const choiceBets = choice.totalBets.toNumber()
     return totalPool > 0 && choiceBets > 0 ? totalPool / choiceBets : 0
-  })() : 0
+  }, [selectedChoice, choices, pool.totalPool])
+
+  const estimatedPayout = useMemo(() => {
+    if (selectedChoice === null || !betAmount) return '0.00'
+    const choice = choices[selectedChoice]
+    if (!choice) return '0.00'
+    const amount = parseFloat(betAmount)
+    if (isNaN(amount) || amount <= 0) return '0.00'
+    const choiceBets = choice.totalBets.toNumber() + amount
+    const totalPool = pool.totalPool.toNumber() + amount
+    const winnerShare = totalPool * 0.85
+    const payout = (amount / choiceBets) * winnerShare
+    return payout.toFixed(2)
+  }, [selectedChoice, betAmount, choices, pool.totalPool])
 
   return (
     <div className="glass-card rounded-2xl p-8">
@@ -242,11 +260,13 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
               min={Number(pool.minBet)}
               max={pool.maxBet ? Number(pool.maxBet) : undefined}
               step="1"
+              aria-label="Bet amount in USDC"
+              aria-describedby="bet-amount-hint"
               className="w-full px-6 py-4 pl-12 glass-card rounded-xl border border-void-800 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/50 transition-all duration-500 font-ui text-lg tabular-nums"
             />
             <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-drift-teal" />
           </div>
-          <div className="flex justify-between mt-3 text-xs text-void-500 font-ui">
+          <div id="bet-amount-hint" className="flex justify-between mt-3 text-xs text-void-500 font-ui">
             <span>Min: ${Number(pool.minBet).toFixed(2)}</span>
             <span>Balance: ${balance}</span>
             {pool.maxBet && <span>Max: ${Number(pool.maxBet).toFixed(2)}</span>}
@@ -314,16 +334,7 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
         <div className="mt-6 p-6 glass-card rounded-xl border border-success/30 bg-success/5">
           <div className="text-sm text-void-400 font-ui uppercase tracking-wider mb-2">Potential Payout:</div>
           <div className="text-4xl font-display font-bold text-success tabular-nums">
-            ${(() => {
-              const choice = choices[selectedChoice]
-              if (!choice) return '0.00'
-              const amount = parseFloat(betAmount)
-              const choiceBets = choice.totalBets.toNumber() + amount
-              const totalPool = pool.totalPool.toNumber() + amount
-              const winnerShare = totalPool * 0.85
-              const payout = (amount / choiceBets) * winnerShare
-              return payout.toFixed(2)
-            })()}
+            ${estimatedPayout}
           </div>
           <div className="text-xs text-void-500 mt-2 font-ui">
             If your choice wins (85% pool to winners • {selectedBranchOdds.toFixed(2)}x odds)

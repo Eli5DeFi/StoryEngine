@@ -11,6 +11,7 @@ export function DustParticles() {
     xOffset: string
     color: string
     size: string
+    opacity: number
   }>>([])
 
   useEffect(() => {
@@ -22,6 +23,8 @@ export function DustParticles() {
       xOffset: `${Math.random() * 100 - 50}px`,
       color: Math.random() > 0.5 ? 'hsl(40, 80%, 60%)' : 'hsl(170, 100%, 45%)',
       size: `${Math.random() * 2 + 1}px`,
+      // Stable opacity: generated once, not on every render
+      opacity: Math.random() * 0.4 + 0.1,
     }))
     setParticles(newParticles)
   }, [])
@@ -41,7 +44,7 @@ export function DustParticles() {
             backgroundColor: particle.color,
             width: particle.size,
             height: particle.size,
-            opacity: Math.random() * 0.4 + 0.1,
+            opacity: particle.opacity,
             zIndex: 1,
           } as React.CSSProperties}
         />

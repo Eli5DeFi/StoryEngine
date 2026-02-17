@@ -9,7 +9,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { useAccount, useSigner } from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 import { NarrativeLiquidityPoolClient } from '@/lib/nlp/client';
 import type { PoolState, SwapQuote, LiquidityPosition } from '@/lib/nlp/client';
 
@@ -24,16 +24,19 @@ const NLP_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_NLP_CONTRACT_ADDRESS || '';
  */
 export function useNLP() {
   const { address, isConnected } = useAccount();
-  const { data: signer } = useSigner();
+  // wagmi v2: useWalletClient replaces useSigner; cast to ethers Signer shape
+  const { data: walletClient } = useWalletClient();
   const [client, setClient] = useState<NarrativeLiquidityPoolClient | null>(null);
 
   useEffect(() => {
-    if (signer && NLP_CONTRACT_ADDRESS) {
-      setClient(new NarrativeLiquidityPoolClient(NLP_CONTRACT_ADDRESS, signer));
+    if (walletClient && NLP_CONTRACT_ADDRESS) {
+      // wagmi v2 walletClient bridges to ethers v5 Signer at runtime
+      // @ts-ignore - cross-version compatibility: wagmi v2 WalletClient → ethers v5 Signer
+      setClient(new NarrativeLiquidityPoolClient(NLP_CONTRACT_ADDRESS, walletClient));
     } else {
       setClient(null);
     }
-  }, [signer]);
+  }, [walletClient]);
 
   return {
     client,
