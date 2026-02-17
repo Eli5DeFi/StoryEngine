@@ -12,6 +12,7 @@ const navLinks = [
   { label: 'How It Works', href: '#how-it-works' },
   { label: 'Leaderboards', href: '/leaderboards' },
   { label: 'Analytics', href: '/analytics' },
+  { label: '🛡️ Insure', href: '/insurance' },
 ]
 
 export function Navbar() {
