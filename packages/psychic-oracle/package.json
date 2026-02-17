@@ -1,0 +1,23 @@
+{
+  "name": "@voidborne/psychic-oracle",
+  "version": "0.1.0",
+  "description": "Voidborne Psychic Consensus Oracle — two-layer prediction market for narrative betting",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "forge test -vvv --match-path 'test/PsychicConsensusOracle.t.sol'",
+    "test:verbose": "forge test -vvvv --match-path 'test/PsychicConsensusOracle.t.sol'",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "viem": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  },
+  "keywords": ["voidborne", "prediction-market", "narrative", "defi", "base", "forge"],
+  "license": "MIT"
+}
