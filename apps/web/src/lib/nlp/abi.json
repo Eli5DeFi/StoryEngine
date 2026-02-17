@@ -1,0 +1,229 @@
+[
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_bettingToken", "type": "address" },
+      { "internalType": "address", "name": "_treasury", "type": "address" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "chapterId", "type": "uint256" },
+      { "indexed": true, "internalType": "uint256", "name": "winningOutcomeId", "type": "uint256" }
+    ],
+    "name": "ChapterResolved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "chapterId", "type": "uint256" },
+      { "indexed": true, "internalType": "uint256", "name": "outcomeId", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "provider", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "lpTokens", "type": "uint256" }
+    ],
+    "name": "LiquidityAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "chapterId", "type": "uint256" },
+      { "indexed": true, "internalType": "uint256", "name": "outcomeId", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "provider", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "lpTokens", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "amountOut", "type": "uint256" }
+    ],
+    "name": "LiquidityRemoved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "chapterId", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "trader", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "fromOutcome", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "toOutcome", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "amountOut", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "fee", "type": "uint256" }
+    ],
+    "name": "PositionSwapped",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "chapterId", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "winner", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "WinningsClaimed",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "chapterId", "type": "uint256" },
+      { "internalType": "uint256", "name": "outcomeId", "type": "uint256" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "addLiquidity",
+    "outputs": [{ "internalType": "uint256", "name": "lpTokens", "type": "uint256" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "chapterId", "type": "uint256" },
+      { "internalType": "uint256", "name": "outcomeId", "type": "uint256" },
+      { "internalType": "uint256", "name": "lpTokens", "type": "uint256" }
+    ],
+    "name": "removeLiquidity",
+    "outputs": [{ "internalType": "uint256", "name": "amountOut", "type": "uint256" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "chapterId", "type": "uint256" },
+      { "internalType": "uint256", "name": "fromOutcome", "type": "uint256" },
+      { "internalType": "uint256", "name": "toOutcome", "type": "uint256" },
+      { "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+      { "internalType": "uint256", "name": "minAmountOut", "type": "uint256" }
+    ],
+    "name": "swapPosition",
+    "outputs": [{ "internalType": "uint256", "name": "amountOut", "type": "uint256" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "chapterId", "type": "uint256" }
+    ],
+    "name": "claimWinnings",
+    "outputs": [{ "internalType": "uint256", "name": "winnings", "type": "uint256" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "chapterId", "type": "uint256" },
+      { "internalType": "uint256", "name": "_winningOutcome", "type": "uint256" }
+    ],
+    "name": "resolveChapter",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "chapterId", "type": "uint256" },
+      { "internalType": "uint256", "name": "fromOutcome", "type": "uint256" },
+      { "internalType": "uint256", "name": "toOutcome", "type": "uint256" }
+    ],
+    "name": "getPrice",
+    "outputs": [{ "internalType": "uint256", "name": "price", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "chapterId", "type": "uint256" },
+      { "internalType": "uint256", "name": "fromOutcome", "type": "uint256" },
+      { "internalType": "uint256", "name": "toOutcome", "type": "uint256" },
+      { "internalType": "uint256", "name": "amountIn", "type": "uint256" }
+    ],
+    "name": "getAmountOut",
+    "outputs": [{ "internalType": "uint256", "name": "amountOut", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "chapterId", "type": "uint256" },
+      { "internalType": "uint256", "name": "outcomeId", "type": "uint256" },
+      { "internalType": "address", "name": "user", "type": "address" }
+    ],
+    "name": "getUserLPBalance",
+    "outputs": [{ "internalType": "uint256", "name": "balance", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "chapterId", "type": "uint256" },
+      { "internalType": "uint256", "name": "numOutcomes", "type": "uint256" }
+    ],
+    "name": "getPoolReserves",
+    "outputs": [{ "internalType": "uint256[]", "name": "reserves", "type": "uint256[]" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "chapterId", "type": "uint256" },
+      { "internalType": "uint256", "name": "deadline", "type": "uint256" }
+    ],
+    "name": "setBettingDeadline",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "bettingToken",
+    "outputs": [{ "internalType": "contract IERC20", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "bettingDeadline",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "chapterResolved",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "winningOutcome",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "", "type": "uint256" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "liquidity",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "", "type": "uint256" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "lpTotalSupply",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
