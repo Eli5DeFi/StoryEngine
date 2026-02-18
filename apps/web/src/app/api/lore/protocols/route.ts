@@ -1,44 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { cache, CacheTTL } from '@/lib/cache'
+import { logger } from '@/lib/logger'
 
+// Dynamic: reads searchParams at request time
 export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/lore/protocols
- * Returns all protocols with optional filters
+ * Returns all protocols with optional filters.
+ * Cached per unique filter combination (5 min TTL).
  */
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
-    
-    // Optional filters
     const houseSlug = searchParams.get('house')
     const strandType = searchParams.get('strand')
     const spectrum = searchParams.get('spectrum')
     const rarity = searchParams.get('rarity')
 
-    const where: any = {}
+    const cacheKey = `lore:protocols:${houseSlug}:${strandType}:${spectrum}:${rarity}`
+    const cached = cache.get(cacheKey, CacheTTL.LONG)
+
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+          'X-Cache': 'HIT',
+        },
+      })
+    }
+
+    const where: Record<string, unknown> = {}
 
     if (houseSlug) {
-      const house = await prisma.house.findUnique({
-        where: { slug: houseSlug },
-      })
-      if (house) {
-        where.houseId = house.id
-      }
+      const house = await prisma.house.findUnique({ where: { slug: houseSlug } })
+      if (house) where.houseId = house.id
     }
-
-    if (strandType) {
-      where.strandType = strandType
-    }
-
-    if (spectrum) {
-      where.spectrum = spectrum
-    }
-
-    if (rarity) {
-      where.rarity = rarity
-    }
+    if (strandType) where.strandType = strandType
+    if (spectrum) where.spectrum = spectrum
+    if (rarity) where.rarity = rarity
 
     const protocols = await prisma.protocol.findMany({
       where,
@@ -53,32 +54,27 @@ export async function GET(request: NextRequest) {
           },
         },
       },
-      orderBy: [
-        { powerLevel: 'desc' },
-        { rarity: 'desc' },
-      ],
+      orderBy: [{ powerLevel: 'desc' }, { rarity: 'desc' }],
     })
 
-    return NextResponse.json({
+    const response = {
       success: true,
-      data: protocols.map(protocol => ({
-        ...protocol,
-        successRate: Number(protocol.successRate),
-      })),
-      filters: {
-        house: houseSlug,
-        strand: strandType,
-        spectrum,
-        rarity,
+      data: protocols.map(p => ({ ...p, successRate: Number(p.successRate) })),
+      filters: { house: houseSlug, strand: strandType, spectrum, rarity },
+    }
+
+    cache.set(cacheKey, response)
+
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        'X-Cache': 'MISS',
       },
     })
   } catch (error) {
-    console.error('Error fetching protocols:', error)
+    logger.error('Error fetching protocols:', error)
     return NextResponse.json(
-      {
-        success: false,
-        error: 'Failed to fetch protocols',
-      },
+      { success: false, error: 'Failed to fetch protocols' },
       { status: 500 }
     )
   }
