@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma, Prisma } from '@voidborne/database'
+import { cache, CacheTTL } from '@/lib/cache'
+import { logger } from '@/lib/logger'
 
 // Decimal class and type from Prisma
 const Decimal = Prisma.Decimal
@@ -15,8 +17,8 @@ type Decimal = Prisma.Decimal
  * - limit: number of results (default 10, max 100)
  * - timeframe: all | 30d | 7d | 24h
  */
-// Cache for 5 minutes
-export const revalidate = 300
+// Dynamic: reads request.url — in-memory cache handles the caching layer
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,9 +27,19 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 100)
     const timeframe = searchParams.get('timeframe') || 'all'
 
-    // Calculate time filter
-    const timeFilter = getTimeFilter(timeframe)
+    // Check in-memory cache (5 min) — leaderboards are expensive aggregations
+    const cacheKey = `leaderboard:${category}:${limit}:${timeframe}`
+    const cached = cache.get(cacheKey, CacheTTL.LONG)
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+          'X-Cache': 'HIT',
+        },
+      })
+    }
 
+    const timeFilter = getTimeFilter(timeframe)
     let leaderboard: any[] = []
 
     switch (category) {
@@ -47,31 +59,33 @@ export async function GET(request: NextRequest) {
         leaderboard = await getWeeklyChampions(limit)
         break
       default:
-        return NextResponse.json(
-          { error: 'Invalid category' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Invalid category' }, { status: 400 })
     }
 
-    // Add rankings
     const rankedLeaderboard = leaderboard.map((entry, index) => ({
       rank: index + 1,
       ...entry,
     }))
 
-    return NextResponse.json({
+    const response = {
       category,
       timeframe,
       limit,
       data: rankedLeaderboard,
       updatedAt: new Date().toISOString(),
+    }
+
+    cache.set(cacheKey, response)
+
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        'X-Cache': 'MISS',
+      },
     })
   } catch (error) {
-    console.error('Leaderboard API error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch leaderboard' },
-      { status: 500 }
-    )
+    logger.error('Leaderboard API error:', error)
+    return NextResponse.json({ error: 'Failed to fetch leaderboard' }, { status: 500 })
   }
 }
 
