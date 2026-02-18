@@ -1,6 +1,9 @@
 import { DynamicProtocolCard } from '@/components/lore/DynamicProtocolCard'
 import type { APIResponse, Protocol } from '@/types/lore'
 
+// Force dynamic — page fetches from internal API at request time (DB-backed)
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Protocols - Voidborne Lore',
   description: 'Reality-shaping techniques mastered by the Seven Houses',
@@ -11,7 +14,7 @@ async function getProtocols(): Promise<Protocol[]> {
 
   try {
     const res = await fetch(`${baseUrl}/api/lore/protocols`, {
-      cache: 'no-store',
+      next: { revalidate: 300 }, // ISR: revalidate every 5 minutes
     })
 
     if (!res.ok) {
