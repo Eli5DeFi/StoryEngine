@@ -3,6 +3,9 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import type { APIResponse, House } from '@/types/lore'
 
+// Force dynamic — renders at request time from DB-backed API
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'House Details - Voidborne Lore',
 }
@@ -12,7 +15,7 @@ async function getHouse(slug: string): Promise<House | null> {
 
   try {
     const res = await fetch(`${baseUrl}/api/lore/houses/${slug}`, {
-      cache: 'no-store',
+      next: { revalidate: 300 }, // ISR: revalidate every 5 minutes
     })
 
     if (!res.ok) {

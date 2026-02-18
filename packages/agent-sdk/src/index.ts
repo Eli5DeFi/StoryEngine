@@ -248,3 +248,60 @@ export class VoidborneSDK {
 // Export types
 export type { Address, Hash }
 export * from 'viem'
+
+// ─── Innovation Cycle #51: The Emergent Theater ───────────────────────────────
+
+// Live Narrative Broadcast — real-time streaming chapter generation with
+// in-stream betting windows (Twitch × prediction markets)
+export {
+  LiveNarrativeBroadcast,
+  BettingWindowManager,
+  BroadcastScheduler,
+  createLNBEngine,
+  detectNarrativeBeat,
+  runLNBDemo,
+} from './live-narrative-broadcast'
+export type {
+  BroadcastConfig,
+  BroadcastSession,
+  BroadcastState,
+  BettingWindow,
+  LiveBet,
+  RevelationEvent,
+  StreamMessage,
+  BroadcastSchedule,
+} from './live-narrative-broadcast'
+
+// Betrayal Protocol — Among Us-style social deduction layer for prediction markets
+export {
+  BetrayalProtocol,
+  StitcherAssigner,
+  SuspicionScorer,
+  StitcherObfuscator,
+  RevelationEngine,
+  runBetrayalDemo,
+} from './betrayal-protocol'
+export type {
+  BetrayalRound,
+  BetrayalRevelation,
+  StitcherAssignment,
+  SuspicionAccusation,
+  DramaticMoment,
+} from './betrayal-protocol'
+
+// Temporal Oracle Markets — long-range prediction markets (5-100 chapters ahead)
+export {
+  TemporalMarketManager,
+  AIResolutionOracle,
+  getHorizonMultiplier,
+  getMultiplierTier,
+  runTemporalMarketsDemo,
+} from './temporal-markets'
+export type {
+  TemporalMarket,
+  TemporalBet,
+  TemporalPortfolio,
+  DisputeVote,
+  OracleResolutionResult,
+  TemporalMarketStatus,
+} from './temporal-markets'

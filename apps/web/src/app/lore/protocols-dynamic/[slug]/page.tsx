@@ -3,6 +3,9 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import type { APIResponse, Protocol } from '@/types/lore'
 
+// Force dynamic — renders at request time from DB-backed API
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'Protocol Details - Voidborne Lore',
 }
@@ -20,7 +23,7 @@ async function getProtocol(slug: string): Promise<Protocol | null> {
 
   try {
     const res = await fetch(`${baseUrl}/api/lore/protocols/${slug}`, {
-      cache: 'no-store',
+      next: { revalidate: 300 }, // ISR: revalidate every 5 minutes
     })
 
     if (!res.ok) {
