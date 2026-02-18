@@ -1,0 +1,44 @@
+{
+  "name": "@voidborne/prophecy-nft",
+  "version": "1.0.0",
+  "description": "Voidborne Prophecy NFT system — Innovation Cycle #49",
+  "type": "module",
+  "main": "./dist/client.js",
+  "types": "./dist/client.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/client.js",
+      "types": "./dist/client.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "types": "./dist/types.d.ts"
+    },
+    "./generator": {
+      "import": "./dist/generator.js",
+      "types": "./dist/generator.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test:contracts": "forge test --match-contract ProphecyNFTTest -vvvv",
+    "test:types": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.36.0",
+    "viem": "^2.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  },
+  "keywords": [
+    "voidborne",
+    "prophecy",
+    "nft",
+    "erc721",
+    "narrative",
+    "prediction-market",
+    "base"
+  ]
+}
