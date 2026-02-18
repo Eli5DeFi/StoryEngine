@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
 import type { NotificationType } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * POST /api/notifications/send
@@ -171,7 +172,7 @@ export async function POST(request: NextRequest) {
       total: targetUserIds.length,
     })
   } catch (error) {
-    console.error('Failed to send notifications:', error)
+    logger.error('Failed to send notifications:', error)
     return NextResponse.json(
       { error: 'Failed to send notifications' },
       { status: 500 }

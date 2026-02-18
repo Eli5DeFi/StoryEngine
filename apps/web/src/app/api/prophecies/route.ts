@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/prophecies
@@ -52,7 +53,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ prophecies: shaped, total, limit, offset })
   } catch (err) {
-    console.error('[GET /api/prophecies]', err)
+    logger.error('[GET /api/prophecies]', err)
     return NextResponse.json({ error: 'Failed to fetch prophecies' }, { status: 500 })
   }
 }
@@ -108,7 +109,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ created: created.length, prophecies: created }, { status: 201 })
   } catch (err) {
-    console.error('[POST /api/prophecies]', err)
+    logger.error('[POST /api/prophecies]', err)
     return NextResponse.json({ error: 'Failed to seed prophecies' }, { status: 500 })
   }
 }

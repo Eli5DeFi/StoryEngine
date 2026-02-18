@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import type { APIResponse, Protocol } from '@/types/lore'
+import { logger } from '@/lib/logger'
 
 // Force dynamic — renders at request time from DB-backed API
 export const dynamic = 'force-dynamic'
@@ -41,7 +42,7 @@ async function getProtocol(slug: string): Promise<Protocol | null> {
 
     return json.data
   } catch (error) {
-    console.error('Error fetching protocol:', error)
+    logger.error('Error fetching protocol:', error)
     return null
   }
 }

@@ -9,6 +9,7 @@
  */
 
 import { NextResponse } from 'next/server'
+import { logger } from '@/lib/logger'
 
 export const revalidate = 60
 
@@ -538,7 +539,7 @@ export async function GET() {
       }
     )
   } catch (error) {
-    console.error('[house-agents] GET error:', error)
+    logger.error('[house-agents] GET error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch house agents' },
       { status: 500 }

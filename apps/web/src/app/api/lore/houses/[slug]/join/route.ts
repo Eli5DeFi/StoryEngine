@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 
@@ -132,7 +133,7 @@ export async function POST(
       message: `Successfully joined ${house.name}!`,
     })
   } catch (error) {
-    console.error('Error joining house:', error)
+    logger.error('Error joining house:', error)
     return NextResponse.json(
       {
         success: false,

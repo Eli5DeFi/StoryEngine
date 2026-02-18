@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/prophecies/leaderboard
@@ -71,7 +72,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ leaderboard: sorted, updatedAt: new Date() })
   } catch (err) {
-    console.error('[GET /api/prophecies/leaderboard]', err)
+    logger.error('[GET /api/prophecies/leaderboard]', err)
     return NextResponse.json({ error: 'Failed to fetch leaderboard' }, { status: 500 })
   }
 }

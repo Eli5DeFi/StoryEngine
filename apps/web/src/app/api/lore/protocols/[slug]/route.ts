@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 
@@ -46,7 +47,7 @@ export async function GET(
       },
     })
   } catch (error) {
-    console.error('Error fetching protocol:', error)
+    logger.error('Error fetching protocol:', error)
     return NextResponse.json(
       {
         success: false,

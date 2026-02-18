@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import type { APIResponse, House } from '@/types/lore'
+import { logger } from '@/lib/logger'
 
 // Force dynamic — renders at request time from DB-backed API
 export const dynamic = 'force-dynamic'
@@ -33,7 +34,7 @@ async function getHouse(slug: string): Promise<House | null> {
 
     return json.data
   } catch (error) {
-    console.error('Error fetching house:', error)
+    logger.error('Error fetching house:', error)
     return null
   }
 }

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/stories/[storyId]
@@ -58,7 +59,7 @@ export async function GET(
 
     return NextResponse.json(story)
   } catch (error) {
-    console.error('Error fetching story:', error)
+    logger.error('Error fetching story:', error)
     return NextResponse.json(
       { error: 'Failed to fetch story' },
       { status: 500 }

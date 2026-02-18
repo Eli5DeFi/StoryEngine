@@ -38,9 +38,12 @@ const nextConfig = {
       '@rainbow-me/rainbowkit',
       'wagmi',
       'viem',
+      '@tanstack/react-query',
     ],
     // Restore scroll position on back/forward navigation
     scrollRestoration: true,
+    // Prefetch links in viewport (faster perceived navigation)
+    optimisticClientCache: true,
   },
 
   // Webpack: bundle splitting + Web3 polyfill suppressions

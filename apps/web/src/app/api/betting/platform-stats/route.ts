@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@voidborne/database'
+import { prisma } from '@voidborne/database'
 import { cache, CacheTTL } from '@/lib/cache'
-
-const prisma = new PrismaClient()
+import { logger } from '@/lib/logger'
 
 // Revalidate every 60 seconds
 export const revalidate = 60
@@ -67,16 +66,23 @@ export async function GET(request: Request) {
             },
           }),
       
-      // Biggest win (timeframe)
-      prisma.$queryRawUnsafe(`
-        SELECT 
-          (b.payout - b.amount)::text as profit
-        FROM bets b
-        WHERE b."isWinner" = true
-          ${timeframeCutoff ? `AND b."createdAt" >= '${timeframeCutoff}'` : ''}
-        ORDER BY (b.payout - b.amount) DESC
-        LIMIT 1
-      `) as Promise<Array<{ profit: string }>>,
+      // Biggest win (timeframe) — use parameterized query to prevent injection
+      (timeframeCutoff
+        ? prisma.$queryRaw`
+          SELECT (b.payout - b.amount)::text as profit
+          FROM bets b
+          WHERE b."isWinner" = true
+            AND b."createdAt" >= ${new Date(timeframeCutoff)}::timestamptz
+          ORDER BY (b.payout - b.amount) DESC
+          LIMIT 1
+        `
+        : prisma.$queryRaw`
+          SELECT (b.payout - b.amount)::text as profit
+          FROM bets b
+          WHERE b."isWinner" = true
+          ORDER BY (b.payout - b.amount) DESC
+          LIMIT 1
+        `) as Promise<Array<{ profit: string }>>,
       
       // Hottest pool (most bets in last hour)
       prisma.$queryRawUnsafe(`
@@ -136,13 +142,11 @@ export async function GET(request: Request) {
       },
     })
   } catch (error) {
-    console.error('Platform stats API error:', error)
+    logger.error('Platform stats API error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch platform stats' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }
 

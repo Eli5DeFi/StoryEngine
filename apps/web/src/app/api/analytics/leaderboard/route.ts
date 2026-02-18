@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 const prisma = new PrismaClient()
 
@@ -125,7 +126,7 @@ export async function GET(request: Request) {
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    console.error('Leaderboard API error:', error)
+    logger.error('Leaderboard API error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch leaderboard' },
       { status: 500 }

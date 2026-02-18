@@ -15,6 +15,7 @@
 
 import { NextResponse } from 'next/server'
 import { MOCK_AUCTIONS } from '@/lib/auction-data'
+import { logger } from '@/lib/logger'
 
 export const revalidate = 30 // ISR: refresh every 30s
 
@@ -35,7 +36,7 @@ export async function GET() {
 
     return NextResponse.json({ auctions, summary }, { status: 200 })
   } catch (err) {
-    console.error('[/api/auction] Error:', err)
+    logger.error('[/api/auction] Error:', err)
     return NextResponse.json({ error: 'Failed to fetch auctions' }, { status: 500 })
   }
 }

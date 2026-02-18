@@ -6,6 +6,7 @@ import {
   getStreakTier,
   getFireEmojis,
 } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/users/[walletAddress]/streaks
@@ -121,7 +122,7 @@ export async function GET(
       }
     })
   } catch (error) {
-    console.error('Error fetching streak data:', error)
+    logger.error('Error fetching streak data:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

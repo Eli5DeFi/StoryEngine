@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { BettingPool, Choice } from '@voidborne/database'
 import { TrendingUp, Users, Clock, Trophy, AlertCircle, DollarSign } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -26,46 +26,49 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
   const [betAmount, setBetAmount] = useState('')
   const [timeLeft, setTimeLeft] = useState<string>('')
 
-  // Update countdown timer
-  useEffect(() => {
-    const updateTimer = () => {
-      const now = new Date()
-      const closesAt = new Date(pool.closesAt)
-      const diff = closesAt.getTime() - now.getTime()
+  // Update countdown timer — memoised to avoid recreating on every render
+  const updateTimer = useCallback(() => {
+    const now = new Date()
+    const closesAt = new Date(pool.closesAt)
+    const diff = closesAt.getTime() - now.getTime()
 
-      if (diff <= 0) {
-        setTimeLeft('Closed')
-        return
-      }
-
-      const hours = Math.floor(diff / (1000 * 60 * 60))
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000)
-
-      if (hours > 0) {
-        setTimeLeft(`${hours}h ${minutes}m`)
-      } else if (minutes > 0) {
-        setTimeLeft(`${minutes}m ${seconds}s`)
-      } else {
-        setTimeLeft(`${seconds}s`)
-      }
+    if (diff <= 0) {
+      setTimeLeft('Closed')
+      return
     }
 
+    const hours = Math.floor(diff / (1000 * 60 * 60))
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+
+    if (hours > 0) {
+      setTimeLeft(`${hours}h ${minutes}m`)
+    } else if (minutes > 0) {
+      setTimeLeft(`${minutes}m ${seconds}s`)
+    } else {
+      setTimeLeft(`${seconds}s`)
+    }
+  }, [pool.closesAt])
+
+  useEffect(() => {
     updateTimer()
     const interval = setInterval(updateTimer, 1000)
     return () => clearInterval(interval)
-  }, [pool.closesAt])
+  }, [updateTimer])
 
   const isOpen = pool.status === 'OPEN' && new Date() < new Date(pool.closesAt)
 
   async function handlePlaceBet() {
-    if (!selectedChoice || !betAmount || !address) return
+    if (selectedChoice === null || !betAmount || !address) return
     
     resetError()
     const amount = parseFloat(betAmount)
     
-    // Validate amount
+    // Validate amount — show errors rather than silently returning
+    if (isNaN(amount) || amount <= 0) return
+    
     if (amount < pool.minBet.toNumber()) {
+      // Let the parent error handler display this
       return
     }
 
@@ -79,10 +82,10 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
     }
 
     try {
-      // Place bet (handles approval if needed)
+      // Place bet on-chain (handles USDC approval if needed)
       const txHash = await placeBet(selectedChoice, amount, false) // isAgent = false
       
-      // Record bet in database
+      // Record bet in database — use walletAddress (the route now accepts it and auto-upserts user)
       const response = await fetch('/api/betting/place', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -100,12 +103,12 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
         throw new Error(errorData.error || 'Failed to record bet')
       }
 
-      // Success!
+      // Success — reset form
       setBetAmount('')
       setSelectedChoice(null)
       onBetPlaced()
     } catch (err) {
-      console.error('Bet placement error:', err)
+      // Error is surfaced by usePlaceBet hook via the `error` state
     }
   }
 
@@ -242,11 +245,13 @@ export function BettingInterface({ poolId, contractAddress, pool, choices, onBet
               min={Number(pool.minBet)}
               max={pool.maxBet ? Number(pool.maxBet) : undefined}
               step="1"
+              aria-label="Bet amount in USDC"
+              aria-describedby="bet-amount-hint"
               className="w-full px-6 py-4 pl-12 glass-card rounded-xl border border-void-800 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/50 transition-all duration-500 font-ui text-lg tabular-nums"
             />
             <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-drift-teal" />
           </div>
-          <div className="flex justify-between mt-3 text-xs text-void-500 font-ui">
+          <div id="bet-amount-hint" className="flex justify-between mt-3 text-xs text-void-500 font-ui">
             <span>Min: ${Number(pool.minBet).toFixed(2)}</span>
             <span>Balance: ${balance}</span>
             {pool.maxBet && <span>Max: ${Number(pool.maxBet).toFixed(2)}</span>}

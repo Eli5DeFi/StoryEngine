@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * POST /api/prophecies/mint
@@ -118,7 +119,7 @@ export async function POST(request: Request) {
     )
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Mint failed'
-    console.error('[POST /api/prophecies/mint]', err)
+    logger.error('[POST /api/prophecies/mint]', err)
 
     // User-friendly errors
     if (message.includes('sold out')) {
@@ -195,7 +196,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ mints: withRarity, stats })
   } catch (err) {
-    console.error('[GET /api/prophecies/mint]', err)
+    logger.error('[GET /api/prophecies/mint]', err)
     return NextResponse.json({ error: 'Failed to fetch mints' }, { status: 500 })
   }
 }

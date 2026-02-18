@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma, Prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 const Decimal = Prisma.Decimal
 type Decimal = Prisma.Decimal
@@ -47,7 +48,7 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Referral validation error:', error)
+    logger.error('Referral validation error:', error)
     return NextResponse.json({ error: 'Failed to validate referral' }, { status: 500 })
   }
 }
@@ -105,7 +106,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Referral recording error:', error)
+    logger.error('Referral recording error:', error)
     return NextResponse.json({ error: 'Failed to record referral' }, { status: 500 })
   }
 }

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/prophecies/[chapterId]
@@ -76,7 +77,7 @@ export async function GET(
       summary,
     })
   } catch (err) {
-    console.error('[GET /api/prophecies/[chapterId]]', err)
+    logger.error('[GET /api/prophecies/[chapterId]]', err)
     return NextResponse.json({ error: 'Failed to fetch chapter prophecies' }, { status: 500 })
   }
 }
@@ -123,7 +124,7 @@ export async function PATCH(
       chapterSummary,
     })
   } catch (err) {
-    console.error('[PATCH /api/prophecies/[chapterId]]', err)
+    logger.error('[PATCH /api/prophecies/[chapterId]]', err)
     return NextResponse.json({ error: 'Failed to fulfill prophecies' }, { status: 500 })
   }
 }

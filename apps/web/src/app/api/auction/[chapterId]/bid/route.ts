@@ -12,6 +12,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { MOCK_AUCTIONS, type AuctionBid } from '@/lib/auction-data'
+import { logger } from '@/lib/logger'
 
 export async function POST(
   req: NextRequest,
@@ -80,7 +81,7 @@ export async function POST(
       bidHistory: [newBid, ...auction.bidHistory].slice(0, 50),
     }
 
-    console.log(`[CAH] New bid: Chapter ${chapterNum} | ${bidder} | $${amountUsdc} USDC`)
+    logger.log(`[CAH] New bid: Chapter ${chapterNum} | ${bidder} | $${amountUsdc} USDC`)
 
     return NextResponse.json(
       {
@@ -92,7 +93,7 @@ export async function POST(
       { status: 201 }
     )
   } catch (err) {
-    console.error('[/api/auction/bid] Error:', err)
+    logger.error('[/api/auction/bid] Error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

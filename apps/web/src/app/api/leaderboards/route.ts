@@ -319,76 +319,53 @@ async function getBiggestBettors(limit: number, timeFilter?: any) {
 }
 
 /**
- * Weekly Champions - Top performers in last 7 days
+ * Weekly Champions - Top performers in last 7 days.
+ * Uses a single DB aggregation instead of loading all bets into memory,
+ * which was O(N) in JS and caused full table scans on high-traffic instances.
  */
 async function getWeeklyChampions(limit: number) {
   const weekAgo = new Date()
   weekAgo.setDate(weekAgo.getDate() - 7)
 
-  const bets = await prisma.bet.findMany({
-    where: {
-      createdAt: {
-        gte: weekAgo,
-      },
-      isWinner: true,
-      payout: {
-        not: null,
-      },
-    },
-    select: {
-      userId: true,
-      amount: true,
-      payout: true,
-    },
-  })
+  // Single aggregation query: sum payout - amount per user, join users inline
+  type WeeklyRow = {
+    userId: string
+    walletAddress: string
+    username: string | null
+    avatar: string | null
+    winRate: Decimal
+    weeklyProfit: string
+    weeklyBets: bigint
+  }
 
-  // Calculate weekly profit per user
-  const userProfits = new Map<string, Decimal>()
-  const userBetCounts = new Map<string, number>()
+  const rows = await prisma.$queryRaw<WeeklyRow[]>`
+    SELECT
+      u.id           AS "userId",
+      u."walletAddress",
+      u.username,
+      u.avatar,
+      u."winRate",
+      SUM(b.payout - b.amount)::text  AS "weeklyProfit",
+      COUNT(b.id)::bigint             AS "weeklyBets"
+    FROM bets b
+    JOIN users u ON u.id = b."userId"
+    WHERE b."createdAt" >= ${weekAgo}
+      AND b."isWinner" = true
+      AND b.payout IS NOT NULL
+    GROUP BY u.id, u."walletAddress", u.username, u.avatar, u."winRate"
+    ORDER BY SUM(b.payout - b.amount) DESC
+    LIMIT ${limit}
+  `
 
-  bets.forEach((bet) => {
-    const profit = (bet.payout || new Decimal(0)).sub(bet.amount)
-    userProfits.set(
-      bet.userId,
-      (userProfits.get(bet.userId) || new Decimal(0)).add(profit)
-    )
-    userBetCounts.set(bet.userId, (userBetCounts.get(bet.userId) || 0) + 1)
-  })
-
-  // Sort by profit
-  const sortedUsers = Array.from(userProfits.entries())
-    .sort((a, b) => b[1].comparedTo(a[1]))
-    .slice(0, limit)
-
-  // Fetch user details
-  const userIds = sortedUsers.map(([id]) => id)
-  const users = await prisma.user.findMany({
-    where: {
-      id: { in: userIds },
-    },
-    select: {
-      id: true,
-      walletAddress: true,
-      username: true,
-      avatar: true,
-      winRate: true,
-    },
-  })
-
-  const userMap = new Map(users.map((u) => [u.id, u]))
-
-  return sortedUsers.map(([userId, weeklyProfit]) => {
-    const user = userMap.get(userId)!
-    return {
-      userId: user.id,
-      walletAddress: user.walletAddress,
-      username: user.username || formatWallet(user.walletAddress),
-      avatar: user.avatar,
-      weeklyProfit: weeklyProfit.toString(),
-      weeklyBets: userBetCounts.get(userId) || 0,
-      winRate: user.winRate,
-    }
-  })
+  return rows.map((row) => ({
+    userId: row.userId,
+    walletAddress: row.walletAddress,
+    username: row.username || formatWallet(row.walletAddress),
+    avatar: row.avatar,
+    weeklyProfit: row.weeklyProfit,
+    weeklyBets: Number(row.weeklyBets),
+    winRate: row.winRate,
+  }))
 }
 
 // ============================================================================

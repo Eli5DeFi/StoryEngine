@@ -1,5 +1,6 @@
 import { DynamicProtocolCard } from '@/components/lore/DynamicProtocolCard'
 import type { APIResponse, Protocol } from '@/types/lore'
+import { logger } from '@/lib/logger'
 
 // Force dynamic — page fetches from internal API at request time (DB-backed)
 export const dynamic = 'force-dynamic'
@@ -29,7 +30,7 @@ async function getProtocols(): Promise<Protocol[]> {
 
     return json.data
   } catch (error) {
-    console.error('Error fetching protocols:', error)
+    logger.error('Error fetching protocols:', error)
     return []
   }
 }

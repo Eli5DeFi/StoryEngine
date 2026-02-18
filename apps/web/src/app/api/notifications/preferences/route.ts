@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/notifications/preferences
@@ -47,7 +48,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ preferences: user.notificationPreference })
   } catch (error) {
-    console.error('Failed to fetch notification preferences:', error)
+    logger.error('Failed to fetch notification preferences:', error)
     return NextResponse.json(
       { error: 'Failed to fetch notification preferences' },
       { status: 500 }
@@ -99,7 +100,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({ preferences: updatedPreferences })
   } catch (error) {
-    console.error('Failed to update notification preferences:', error)
+    logger.error('Failed to update notification preferences:', error)
     return NextResponse.json(
       { error: 'Failed to update notification preferences' },
       { status: 500 }
