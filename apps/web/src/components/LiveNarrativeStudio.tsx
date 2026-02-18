@@ -397,7 +397,7 @@ export default function LiveNarrativeStudio({
 
         case 'betting_window_open':
           setPhase('window_open')
-          setActiveBettingWindow(event.payload as BettingWindow)
+          setActiveBettingWindow(event.payload as unknown as BettingWindow)
           break
 
         case 'betting_window_update':
@@ -416,7 +416,7 @@ export default function LiveNarrativeStudio({
 
         case 'revelation':
           setPhase('revelation')
-          setRevelation(event.payload as RevelationData)
+          setRevelation(event.payload as unknown as RevelationData)
           setShowRevelation(true)
           break
 
