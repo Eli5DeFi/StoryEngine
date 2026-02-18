@@ -9,6 +9,7 @@ import { ClientOnly } from '@/components/ClientOnly'
 const navLinks = [
   { label: 'Explore Lore', href: '/lore' },
   { label: 'Read Story', href: '/story/voidborne-story' },
+  { label: 'House Agents ⚔', href: '/house-agents' },
   { label: 'Prophecies ✦', href: '/prophecies' },
   { label: 'Leaderboards', href: '/leaderboards' },
   { label: 'Analytics', href: '/analytics' },
