@@ -1,21 +1,42 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * POST /api/betting/place
- * Place a bet on a choice
+ * Place a bet on a choice.
+ *
+ * Accepts either `walletAddress` (from the frontend ConnectWallet flow) or
+ * `userId` (direct API callers). When `walletAddress` is provided the user
+ * record is upserted so new wallets are automatically registered.
  */
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { poolId, choiceId, userId, amount, txHash } = body
+    const { poolId, choiceId, walletAddress, userId: rawUserId, amount, txHash } = body
 
-    // Validate required fields
-    if (!poolId || !choiceId || !userId || !amount) {
+    // Validate required fields — accept walletAddress OR userId
+    if (!poolId || !choiceId || (!walletAddress && !rawUserId) || !amount) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Missing required fields (poolId, choiceId, walletAddress, amount)' },
         { status: 400 }
       )
+    }
+
+    // Resolve userId: prefer walletAddress lookup (upsert) so new wallets auto-register
+    let userId = rawUserId as string | undefined
+    if (walletAddress && !userId) {
+      const user = await prisma.user.upsert({
+        where: { walletAddress: walletAddress.toLowerCase() },
+        create: { walletAddress: walletAddress.toLowerCase() },
+        update: {},
+        select: { id: true },
+      })
+      userId = user.id
+    }
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Could not resolve user' }, { status: 400 })
     }
 
     // Get betting pool and verify it's open
@@ -143,7 +164,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(bet, { status: 201 })
   } catch (error) {
-    console.error('Error placing bet:', error)
+    logger.error('Error placing bet:', error)
     return NextResponse.json(
       { error: 'Failed to place bet' },
       { status: 500 }

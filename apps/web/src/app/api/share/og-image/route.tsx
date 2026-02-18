@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server'
 import { ImageResponse } from 'next/og'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/share/og-image
@@ -104,7 +105,7 @@ export async function GET(request: NextRequest) {
       }
     )
   } catch (error) {
-    console.error('OG image generation error:', error)
+    logger.error('OG image generation error:', error)
     return new Response('Failed to generate image', { status: 500 })
   }
 }

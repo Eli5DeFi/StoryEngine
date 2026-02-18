@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/users/[walletAddress]
@@ -45,7 +46,7 @@ export async function GET(
 
     return NextResponse.json(user)
   } catch (error) {
-    console.error('Error fetching user:', error)
+    logger.error('Error fetching user:', error)
     return NextResponse.json(
       { error: 'Failed to fetch user' },
       { status: 500 }
@@ -76,7 +77,7 @@ export async function PATCH(
 
     return NextResponse.json(user)
   } catch (error) {
-    console.error('Error updating user:', error)
+    logger.error('Error updating user:', error)
     return NextResponse.json(
       { error: 'Failed to update user' },
       { status: 500 }
