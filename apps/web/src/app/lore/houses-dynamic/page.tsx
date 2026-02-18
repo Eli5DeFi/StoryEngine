@@ -1,6 +1,9 @@
 import { DynamicHouseCard } from '@/components/lore/DynamicHouseCard'
 import type { APIResponse, House } from '@/types/lore'
 
+// Force dynamic — page fetches from internal API at request time (DB-backed)
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: 'The Seven Houses - Voidborne Lore',
   description: 'The political powers of the Covenant',
@@ -11,7 +14,7 @@ async function getHouses(): Promise<House[]> {
   
   try {
     const res = await fetch(`${baseUrl}/api/lore/houses`, {
-      cache: 'no-store',
+      next: { revalidate: 300 }, // ISR: revalidate every 5 minutes
     })
     
     if (!res.ok) {
