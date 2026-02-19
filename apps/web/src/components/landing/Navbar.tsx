@@ -12,6 +12,7 @@ const navLinks = [
   { label: '🔴 Live', href: '/live' },
   { label: 'Auction House 🏛', href: '/auction' },
   { label: 'House Agents ⚔', href: '/house-agents' },
+  { label: 'Guilds ⚔️', href: '/guilds' },
   { label: 'Prophecies ✦', href: '/prophecies' },
   { label: 'Leaderboards', href: '/leaderboards' },
   { label: 'Analytics', href: '/analytics' },
