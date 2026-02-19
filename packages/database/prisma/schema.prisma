@@ -46,6 +46,7 @@ model User {
   notifications Notification[]
   notificationPreference NotificationPreference?
   userHouses    UserHouse[] // House affiliations
+  prophecyMints ProphecyMint[] // Prophecy NFT mints
   
   @@index([walletAddress])
   @@map("users")
@@ -132,6 +133,7 @@ model Chapter {
   // Relationships
   choices       Choice[]
   bettingPool   BettingPool?
+  prophecies    Prophecy[]   // Prophecy NFTs seeded for this chapter
   
   @@unique([storyId, chapterNumber])
   @@index([storyId, chapterNumber])
@@ -760,3 +762,90 @@ model NotificationPreference {
   
   @@map("notification_preferences")
 }
+
+// ============================================================================
+// PROPHECY NFTs (Innovation Cycle #49 — "The Living Cosmos")
+// ============================================================================
+
+/// A cryptic prophecy seeded by the AI before each chapter resolves.
+/// Up to 100 NFT slots per prophecy. Art transforms post-resolution.
+model Prophecy {
+  id              String             @id @default(cuid())
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  // Which chapter this prophecy belongs to
+  chapterId       String
+  chapter         Chapter            @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  // On-chain seal: keccak256(text) stored before reveal
+  contentHash     String             // hex bytes32
+  // Plaintext (null until minting window closes and oracle reveals)
+  text            String?            @db.Text
+  // Teaser shown to readers before reveal (2-4 words, sealed)
+  teaser          String
+
+  // IPFS metadata URIs per fulfillment state
+  pendingURI      String             // Shown while chapter is open
+  fulfilledURI    String?            // Legendary golden art
+  echoedURI       String?            // Silver art
+  unfulfilledURI  String?            // Dark relic art
+
+  // Mint status
+  mintedCount     Int                @default(0)
+  maxSupply       Int                @default(100)
+
+  // Revelation & fulfillment
+  revealed        Boolean            @default(false)
+  revealedAt      DateTime?
+  status          ProphecyStatus     @default(PENDING)
+  fulfilledAt     DateTime?
+
+  // AI metadata
+  targetEvent     String?            @db.Text // What the AI intended this to reference
+  relevanceScore  Float?             // 0-1 AI confidence score
+  artTheme        String?            // 'void' | 'light' | 'shadow' | etc.
+
+  // NFT mints
+  mints           ProphecyMint[]
+
+  @@index([chapterId, status])
+  @@index([status])
+  @@map("prophecies")
+}
+
+enum ProphecyStatus {
+  PENDING       // Chapter not yet resolved
+  UNFULFILLED   // Prophecy did not come true
+  ECHOED        // Thematic match (silver, 3× value)
+  FULFILLED     // Direct match (legendary golden, 10× value)
+}
+
+/// One minted NFT token for a prophecy.
+model ProphecyMint {
+  id            String     @id @default(cuid())
+  createdAt     DateTime   @default(now())
+
+  prophecyId    String
+  prophecy      Prophecy   @relation(fields: [prophecyId], references: [id], onDelete: Cascade)
+
+  // Minter info
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  walletAddress String
+
+  // Token metadata
+  mintOrder     Int        // 1-100 (lower = more prestigious)
+  tokenId       String?    // On-chain ERC-721 token ID (set once deployed)
+  txHash        String?    // Transaction hash
+
+  // Cost
+  forgePaid     Float      @default(5) // $FORGE paid (5 base, 4.5 with oracle pack)
+
+  @@unique([prophecyId, mintOrder])
+  @@unique([prophecyId, userId])     // One mint per user per prophecy
+  @@index([userId])
+  @@index([prophecyId])
+  @@map("prophecy_mints")
+}
+

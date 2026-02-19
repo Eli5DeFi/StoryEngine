@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@voidborne/database';
 import OpenAI from 'openai';
+import { logger } from '@/lib/logger'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -224,7 +225,7 @@ Extract all characters that appear in this chapter.`,
       relationshipsExtracted: extraction.relationships.length,
     });
   } catch (error) {
-    console.error('Error extracting characters:', error);
+    logger.error('Error extracting characters:', error);
     return NextResponse.json(
       { error: 'Failed to extract characters' },
       { status: 500 }

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 const prisma = new PrismaClient()
 
@@ -20,7 +21,7 @@ export async function GET() {
 
     return NextResponse.json({ badges })
   } catch (error) {
-    console.error('Badges API error:', error)
+    logger.error('Badges API error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch badges' },
       { status: 500 }

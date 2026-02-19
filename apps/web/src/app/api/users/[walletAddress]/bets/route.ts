@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 const prisma = new PrismaClient()
 
@@ -253,7 +254,7 @@ export async function GET(
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    console.error('User bets API error:', error)
+    logger.error('User bets API error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch user bets' },
       { status: 500 }

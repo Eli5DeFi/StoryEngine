@@ -8,6 +8,7 @@ import { ChapterReader } from '@/components/story/ChapterReader'
 import { BettingInterface } from '@/components/story/BettingInterface'
 import { ChapterNavigation } from '@/components/story/ChapterNavigation'
 import { ClientOnly } from '@/components/ClientOnly'
+import { ProphecyBanner } from '@/components/prophecy/ProphecyBanner'
 
 type StoryWithChapters = Story & {
   chapters: (Chapter & {
@@ -102,7 +103,12 @@ export default function StoryPage() {
 
           {/* Sidebar - Betting Interface */}
           <div className="lg:col-span-1">
-            <div className="sticky top-8">
+            <div className="sticky top-8 space-y-4">
+              {/* Prophecy NFT banner — tease open prophecies */}
+              <ClientOnly>
+                <ProphecyBanner chapterId={currentChapter.id} />
+              </ClientOnly>
+
               {currentChapter.bettingPool && currentChapter.bettingPool.contractAddress && (
                 <ClientOnly>
                   <BettingInterface

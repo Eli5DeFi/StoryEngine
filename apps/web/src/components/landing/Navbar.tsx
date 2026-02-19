@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { Menu, X, Scroll } from 'lucide-react'
 import { ConnectWallet } from '@/components/wallet/ConnectWallet'
@@ -9,7 +9,11 @@ import { ClientOnly } from '@/components/ClientOnly'
 const navLinks = [
   { label: 'Explore Lore', href: '/lore' },
   { label: 'Read Story', href: '/story/voidborne-story' },
-  { label: 'How It Works', href: '#how-it-works' },
+  { label: '🔴 Live', href: '/live' },
+  { label: 'Auction House 🏛', href: '/auction' },
+  { label: 'House Agents ⚔', href: '/house-agents' },
+  { label: 'Guilds ⚔️', href: '/guilds' },
+  { label: 'Prophecies ✦', href: '/prophecies' },
   { label: 'Leaderboards', href: '/leaderboards' },
   { label: 'Analytics', href: '/analytics' },
 ]
@@ -18,14 +22,14 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+  const handleScroll = useCallback(() => {
+    setIsScrolled(window.scrollY > 20)
   }, [])
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [handleScroll])
 
   return (
     <>
@@ -53,16 +57,16 @@ export function Navbar() {
               </div>
             </Link>
 
-            {/* Desktop Nav */}
+            {/* Desktop Nav — use Next.js Link for client-side routing (no full reload) */}
             <div className="hidden lg:flex items-center gap-8">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.href}
                   href={link.href}
                   className="text-sm font-ui text-void-300 hover:text-gold transition-colors duration-500 uppercase tracking-wider"
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
             </div>
 
@@ -101,14 +105,14 @@ export function Navbar() {
           {/* Menu Content */}
           <div className="relative h-full flex flex-col items-center justify-center gap-8 px-6">
             {navLinks.map((link, index) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`text-2xl font-display text-foreground hover:text-gold transition-colors duration-500 opacity-0 ambient-fade stagger-${index + 1}`}
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
 
             <div className="mt-8 opacity-0 ambient-fade stagger-5">

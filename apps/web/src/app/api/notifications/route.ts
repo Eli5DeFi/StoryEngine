@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/notifications
@@ -69,7 +70,7 @@ export async function GET(request: NextRequest) {
       unreadCount,
     })
   } catch (error) {
-    console.error('Failed to fetch notifications:', error)
+    logger.error('Failed to fetch notifications:', error)
     return NextResponse.json(
       { error: 'Failed to fetch notifications' },
       { status: 500 }
@@ -127,7 +128,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ notification }, { status: 201 })
   } catch (error) {
-    console.error('Failed to create notification:', error)
+    logger.error('Failed to create notification:', error)
     return NextResponse.json(
       { error: 'Failed to create notification' },
       { status: 500 }
@@ -170,7 +171,7 @@ export async function PATCH(request: NextRequest) {
       updated: result.count,
     })
   } catch (error) {
-    console.error('Failed to update notifications:', error)
+    logger.error('Failed to update notifications:', error)
     return NextResponse.json(
       { error: 'Failed to update notifications' },
       { status: 500 }
@@ -208,7 +209,7 @@ export async function DELETE(request: NextRequest) {
       deleted: result.count,
     })
   } catch (error) {
-    console.error('Failed to delete notifications:', error)
+    logger.error('Failed to delete notifications:', error)
     return NextResponse.json(
       { error: 'Failed to delete notifications' },
       { status: 500 }
