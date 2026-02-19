@@ -305,3 +305,36 @@ export type {
   OracleResolutionResult,
   TemporalMarketStatus,
 } from './temporal-markets'
+
+// ─── Innovation Cycle #52: The Faction War Engine ─────────────────────────────
+
+// Narrative Guilds & Faction Wars — player factions control territory, bet
+// collectively, and earn literal narrative injection rights (agenda → Claude prompt)
+export {
+  GuildRegistry,
+  GuildTreasuryManager,
+  VoidMapController,
+  FactionWarEngine,
+  GuildLeaderboard,
+  AgendaInjector,
+  NarrativeGuildEngine,
+  createGuildEngine,
+  runGuildFactionDemo,
+} from './guild-faction-engine'
+export type {
+  HouseAlignment,
+  GuildTier,
+  Guild,
+  GuildMember,
+  GuildTreasury,
+  GuildBet,
+  SectorControl,
+  FactionWar,
+  WarTrophyNFT,
+  AgendaSlot,
+  VoidMapSector,
+  GuildWarDeclaration,
+  GuildScore,
+  AgendaProposal,
+  FactionWarResult,
+} from './guild-faction-engine'
