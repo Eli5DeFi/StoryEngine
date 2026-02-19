@@ -41,7 +41,23 @@ const config = getDefaultConfig({
   ssr: false,
 })
 
-const queryClient = new QueryClient()
+/**
+ * QueryClient with optimized defaults:
+ * - staleTime: 30s — prevents refetch on every focus
+ * - gcTime: 5min — keeps data in cache longer
+ * - refetchOnWindowFocus: false — reduces unnecessary RPC calls
+ * - retry: 1 — faster failure on bad network
+ */
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,          // 30 seconds
+      gcTime: 5 * 60_000,         // 5 minutes
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+})
 
 export function Web3Provider({ children }: { children: ReactNode }) {
   return (

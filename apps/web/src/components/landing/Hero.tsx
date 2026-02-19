@@ -1,17 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
+/**
+ * Hero section for Voidborne landing page.
+ * Static content — no client-side data fetching needed.
+ * Removed mounted guard to prevent SSR flash and improve LCP.
+ */
 export function Hero() {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) return null
-
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Primary Gradient Background */}

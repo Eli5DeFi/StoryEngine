@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { TrendingUp, Clock } from 'lucide-react'
 import Link from 'next/link'
@@ -32,15 +32,7 @@ export function RecentActivityFeed() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchRecentBets()
-    
-    // Auto-refresh every 10 seconds
-    const interval = setInterval(fetchRecentBets, 10000)
-    return () => clearInterval(interval)
-  }, [])
-
-  async function fetchRecentBets() {
+  const fetchRecentBets = useCallback(async () => {
     try {
       const response = await fetch('/api/betting/recent?limit=20')
       
@@ -65,7 +57,14 @@ export function RecentActivityFeed() {
       setError(err instanceof Error ? err.message : 'Unknown error')
       setLoading(false)
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchRecentBets()
+    // Refresh every 15 seconds (reduced from 10s to lower API costs)
+    const interval = setInterval(fetchRecentBets, 15_000)
+    return () => clearInterval(interval)
+  }, [fetchRecentBets])
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
