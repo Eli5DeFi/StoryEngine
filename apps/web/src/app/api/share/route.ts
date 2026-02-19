@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 const prisma = new PrismaClient()
 
@@ -140,7 +141,7 @@ export async function POST(request: Request) {
       data: shareData,
     })
   } catch (error) {
-    console.error('Share API error:', error)
+    logger.error('Share API error:', error)
     return NextResponse.json(
       { error: 'Failed to generate share link' },
       { status: 500 }

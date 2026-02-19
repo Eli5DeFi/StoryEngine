@@ -8,6 +8,7 @@ import { ChapterReader } from '@/components/story/ChapterReader'
 import { BettingInterface } from '@/components/story/BettingInterface'
 import { ChapterNavigation } from '@/components/story/ChapterNavigation'
 import { ClientOnly } from '@/components/ClientOnly'
+import { ProphecyBanner } from '@/components/prophecy/ProphecyBanner'
 
 type StoryWithChapters = Story & {
   chapters: (Chapter & {
@@ -54,10 +55,26 @@ export default function StoryPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-foreground/70">Loading story...</p>
+      <div className="min-h-screen bg-background">
+        {/* Story skeleton — matches page layout to reduce CLS */}
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 space-y-8" aria-busy="true" aria-label="Loading story…">
+          {/* Header skeleton */}
+          <div className="space-y-3">
+            <div className="h-8 w-2/3 bg-white/5 rounded-lg animate-pulse" />
+            <div className="h-4 w-1/3 bg-white/5 rounded animate-pulse" />
+          </div>
+          {/* Chapter body skeleton */}
+          <div className="space-y-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-4 bg-white/5 rounded animate-pulse"
+                style={{ width: i % 3 === 2 ? '70%' : '100%' }}
+              />
+            ))}
+          </div>
+          {/* Betting panel skeleton */}
+          <div className="h-48 bg-white/5 rounded-xl animate-pulse" />
         </div>
       </div>
     )
@@ -102,7 +119,12 @@ export default function StoryPage() {
 
           {/* Sidebar - Betting Interface */}
           <div className="lg:col-span-1">
-            <div className="sticky top-8">
+            <div className="sticky top-8 space-y-4">
+              {/* Prophecy NFT banner — tease open prophecies */}
+              <ClientOnly>
+                <ProphecyBanner chapterId={currentChapter.id} />
+              </ClientOnly>
+
               {currentChapter.bettingPool && currentChapter.bettingPool.contractAddress && (
                 <ClientOnly>
                   <BettingInterface

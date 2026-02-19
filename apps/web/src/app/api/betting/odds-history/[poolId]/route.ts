@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/betting/odds-history/[poolId]
@@ -103,7 +104,7 @@ export async function GET(
       updatedAt: new Date().toISOString(),
     })
   } catch (error) {
-    console.error('Odds history API error:', error)
+    logger.error('Odds history API error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch odds history' },
       { status: 500 }

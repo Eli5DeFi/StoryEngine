@@ -70,11 +70,20 @@ export function CommunityPulse() {
 
   if (loading || !data) {
     return (
-      <div className="glass-card rounded-2xl p-8">
-        <div className="text-center py-12">
-          <div className="w-12 h-12 border-4 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-void-400">Loading trending data...</p>
-        </div>
+      <div
+        className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+        aria-busy="true"
+        aria-label="Loading trending data…"
+      >
+        {/* Skeleton — mirrors the live layout (2 columns, 5 rows each) */}
+        {[0, 1].map((col) => (
+          <div key={col} className="glass-card rounded-2xl p-8 space-y-4">
+            <div className="h-6 w-1/3 bg-white/5 rounded animate-pulse" />
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="h-14 rounded-lg bg-white/5 animate-pulse" />
+            ))}
+          </div>
+        ))}
       </div>
     )
   }

@@ -63,8 +63,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${cinzel.variable} ${spaceGrotesk.variable}`}>
       <head>
+        {/* Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Preconnect to Base / Alchemy RPC and Supabase for faster first API calls */}
+        <link rel="preconnect" href="https://mainnet.base.org" />
+        <link rel="dns-prefetch" href="https://mainnet.base.org" />
+        <link rel="dns-prefetch" href="https://base-mainnet.g.alchemy.com" />
+        {/* Preconnect to Vercel Analytics */}
+        <link rel="preconnect" href="https://vitals.vercel-insights.com" />
       </head>
       <body className="bg-background text-foreground antialiased">
         <Providers>

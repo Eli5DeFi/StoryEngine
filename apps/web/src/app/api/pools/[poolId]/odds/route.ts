@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 
@@ -230,7 +231,7 @@ export async function GET(
     })
 
   } catch (error) {
-    console.error('Error fetching pool odds:', error)
+    logger.error('Error fetching pool odds:', error)
     return NextResponse.json(
       { error: 'Failed to fetch odds data' },
       { status: 500 }

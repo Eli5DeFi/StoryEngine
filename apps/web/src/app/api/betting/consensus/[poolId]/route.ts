@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma, Prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/betting/consensus/[poolId]
@@ -140,7 +141,7 @@ export async function GET(
       updatedAt: new Date().toISOString(),
     })
   } catch (error) {
-    console.error('Consensus API error:', error)
+    logger.error('Consensus API error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch consensus' },
       { status: 500 }

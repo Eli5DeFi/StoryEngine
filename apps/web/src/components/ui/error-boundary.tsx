@@ -90,13 +90,12 @@ export function ErrorFallback({ error, reset }: ErrorBoundaryProps) {
   const errorInfo = getErrorType(error)
   
   useEffect(() => {
-    // Log to error tracking service (Sentry, etc.)
-    console.error('Error boundary caught:', error)
-    
-    // TODO: Send to error tracking
-    // if (typeof window !== 'undefined' && window.Sentry) {
-    //   window.Sentry.captureException(error)
-    // }
+    // Production-safe error logging (strips noise in prod via logger)
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error boundary caught:', error)
+    }
+    // TODO: integrate Sentry or similar once monitoring is set up
+    // Sentry.captureException(error)
   }, [error])
   
   const Icon = errorInfo.type === 'network' ? WifiOff : AlertTriangle

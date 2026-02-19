@@ -39,13 +39,31 @@ class MemoryCache {
   }
 
   /**
-   * Clear specific key or entire cache
+   * Clear a specific key, all keys matching a prefix, or the entire cache.
+   *
+   * @param keyOrPrefix - Exact key, a prefix string ending with ':', or
+   *                      undefined to clear everything.
+   * @example
+   *   cache.clear()              // wipe all
+   *   cache.clear('story:abc')   // exact key
+   *   cache.clear('stories:')    // all keys starting with 'stories:'
    */
-  clear(key?: string): void {
-    if (key) {
-      this.cache.delete(key)
-    } else {
+  clear(keyOrPrefix?: string): void {
+    if (!keyOrPrefix) {
       this.cache.clear()
+      return
+    }
+
+    // Prefix mode: key ends with ':' — delete all matching entries
+    if (keyOrPrefix.endsWith(':')) {
+      for (const k of this.cache.keys()) {
+        if (k.startsWith(keyOrPrefix)) {
+          this.cache.delete(k)
+        }
+      }
+    } else {
+      // Exact key match
+      this.cache.delete(keyOrPrefix)
     }
   }
 
