@@ -65,8 +65,10 @@ export function GuildDetailContent({ guildId }: GuildDetailContentProps) {
     setLoading(true)
     setError(null)
     try {
+      // Revalidate every 30s (matches the API route's revalidate config).
+      // Avoids cache: 'no-store' which bypasses Vercel's edge cache on every hit.
       const res = await fetch(`/api/guilds/${guildId}`, {
-        cache: 'no-store',
+        next: { revalidate: 30 },
       })
       if (res.status === 404) {
         setError('Guild not found')

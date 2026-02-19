@@ -18,30 +18,33 @@ export default function DashboardPage() {
               <Link
                 href="/"
                 className="text-foreground/70 hover:text-gold transition-colors"
+                aria-label="Back to home"
               >
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-5 h-5" aria-hidden="true" />
               </Link>
               <h1 className="text-2xl font-cinzel font-bold text-gold">
                 Betting Dashboard
               </h1>
             </div>
             
-            <div className="flex items-center gap-3">
+            <nav className="flex items-center gap-3" aria-label="Dashboard quick links">
               <Link
                 href="/my-bets"
                 className="flex items-center gap-2 px-4 py-2 glass-card rounded-lg border border-void-800 hover:border-gold/50 transition-all text-sm font-ui font-semibold text-foreground"
+                aria-label="View my bets"
               >
-                <User className="w-4 h-4" />
+                <User className="w-4 h-4" aria-hidden="true" />
                 <span>My Bets</span>
               </Link>
               <Link
                 href="/analytics"
                 className="flex items-center gap-2 px-4 py-2 glass-card rounded-lg border border-void-800 hover:border-gold/50 transition-all text-sm font-ui font-semibold text-foreground"
+                aria-label="View analytics"
               >
-                <BarChart3 className="w-4 h-4" />
+                <BarChart3 className="w-4 h-4" aria-hidden="true" />
                 <span>Analytics</span>
               </Link>
-            </div>
+            </nav>
           </div>
         </div>
       </div>

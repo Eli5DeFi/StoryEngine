@@ -94,8 +94,9 @@ export async function POST(request: Request) {
       },
     })
 
-    // Invalidate list cache so next GET reflects the new story
-    cache.clear()
+    // Invalidate story-list keys only (prefix match) so a single new story
+    // doesn't evict unrelated cache entries (e.g. betting stats).
+    cache.clear('stories:')
 
     return NextResponse.json(story, { status: 201 })
   } catch (error) {

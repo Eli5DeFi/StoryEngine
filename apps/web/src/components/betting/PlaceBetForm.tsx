@@ -211,6 +211,9 @@ export function PlaceBetForm({ chapterId, outcomes }: PlaceBetFormProps) {
             <button
               key={outcome.outcomeId}
               onClick={() => toggleOutcome(outcome.outcomeId)}
+              role="checkbox"
+              aria-checked={selectedOutcomes.includes(outcome.outcomeId)}
+              aria-label={`Select outcome: ${outcome.description}`}
               className={`w-full p-4 rounded-lg text-left transition-all ${
                 selectedOutcomes.includes(outcome.outcomeId)
                   ? 'ring-2 ring-[#6366F1]'
@@ -260,12 +263,15 @@ export function PlaceBetForm({ chapterId, outcomes }: PlaceBetFormProps) {
           Bet Amount (USDC)
         </label>
         <input
+          id="bet-amount"
           type="number"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           placeholder="100"
           min="0"
           step="1"
+          aria-label="Bet amount in USDC"
+          aria-describedby={usdcBalance ? 'bet-balance' : undefined}
           className="w-full px-4 py-3 rounded-lg font-display text-lg text-[#F1F5F9] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
           style={{
             background: 'rgba(15, 23, 42, 0.5)',
@@ -273,7 +279,7 @@ export function PlaceBetForm({ chapterId, outcomes }: PlaceBetFormProps) {
           }}
         />
         {usdcBalance && (
-          <p className="text-xs text-[#64748B] mt-2">
+          <p id="bet-balance" className="text-xs text-[#64748B] mt-2">
             Balance: {formatUnits(usdcBalance as bigint, 6)} USDC
           </p>
         )}
@@ -290,6 +296,7 @@ export function PlaceBetForm({ chapterId, outcomes }: PlaceBetFormProps) {
         <select
           value={betType}
           onChange={(e) => setBetType(Number(e.target.value) as BetType)}
+          aria-label="Select bet type"
           className="w-full px-4 py-3 rounded-lg font-medium text-[#F1F5F9] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
           style={{
             background: 'rgba(15, 23, 42, 0.5)',

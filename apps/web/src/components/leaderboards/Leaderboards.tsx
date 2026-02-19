@@ -197,11 +197,17 @@ export function Leaderboards() {
         {/* Table */}
         <div className="overflow-x-auto">
           {loading ? (
-            <div className="p-12 text-center">
-              <div className="inline-flex items-center gap-3 text-foreground/50">
-                <div className="w-6 h-6 border-2 border-gold border-t-transparent rounded-full animate-spin" />
-                <span>Loading champions...</span>
-              </div>
+            /* Skeleton rows — content-shaped to reduce layout shift */
+            <div className="divide-y divide-void-800" aria-busy="true" aria-label="Loading leaderboard…">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-4 px-6 py-4">
+                  <div className="h-5 w-8 bg-white/5 rounded animate-pulse shrink-0" />
+                  <div className="h-8 w-8 rounded-full bg-white/5 animate-pulse shrink-0" />
+                  <div className="flex-1 h-4 bg-white/5 rounded animate-pulse" />
+                  <div className="h-4 w-16 bg-white/5 rounded animate-pulse shrink-0" />
+                  <div className="h-4 w-16 bg-white/5 rounded animate-pulse shrink-0" />
+                </div>
+              ))}
             </div>
           ) : data && data.data.length > 0 ? (
             <table className="w-full">

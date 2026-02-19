@@ -2,6 +2,7 @@
 
 /**
  * AuctionDetailContent — Full detail view for a single chapter auction.
+ * @module AuctionDetailContent
  *
  * Shows:
  * - Chapter info + status
@@ -31,6 +32,7 @@ import type { ChapterAuction } from '@/lib/auction-data'
 import { AuctionCountdown } from './AuctionCountdown'
 import { AuctionBidForm } from './AuctionBidForm'
 import { PatronParameters } from './PatronParameters'
+import { logger } from '@/lib/logger'
 
 interface AuctionDetail extends ChapterAuction {
   msRemaining: number
@@ -263,7 +265,7 @@ export function AuctionDetailContent({ chapterId }: AuctionDetailContentProps) {
               <PatronParameters
                 chapterNumber={data.chapterNumber}
                 onSubmit={(params) => {
-                  console.log('Patron parameters submitted:', params)
+                  logger.debug('Patron parameters submitted:', params)
                   fetchAuction()
                 }}
               />

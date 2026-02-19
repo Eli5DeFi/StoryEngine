@@ -81,12 +81,14 @@ export function Navbar() {
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="lg:hidden text-foreground hover:text-gold transition-colors duration-500"
-              aria-label="Toggle menu"
+              aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-nav"
             >
               {isMobileMenuOpen ? (
-                <X className="w-6 h-6" />
+                <X className="w-6 h-6" aria-hidden="true" />
               ) : (
-                <Menu className="w-6 h-6" />
+                <Menu className="w-6 h-6" aria-hidden="true" />
               )}
             </button>
           </div>
@@ -103,7 +105,7 @@ export function Navbar() {
           />
 
           {/* Menu Content */}
-          <div className="relative h-full flex flex-col items-center justify-center gap-8 px-6">
+          <nav id="mobile-nav" className="relative h-full flex flex-col items-center justify-center gap-8 px-6" aria-label="Mobile navigation">
             {navLinks.map((link, index) => (
               <Link
                 key={link.href}
@@ -120,7 +122,7 @@ export function Navbar() {
                 <ConnectWallet />
               </ClientOnly>
             </div>
-          </div>
+          </nav>
         </div>
       )}
     </>

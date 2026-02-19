@@ -13,6 +13,7 @@
 import { useState, useCallback } from 'react'
 import { ProphecyCard, type ProphecyData } from './ProphecyCard'
 import { ProphecyMintModal } from './ProphecyMintModal'
+import { logger } from '@/lib/logger'
 
 type StatusFilter = 'ALL' | 'PENDING' | 'FULFILLED' | 'ECHOED' | 'UNFULFILLED'
 type SortKey = 'newest' | 'rarest' | 'most-minted' | 'spots-remaining'
@@ -80,7 +81,7 @@ export function ProphecyGallery({
 
   const handleMintSuccess = useCallback(
     (mintOrder: number) => {
-      console.log(`Minted at position #${mintOrder}`)
+      logger.debug(`Minted at position #${mintOrder}`)
       setActiveMint(null)
       onRefresh?.()
     },
