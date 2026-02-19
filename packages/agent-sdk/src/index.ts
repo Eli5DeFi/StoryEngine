@@ -248,3 +248,51 @@ export class VoidborneSDK {
 // Export types
 export type { Address, Hash }
 export * from 'viem'
+
+// ─── Innovation Cycle #53: The Living Story Protocol ──────────────────────────
+
+// Narrative Consequence Ledger — persistent cross-chapter consequence tracking.
+// Every bet outcome creates a typed consequence injected into Claude's next
+// chapter prompt. Players bet on when consequences resolve (8x exact chapter).
+export {
+  ConsequenceRecorder,
+  ConsequenceLedger,
+  NarrativeDebtEngine,
+  ClaudeContextBuilder as NCLContextBuilder,
+  ConsequenceBetMarket,
+  LivingStoryOrchestrator,
+  createLivingStoryEngine,
+  runConsequenceLedgerDemo,
+} from './consequence-ledger'
+export type {
+  ConsequenceStatus,
+  ConsequenceSeverity,
+  ConsequenceVector,
+  NarrativeConsequence,
+  ConsequenceBet,
+  NarrativeDebtReport,
+  ChapterConsequenceContext,
+} from './consequence-ledger'
+
+// Chaos Oracle Protocol — real-world signals (BTC price, social mentions,
+// on-chain volume) mapped to narrative parameters. The story reacts to markets.
+export {
+  SignalFetcher,
+  ChaosMapper,
+  ChaosMarketEngine,
+  ClaudeChaosInjector,
+  ChaosSignalArchive,
+  ChaosOracleEngine,
+  createChaosOracleEngine,
+  runChaosOracleDemo,
+} from './chaos-oracle'
+export type {
+  SignalSource,
+  SignalDirection,
+  RawSignal,
+  NarrativeMapping,
+  ChaosSignal,
+  ChaosMarket,
+  ChaosMarketBet,
+  ChaosChapterContext,
+} from './chaos-oracle'
