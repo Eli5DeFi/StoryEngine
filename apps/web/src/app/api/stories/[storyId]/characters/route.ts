@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@voidborne/database';
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic';
 
@@ -80,7 +81,7 @@ export async function GET(
 
     return NextResponse.json({ characters: charactersWithRelationships });
   } catch (error) {
-    console.error('Error fetching characters:', error);
+    logger.error('Error fetching characters:', error);
     return NextResponse.json(
       { error: 'Failed to fetch characters' },
       { status: 500 }

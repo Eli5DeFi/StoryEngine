@@ -1,17 +1,37 @@
 import { NextResponse } from 'next/server'
 import { prisma, calculateOdds } from '@voidborne/database'
+import { cache, CacheTTL } from '@/lib/cache'
+import { logger } from '@/lib/logger'
+
+// Revalidate every 15 seconds — betting pools change frequently
+export const revalidate = 15
 
 /**
  * GET /api/betting/pools/[poolId]
  * Get betting pool details with current odds
+ * Cached for 15s to reduce DB load on high-traffic pools
  */
 export async function GET(
   request: Request,
   { params }: { params: { poolId: string } }
 ) {
   try {
+    const { poolId } = params
+    const cacheKey = `pool:${poolId}`
+
+    // Check in-memory cache (15s TTL)
+    const cached = cache.get(cacheKey, CacheTTL.SHORT / 2)
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=15, stale-while-revalidate=30',
+          'X-Cache': 'HIT',
+        },
+      })
+    }
+
     const pool = await prisma.bettingPool.findUnique({
-      where: { id: params.poolId },
+      where: { id: poolId },
       include: {
         chapter: {
           include: {
@@ -60,15 +80,29 @@ export async function GET(
         : 0,
     }))
 
-    return NextResponse.json({
+    const result = {
       ...pool,
       chapter: {
         ...pool.chapter,
         choices: choicesWithOdds,
       },
+    }
+
+    // Cache result; skip caching resolved/closed pools (stale fast)
+    if (pool.status === 'OPEN') {
+      cache.set(cacheKey, result)
+    }
+
+    return NextResponse.json(result, {
+      headers: {
+        'Cache-Control': pool.status === 'OPEN'
+          ? 'public, s-maxage=15, stale-while-revalidate=30'
+          : 'public, s-maxage=300, stale-while-revalidate=600',
+        'X-Cache': 'MISS',
+      },
     })
   } catch (error) {
-    console.error('Error fetching betting pool:', error)
+    logger.error('Error fetching betting pool:', error)
     return NextResponse.json(
       { error: 'Failed to fetch betting pool' },
       { status: 500 }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@voidborne/database'
 import { cache, CacheTTL } from '@/lib/cache'
+import { logger } from '@/lib/logger'
 
 const prisma = new PrismaClient()
 
@@ -185,7 +186,7 @@ export async function GET(request: Request) {
       },
     })
   } catch (error) {
-    console.error('Stats API error:', error)
+    logger.error('Stats API error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch stats' },
       { status: 500 }

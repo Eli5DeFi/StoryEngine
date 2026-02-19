@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@voidborne/database';
 import Anthropic from '@anthropic-ai/sdk';
+import { logger } from '@/lib/logger'
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -140,7 +141,7 @@ Keep the same characters and setting, but show how this decision would have chan
       viewCount: outcome.viewCount,
     });
   } catch (error) {
-    console.error('Error generating what-if scenario:', error);
+    logger.error('Error generating what-if scenario:', error);
     return NextResponse.json(
       { error: 'Failed to generate what-if scenario' },
       { status: 500 }

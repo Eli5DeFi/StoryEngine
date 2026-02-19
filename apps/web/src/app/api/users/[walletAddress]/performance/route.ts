@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 const prisma = new PrismaClient()
 
@@ -189,7 +190,7 @@ export async function GET(
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    console.error('Performance API error:', error)
+    logger.error('Performance API error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch performance data' },
       { status: 500 }

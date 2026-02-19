@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma, Prisma } from '@voidborne/database'
+import { cache, CacheTTL } from '@/lib/cache'
+import { logger } from '@/lib/logger'
 
 // Decimal class and type from Prisma
 const Decimal = Prisma.Decimal
@@ -15,8 +17,8 @@ type Decimal = Prisma.Decimal
  * - limit: number of results (default 10, max 100)
  * - timeframe: all | 30d | 7d | 24h
  */
-// Cache for 5 minutes
-export const revalidate = 300
+// Dynamic: reads request.url — in-memory cache handles the caching layer
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,9 +27,19 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 100)
     const timeframe = searchParams.get('timeframe') || 'all'
 
-    // Calculate time filter
-    const timeFilter = getTimeFilter(timeframe)
+    // Check in-memory cache (5 min) — leaderboards are expensive aggregations
+    const cacheKey = `leaderboard:${category}:${limit}:${timeframe}`
+    const cached = cache.get(cacheKey, CacheTTL.LONG)
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+          'X-Cache': 'HIT',
+        },
+      })
+    }
 
+    const timeFilter = getTimeFilter(timeframe)
     let leaderboard: any[] = []
 
     switch (category) {
@@ -47,31 +59,33 @@ export async function GET(request: NextRequest) {
         leaderboard = await getWeeklyChampions(limit)
         break
       default:
-        return NextResponse.json(
-          { error: 'Invalid category' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Invalid category' }, { status: 400 })
     }
 
-    // Add rankings
     const rankedLeaderboard = leaderboard.map((entry, index) => ({
       rank: index + 1,
       ...entry,
     }))
 
-    return NextResponse.json({
+    const response = {
       category,
       timeframe,
       limit,
       data: rankedLeaderboard,
       updatedAt: new Date().toISOString(),
+    }
+
+    cache.set(cacheKey, response)
+
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        'X-Cache': 'MISS',
+      },
     })
   } catch (error) {
-    console.error('Leaderboard API error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch leaderboard' },
-      { status: 500 }
-    )
+    logger.error('Leaderboard API error:', error)
+    return NextResponse.json({ error: 'Failed to fetch leaderboard' }, { status: 500 })
   }
 }
 
@@ -305,76 +319,53 @@ async function getBiggestBettors(limit: number, timeFilter?: any) {
 }
 
 /**
- * Weekly Champions - Top performers in last 7 days
+ * Weekly Champions - Top performers in last 7 days.
+ * Uses a single DB aggregation instead of loading all bets into memory,
+ * which was O(N) in JS and caused full table scans on high-traffic instances.
  */
 async function getWeeklyChampions(limit: number) {
   const weekAgo = new Date()
   weekAgo.setDate(weekAgo.getDate() - 7)
 
-  const bets = await prisma.bet.findMany({
-    where: {
-      createdAt: {
-        gte: weekAgo,
-      },
-      isWinner: true,
-      payout: {
-        not: null,
-      },
-    },
-    select: {
-      userId: true,
-      amount: true,
-      payout: true,
-    },
-  })
+  // Single aggregation query: sum payout - amount per user, join users inline
+  type WeeklyRow = {
+    userId: string
+    walletAddress: string
+    username: string | null
+    avatar: string | null
+    winRate: Decimal
+    weeklyProfit: string
+    weeklyBets: bigint
+  }
 
-  // Calculate weekly profit per user
-  const userProfits = new Map<string, Decimal>()
-  const userBetCounts = new Map<string, number>()
+  const rows = await prisma.$queryRaw<WeeklyRow[]>`
+    SELECT
+      u.id           AS "userId",
+      u."walletAddress",
+      u.username,
+      u.avatar,
+      u."winRate",
+      SUM(b.payout - b.amount)::text  AS "weeklyProfit",
+      COUNT(b.id)::bigint             AS "weeklyBets"
+    FROM bets b
+    JOIN users u ON u.id = b."userId"
+    WHERE b."createdAt" >= ${weekAgo}
+      AND b."isWinner" = true
+      AND b.payout IS NOT NULL
+    GROUP BY u.id, u."walletAddress", u.username, u.avatar, u."winRate"
+    ORDER BY SUM(b.payout - b.amount) DESC
+    LIMIT ${limit}
+  `
 
-  bets.forEach((bet) => {
-    const profit = (bet.payout || new Decimal(0)).sub(bet.amount)
-    userProfits.set(
-      bet.userId,
-      (userProfits.get(bet.userId) || new Decimal(0)).add(profit)
-    )
-    userBetCounts.set(bet.userId, (userBetCounts.get(bet.userId) || 0) + 1)
-  })
-
-  // Sort by profit
-  const sortedUsers = Array.from(userProfits.entries())
-    .sort((a, b) => b[1].comparedTo(a[1]))
-    .slice(0, limit)
-
-  // Fetch user details
-  const userIds = sortedUsers.map(([id]) => id)
-  const users = await prisma.user.findMany({
-    where: {
-      id: { in: userIds },
-    },
-    select: {
-      id: true,
-      walletAddress: true,
-      username: true,
-      avatar: true,
-      winRate: true,
-    },
-  })
-
-  const userMap = new Map(users.map((u) => [u.id, u]))
-
-  return sortedUsers.map(([userId, weeklyProfit]) => {
-    const user = userMap.get(userId)!
-    return {
-      userId: user.id,
-      walletAddress: user.walletAddress,
-      username: user.username || formatWallet(user.walletAddress),
-      avatar: user.avatar,
-      weeklyProfit: weeklyProfit.toString(),
-      weeklyBets: userBetCounts.get(userId) || 0,
-      winRate: user.winRate,
-    }
-  })
+  return rows.map((row) => ({
+    userId: row.userId,
+    walletAddress: row.walletAddress,
+    username: row.username || formatWallet(row.walletAddress),
+    avatar: row.avatar,
+    weeklyProfit: row.weeklyProfit,
+    weeklyBets: Number(row.weeklyBets),
+    winRate: row.winRate,
+  }))
 }
 
 // ============================================================================

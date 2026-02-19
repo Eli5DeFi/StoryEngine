@@ -248,3 +248,93 @@ export class VoidborneSDK {
 // Export types
 export type { Address, Hash }
 export * from 'viem'
+
+// ─── Innovation Cycle #51: The Emergent Theater ───────────────────────────────
+
+// Live Narrative Broadcast — real-time streaming chapter generation with
+// in-stream betting windows (Twitch × prediction markets)
+export {
+  LiveNarrativeBroadcast,
+  BettingWindowManager,
+  BroadcastScheduler,
+  createLNBEngine,
+  detectNarrativeBeat,
+  runLNBDemo,
+} from './live-narrative-broadcast'
+export type {
+  BroadcastConfig,
+  BroadcastSession,
+  BroadcastState,
+  BettingWindow,
+  LiveBet,
+  RevelationEvent,
+  StreamMessage,
+  BroadcastSchedule,
+} from './live-narrative-broadcast'
+
+// Betrayal Protocol — Among Us-style social deduction layer for prediction markets
+export {
+  BetrayalProtocol,
+  StitcherAssigner,
+  SuspicionScorer,
+  StitcherObfuscator,
+  RevelationEngine,
+  runBetrayalDemo,
+} from './betrayal-protocol'
+export type {
+  BetrayalRound,
+  BetrayalRevelation,
+  StitcherAssignment,
+  SuspicionAccusation,
+  DramaticMoment,
+} from './betrayal-protocol'
+
+// Temporal Oracle Markets — long-range prediction markets (5-100 chapters ahead)
+export {
+  TemporalMarketManager,
+  AIResolutionOracle,
+  getHorizonMultiplier,
+  getMultiplierTier,
+  runTemporalMarketsDemo,
+} from './temporal-markets'
+export type {
+  TemporalMarket,
+  TemporalBet,
+  TemporalPortfolio,
+  DisputeVote,
+  OracleResolutionResult,
+  TemporalMarketStatus,
+} from './temporal-markets'
+
+// ─── Innovation Cycle #52: The Faction War Engine ─────────────────────────────
+
+// Narrative Guilds & Faction Wars — player factions control territory, bet
+// collectively, and earn literal narrative injection rights (agenda → Claude prompt)
+export {
+  GuildRegistry,
+  GuildTreasuryManager,
+  VoidMapController,
+  FactionWarEngine,
+  GuildLeaderboard,
+  AgendaInjector,
+  NarrativeGuildEngine,
+  createGuildEngine,
+  runGuildFactionDemo,
+} from './guild-faction-engine'
+export type {
+  HouseAlignment,
+  GuildTier,
+  Guild,
+  GuildMember,
+  GuildTreasury,
+  GuildBet,
+  SectorControl,
+  FactionWar,
+  WarTrophyNFT,
+  AgendaSlot,
+  VoidMapSector,
+  GuildWarDeclaration,
+  GuildScore,
+  AgendaProposal,
+  FactionWarResult,
+} from './guild-faction-engine'
