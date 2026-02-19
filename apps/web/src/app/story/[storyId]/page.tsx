@@ -8,6 +8,8 @@ import { ChapterReader } from '@/components/story/ChapterReader'
 import { BettingInterface } from '@/components/story/BettingInterface'
 import { ChapterNavigation } from '@/components/story/ChapterNavigation'
 import { ClientOnly } from '@/components/ClientOnly'
+import { ChaosOracleWidget } from '@/components/chaos-oracle/ChaosOracleWidget'
+import { ChaosOracleBanner } from '@/components/chaos-oracle/ChaosOracleBanner'
 
 type StoryWithChapters = Story & {
   chapters: (Chapter & {
@@ -29,14 +31,14 @@ export default function StoryPage() {
     try {
       setLoading(true)
       const response = await fetch(`/api/stories/${storyId}`)
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch story')
       }
 
       const data = await response.json()
       setStory(data)
-      
+
       // Start at latest chapter
       if (data.chapters.length > 0) {
         setCurrentChapterIndex(data.chapters.length - 1)
@@ -75,6 +77,7 @@ export default function StoryPage() {
   }
 
   const currentChapter = story.chapters[currentChapterIndex]
+  const currentChapterNumber = currentChapter?.chapterNumber ?? currentChapterIndex + 1
 
   return (
     <div className="min-h-screen bg-background">
@@ -82,6 +85,13 @@ export default function StoryPage() {
       <StoryHeader story={story} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Chaos Oracle Banner — shows dominant real-world signal affecting this chapter */}
+        <ChaosOracleBanner
+          chapterNumber={currentChapterNumber}
+          storyId={storyId}
+          className="mb-6"
+        />
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content - Chapter Reader */}
           <div className="lg:col-span-2">
@@ -100,10 +110,11 @@ export default function StoryPage() {
             )}
           </div>
 
-          {/* Sidebar - Betting Interface */}
+          {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="sticky top-8">
-              {currentChapter.bettingPool && currentChapter.bettingPool.contractAddress && (
+            <div className="sticky top-8 space-y-6">
+              {/* Betting Interface */}
+              {currentChapter?.bettingPool && currentChapter.bettingPool.contractAddress && (
                 <ClientOnly>
                   <BettingInterface
                     poolId={currentChapter.bettingPool.id}
@@ -114,6 +125,14 @@ export default function StoryPage() {
                   />
                 </ClientOnly>
               )}
+
+              {/* Chaos Oracle Widget — real-world signals → narrative context */}
+              <div id="chaos-oracle">
+                <ChaosOracleWidget
+                  chapterNumber={currentChapterNumber}
+                  className="w-full"
+                />
+              </div>
             </div>
           </div>
         </div>
