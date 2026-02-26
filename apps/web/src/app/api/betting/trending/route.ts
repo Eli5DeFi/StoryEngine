@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@voidborne/database'
+import { prisma } from '@voidborne/database'
 import { cache, CacheTTL } from '@/lib/cache'
-
-const prisma = new PrismaClient()
+import { logger } from '@/lib/logger'
 
 // Revalidate every 30 seconds (trending data changes frequently)
 export const revalidate = 30
@@ -133,12 +132,10 @@ export async function GET(request: Request) {
       },
     })
   } catch (error) {
-    console.error('Trending API error:', error)
+    logger.error('Trending API error:', error)
     return NextResponse.json(
       { error: 'Failed to fetch trending data' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }

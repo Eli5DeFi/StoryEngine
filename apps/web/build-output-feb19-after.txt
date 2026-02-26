@@ -1,0 +1,97 @@
+
+> @voidborne/web@0.1.0 build /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web
+> next build
+
+  ▲ Next.js 14.2.35
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/55) ...
+   Generating static pages (13/55) 
+   Generating static pages (27/55) 
+   Generating static pages (41/55) 
+ ✓ Generating static pages (55/55)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                       Size     First Load JS
+┌ ○ /                                             6.87 kB         717 kB
+├ ○ /_not-found                                   136 B           236 kB
+├ ○ /about                                        136 B           236 kB
+├ ○ /analytics                                    4.11 kB         280 kB
+├ ƒ /api/analytics/leaderboard                    0 B                0 B
+├ ƒ /api/analytics/stats                          0 B                0 B
+├ ƒ /api/badges                                   0 B                0 B
+├ ƒ /api/badges/[userId]                          0 B                0 B
+├ ƒ /api/betting/consensus/[poolId]               0 B                0 B
+├ ƒ /api/betting/odds-history/[poolId]            0 B                0 B
+├ ƒ /api/betting/place                            0 B                0 B
+├ ƒ /api/betting/platform-stats                   0 B                0 B
+├ ƒ /api/betting/pools/[poolId]                   0 B                0 B
+├ ƒ /api/betting/recent                           0 B                0 B
+├ ƒ /api/betting/resolve-pool                     0 B                0 B
+├ ○ /api/betting/trending                         0 B                0 B
+├ ƒ /api/chapters/[chapterId]/what-if/[choiceId]  0 B                0 B
+├ ƒ /api/characters/extract                       0 B                0 B
+├ ƒ /api/cron/capture-odds                        0 B                0 B
+├ ƒ /api/cron/extract-characters                  0 B                0 B
+├ ƒ /api/leaderboards                             0 B                0 B
+├ ƒ /api/lore/houses                              0 B                0 B
+├ ƒ /api/lore/houses/[slug]                       0 B                0 B
+├ ƒ /api/lore/houses/[slug]/join                  0 B                0 B
+├ ƒ /api/lore/protocols                           0 B                0 B
+├ ƒ /api/lore/protocols/[slug]                    0 B                0 B
+├ ƒ /api/notifications                            0 B                0 B
+├ ƒ /api/notifications/preferences                0 B                0 B
+├ ƒ /api/notifications/send                       0 B                0 B
+├ ƒ /api/pools/[poolId]/odds                      0 B                0 B
+├ ƒ /api/share                                    0 B                0 B
+├ ƒ /api/share/og                                 0 B                0 B
+├ ƒ /api/share/og-image                           0 B                0 B
+├ ƒ /api/share/referral                           0 B                0 B
+├ ƒ /api/stories                                  0 B                0 B
+├ ƒ /api/stories/[storyId]                        0 B                0 B
+├ ƒ /api/stories/[storyId]/characters             0 B                0 B
+├ ƒ /api/users/[walletAddress]                    0 B                0 B
+├ ƒ /api/users/[walletAddress]/bets               0 B                0 B
+├ ƒ /api/users/[walletAddress]/performance        0 B                0 B
+├ ƒ /api/users/[walletAddress]/streaks            0 B                0 B
+├ ○ /dashboard                                    3.32 kB         279 kB
+├ ○ /faq                                          4.17 kB        92.8 kB
+├ ○ /leaderboards                                 3.27 kB         713 kB
+├ ○ /lore                                         136 B           236 kB
+├ ○ /lore/characters                              136 B           236 kB
+├ ● /lore/characters/[characterId]                135 B           236 kB
+├   ├ /lore/characters/sera-valdris
+├   ├ /lore/characters/rael-thorn
+├   ├ /lore/characters/lienne-sol-ashura
+├   └ [+2 more paths]
+├ ○ /lore/houses                                  136 B           236 kB
+├ ƒ /lore/houses-dynamic                          136 B           236 kB
+├ ƒ /lore/houses-dynamic/[slug]                   136 B           236 kB
+├ ● /lore/houses/[houseId]                        136 B           236 kB
+├   ├ /lore/houses/valdris
+├   ├ /lore/houses/meridian
+├   ├ /lore/houses/solvane
+├   └ [+4 more paths]
+├ ○ /lore/protocols                               136 B           236 kB
+├ ƒ /lore/protocols-dynamic                       136 B           236 kB
+├ ƒ /lore/protocols-dynamic/[slug]                136 B           236 kB
+├ ● /lore/protocols/[protocolId]                  136 B           236 kB
+├   ├ /lore/protocols/geodesist
+├   ├ /lore/protocols/tensor
+├   ├ /lore/protocols/fracturer
+├   └ [+11 more paths]
+├ ○ /my-bets                                      2.41 kB         712 kB
+└ ƒ /story/[storyId]                              12.7 kB         722 kB
++ First Load JS shared by all                     88.6 kB
+  ├ chunks/7686-69f891aa81717031.js               84.8 kB
+  └ other shared chunks (total)                   3.8 kB
+
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses getStaticProps)
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@voidborne/database'
+import { logger } from '@/lib/logger'
 
 /**
  * POST /api/betting/place
@@ -143,7 +144,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(bet, { status: 201 })
   } catch (error) {
-    console.error('Error placing bet:', error)
+    logger.error('Error placing bet:', error)
     return NextResponse.json(
       { error: 'Failed to place bet' },
       { status: 500 }

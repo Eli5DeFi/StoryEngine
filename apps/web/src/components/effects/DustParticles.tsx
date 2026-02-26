@@ -1,33 +1,30 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 
+/**
+ * Ambient dust particles for visual atmosphere.
+ * useMemo ensures particle positions are stable across re-renders.
+ * Particles are generated once per mount — no state updates needed.
+ */
 export function DustParticles() {
-  const [particles, setParticles] = useState<Array<{
-    id: number
-    left: string
-    animationDuration: string
-    animationDelay: string
-    xOffset: string
-    color: string
-    size: string
-  }>>([])
-
-  useEffect(() => {
-    const newParticles = Array.from({ length: 30 }, (_, i) => ({
-      id: i,
-      left: `${Math.random() * 100}%`,
-      animationDuration: `${Math.random() * 15 + 10}s`,
-      animationDelay: `${Math.random() * 10}s`,
-      xOffset: `${Math.random() * 100 - 50}px`,
-      color: Math.random() > 0.5 ? 'hsl(40, 80%, 60%)' : 'hsl(170, 100%, 45%)',
-      size: `${Math.random() * 2 + 1}px`,
-    }))
-    setParticles(newParticles)
-  }, [])
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 30 }, (_, i) => ({
+        id: i,
+        left: `${(i * 37 + 11) % 100}%`,
+        animationDuration: `${10 + (i % 15)}s`,
+        animationDelay: `${(i * 0.7) % 10}s`,
+        xOffset: `${((i * 19) % 100) - 50}px`,
+        color: i % 2 === 0 ? 'hsl(40, 80%, 60%)' : 'hsl(170, 100%, 45%)',
+        size: `${1 + (i % 2)}px`,
+        opacity: 0.1 + (i % 4) * 0.1,
+      })),
+    []
+  )
 
   return (
-    <>
+    <div aria-hidden="true">
       {particles.map((particle) => (
         <div
           key={particle.id}
@@ -41,11 +38,11 @@ export function DustParticles() {
             backgroundColor: particle.color,
             width: particle.size,
             height: particle.size,
-            opacity: Math.random() * 0.4 + 0.1,
+            opacity: particle.opacity,
             zIndex: 1,
           } as React.CSSProperties}
         />
       ))}
-    </>
+    </div>
   )
 }

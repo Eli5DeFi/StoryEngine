@@ -206,11 +206,13 @@ export function PlaceBetForm({ chapterId, outcomes }: PlaceBetFormProps) {
         >
           Select Outcomes (Min 2)
         </label>
-        <div className="space-y-2">
+        <div className="space-y-2" role="group" aria-label="Select outcomes to bet on">
           {outcomes.map((outcome) => (
             <button
               key={outcome.outcomeId}
               onClick={() => toggleOutcome(outcome.outcomeId)}
+              aria-pressed={selectedOutcomes.includes(outcome.outcomeId)}
+              aria-label={`${outcome.description} — ${outcome.odds ? (Number(outcome.odds) / 1e18).toFixed(2) : '—'}x odds`}
               className={`w-full p-4 rounded-lg text-left transition-all ${
                 selectedOutcomes.includes(outcome.outcomeId)
                   ? 'ring-2 ring-[#6366F1]'
@@ -253,19 +255,23 @@ export function PlaceBetForm({ chapterId, outcomes }: PlaceBetFormProps) {
 
       {/* Amount Input */}
       <div className="mb-6">
-        <label 
+        <label
+          htmlFor="bet-amount"
           className="block text-xs uppercase tracking-[2px] text-[#64748B] mb-3"
           style={{ fontFamily: 'var(--font-mono)' }}
         >
           Bet Amount (USDC)
         </label>
         <input
+          id="bet-amount"
           type="number"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           placeholder="100"
           min="0"
           step="1"
+          aria-label="Bet amount in USDC"
+          aria-describedby="bet-amount-balance"
           className="w-full px-4 py-3 rounded-lg font-display text-lg text-[#F1F5F9] placeholder-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
           style={{
             background: 'rgba(15, 23, 42, 0.5)',
@@ -273,7 +279,7 @@ export function PlaceBetForm({ chapterId, outcomes }: PlaceBetFormProps) {
           }}
         />
         {usdcBalance && (
-          <p className="text-xs text-[#64748B] mt-2">
+          <p id="bet-amount-balance" className="text-xs text-[#64748B] mt-2">
             Balance: {formatUnits(usdcBalance as bigint, 6)} USDC
           </p>
         )}
