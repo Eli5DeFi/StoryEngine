@@ -6,12 +6,15 @@ export const metadata = {
   description: 'Reality-shaping techniques mastered by the Seven Houses',
 }
 
+// Revalidate every 60 seconds (ISR)
+export const revalidate = 60
+
 async function getProtocols(): Promise<Protocol[]> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 
   try {
     const res = await fetch(`${baseUrl}/api/lore/protocols`, {
-      cache: 'no-store',
+      next: { revalidate: 60 }, // ISR: revalidate every 60 seconds
     })
 
     if (!res.ok) {
@@ -26,7 +29,9 @@ async function getProtocols(): Promise<Protocol[]> {
 
     return json.data
   } catch (error) {
-    console.error('Error fetching protocols:', error)
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Error fetching protocols:', error)
+    }
     return []
   }
 }

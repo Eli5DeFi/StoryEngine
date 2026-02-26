@@ -58,3 +58,4 @@ redis-data/
 # Logs
 logs/
 *.log
+.archive/
