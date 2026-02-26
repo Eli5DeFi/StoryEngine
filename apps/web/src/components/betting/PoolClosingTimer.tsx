@@ -161,7 +161,7 @@ export function PoolClosingTimer({
         transition={
           config.pulse
             ? {
-                duration: config.pulseSpeed,
+                duration: ('pulseSpeed' in config) ? config.pulseSpeed : 2,
                 repeat: Infinity,
                 ease: 'easeInOut'
               }
@@ -195,7 +195,7 @@ export function PoolClosingTimer({
       transition={
         config.pulse
           ? {
-              duration: config.pulseSpeed,
+              duration: ('pulseSpeed' in config) ? config.pulseSpeed : 2,
               repeat: Infinity,
               ease: 'easeInOut'
             }
