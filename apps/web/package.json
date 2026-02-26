@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
@@ -12,6 +13,8 @@
     "test:build": "pnpm test && pnpm build",
     "preview": "pnpm build && pnpm start",
     "deploy:check": "pnpm type-check && pnpm lint && echo '✅ Pre-deployment checks passed'",
+    "perf:lighthouse": "node scripts/lighthouse.mjs",
+    "perf:bundle": "pnpm build:analyze",
     "db:generate": "cd ../../packages/database && pnpm db:generate",
     "db:push": "cd ../../packages/database && pnpm db:push",
     "db:migrate": "cd ../../packages/database && pnpm db:migrate",
