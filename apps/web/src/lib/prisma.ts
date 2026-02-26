@@ -1,78 +1,42 @@
 /**
- * Prisma Client Singleton with Connection Pooling
- * 
- * Prevents "too many connections" errors by reusing a single
- * PrismaClient instance across all API routes.
- * 
- * Connection pooling is configured in DATABASE_URL:
- * postgresql://user:pass@host/db?connection_limit=20&pool_timeout=20
+ * Prisma Client Singleton
+ * Prevents creating multiple Prisma instances in development/serverless
+ * Ensures connection pooling is efficient
  */
 
 import { PrismaClient } from '@voidborne/database'
 
 declare global {
-  var prisma: PrismaClient | undefined
+  // eslint-disable-next-line no-var
+  var cachedPrisma: PrismaClient | undefined
 }
 
-const prismaClientSingleton = () => {
-  return new PrismaClient({
-    log: process.env.NODE_ENV === 'development' 
-      ? ['query', 'error', 'warn'] 
-      : ['error'],
-    
-    // Connection pooling settings
-    datasources: {
-      db: {
-        url: process.env.DATABASE_URL,
-      },
-    },
+let prisma: PrismaClient
+
+if (process.env.NODE_ENV === 'production') {
+  // Production: Always create new instance
+  prisma = new PrismaClient({
+    log: ['error', 'warn'],
   })
+} else {
+  // Development: Reuse existing instance to prevent connection exhaustion
+  if (!global.cachedPrisma) {
+    global.cachedPrisma = new PrismaClient({
+      log: ['error', 'warn', 'query'],
+    })
+  }
+  prisma = global.cachedPrisma
 }
 
-// Reuse client in development (hot reload safe)
-export const prisma = global.prisma || prismaClientSingleton()
+export { prisma }
 
-if (process.env.NODE_ENV !== 'production') {
-  global.prisma = prisma
-}
-
-// Graceful shutdown
-if (typeof window === 'undefined') {
-  process.on('beforeExit', async () => {
+/**
+ * Helper to ensure Prisma disconnects gracefully
+ * Use in API routes that need explicit cleanup
+ */
+export async function disconnectPrisma() {
+  if (process.env.NODE_ENV === 'production') {
     await prisma.$disconnect()
-  })
-}
-
-/**
- * Database health check
- */
-export async function checkDatabaseHealth(): Promise<boolean> {
-  try {
-    await prisma.$queryRaw`SELECT 1`
-    return true
-  } catch (error) {
-    console.error('Database health check failed:', error)
-    return false
   }
-}
-
-/**
- * Get connection pool stats (for monitoring)
- */
-export async function getConnectionStats() {
-  try {
-    const result = await prisma.$queryRaw<Array<{ count: bigint }>>`
-      SELECT COUNT(*) as count
-      FROM pg_stat_activity
-      WHERE datname = current_database()
-    `
-    
-    return {
-      activeConnections: Number(result[0]?.count || 0),
-      maxConnections: parseInt(process.env.DATABASE_CONNECTION_LIMIT || '20'),
-    }
-  } catch (error) {
-    console.error('Failed to get connection stats:', error)
-    return null
-  }
+  // In development, keep connection alive for reuse
 }

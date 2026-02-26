@@ -5,6 +5,7 @@ import { User } from 'lucide-react';
 import { useState } from 'react';
 import Image from 'next/image';
 import { CharacterProfile } from './CharacterProfile';
+import Image from 'next/image';
 
 interface Character {
   id: string;

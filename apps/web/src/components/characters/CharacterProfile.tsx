@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Image from 'next/image';
 import { User, Heart, Zap, Eye, Calendar } from 'lucide-react';
+import Image from 'next/image';
 
 interface CharacterTrait {
   name: string;
