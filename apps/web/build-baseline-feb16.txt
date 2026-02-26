@@ -1,0 +1,283 @@
+
+> @voidborne/web@0.1.0 build /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web
+> next build
+
+  ▲ Next.js 14.2.35
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ ⚠ Compiled with warnings
+
+../../node_modules/.pnpm/@metamask+sdk@0.33.1/node_modules/@metamask/sdk/dist/browser/es/metamask-sdk.js
+Module not found: Can't resolve '@react-native-async-storage/async-storage' in '/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/@metamask+sdk@0.33.1/node_modules/@metamask/sdk/dist/browser/es'
+
+Import trace for requested module:
+../../node_modules/.pnpm/@metamask+sdk@0.33.1/node_modules/@metamask/sdk/dist/browser/es/metamask-sdk.js
+../../node_modules/.pnpm/@wagmi+connectors@6.2.0_@tanstack+react-query@5.90.20_@types+react@18.3.28_@wagmi+core@2.22.1_to5d2qtreoqg2rozgyknldinsa/node_modules/@wagmi/connectors/dist/esm/metaMask.js
+../../node_modules/.pnpm/@wagmi+connectors@6.2.0_@tanstack+react-query@5.90.20_@types+react@18.3.28_@wagmi+core@2.22.1_to5d2qtreoqg2rozgyknldinsa/node_modules/@wagmi/connectors/dist/esm/exports/index.js
+../../node_modules/.pnpm/wagmi@2.19.5_@tanstack+react-query@5.90.20_@types+react@18.3.28_react@18.3.1_typescript@5.9.3_viem@2.45.2/node_modules/wagmi/dist/esm/exports/connectors.js
+../../node_modules/.pnpm/@rainbow-me+rainbowkit@2.2.10_@tanstack+react-query@5.90.20_@types+react@18.3.28_react-dom@18_jkdnbsezrzpisp6cv6tsghofmu/node_modules/@rainbow-me/rainbowkit/dist/index.js
+__barrel_optimize__?names=RainbowKitProvider,darkTheme,getDefaultConfig!=!../../node_modules/.pnpm/@rainbow-me+rainbowkit@2.2.10_@tanstack+react-query@5.90.20_@types+react@18.3.28_react-dom@18_jkdnbsezrzpisp6cv6tsghofmu/node_modules/@rainbow-me/rainbowkit/dist/index.js
+./src/components/providers/Web3Provider.tsx
+./src/components/providers/Providers.tsx
+
+../../node_modules/.pnpm/@metamask+sdk@0.33.1/node_modules/@metamask/sdk/dist/browser/es/metamask-sdk.js
+Module not found: Can't resolve '@react-native-async-storage/async-storage' in '/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/@metamask+sdk@0.33.1/node_modules/@metamask/sdk/dist/browser/es'
+
+Import trace for requested module:
+../../node_modules/.pnpm/@metamask+sdk@0.33.1/node_modules/@metamask/sdk/dist/browser/es/metamask-sdk.js
+../../node_modules/.pnpm/@wagmi+connectors@6.2.0_@tanstack+react-query@5.90.20_@types+react@18.3.28_@wagmi+core@2.22.1_to5d2qtreoqg2rozgyknldinsa/node_modules/@wagmi/connectors/dist/esm/metaMask.js
+../../node_modules/.pnpm/@wagmi+connectors@6.2.0_@tanstack+react-query@5.90.20_@types+react@18.3.28_@wagmi+core@2.22.1_to5d2qtreoqg2rozgyknldinsa/node_modules/@wagmi/connectors/dist/esm/exports/index.js
+../../node_modules/.pnpm/wagmi@2.19.5_@tanstack+react-query@5.90.20_@types+react@18.3.28_react@18.3.1_typescript@5.9.3_viem@2.45.2/node_modules/wagmi/dist/esm/exports/connectors.js
+../../node_modules/.pnpm/@rainbow-me+rainbowkit@2.2.10_@tanstack+react-query@5.90.20_@types+react@18.3.28_react-dom@18_jkdnbsezrzpisp6cv6tsghofmu/node_modules/@rainbow-me/rainbowkit/dist/index.js
+__barrel_optimize__?names=ConnectButton!=!../../node_modules/.pnpm/@rainbow-me+rainbowkit@2.2.10_@tanstack+react-query@5.90.20_@types+react@18.3.28_react-dom@18_jkdnbsezrzpisp6cv6tsghofmu/node_modules/@rainbow-me/rainbowkit/dist/index.js
+./src/components/wallet/ConnectWallet.tsx
+./src/app/my-bets/page.tsx
+
+../../node_modules/.pnpm/pino@7.11.0/node_modules/pino/lib/tools.js
+Module not found: Can't resolve 'pino-pretty' in '/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/pino@7.11.0/node_modules/pino/lib'
+
+Import trace for requested module:
+../../node_modules/.pnpm/pino@7.11.0/node_modules/pino/lib/tools.js
+../../node_modules/.pnpm/pino@7.11.0/node_modules/pino/pino.js
+../../node_modules/.pnpm/@walletconnect+logger@2.1.2/node_modules/@walletconnect/logger/dist/index.es.js
+../../node_modules/.pnpm/@walletconnect+universal-provider@2.21.1_typescript@5.9.3/node_modules/@walletconnect/universal-provider/dist/index.es.js
+../../node_modules/.pnpm/@walletconnect+ethereum-provider@2.21.1_@types+react@18.3.28_react@18.3.1_typescript@5.9.3/node_modules/@walletconnect/ethereum-provider/dist/index.es.js
+../../node_modules/.pnpm/@wagmi+connectors@6.2.0_@tanstack+react-query@5.90.20_@types+react@18.3.28_@wagmi+core@2.22.1_to5d2qtreoqg2rozgyknldinsa/node_modules/@wagmi/connectors/dist/esm/walletConnect.js
+../../node_modules/.pnpm/@wagmi+connectors@6.2.0_@tanstack+react-query@5.90.20_@types+react@18.3.28_@wagmi+core@2.22.1_to5d2qtreoqg2rozgyknldinsa/node_modules/@wagmi/connectors/dist/esm/exports/index.js
+../../node_modules/.pnpm/wagmi@2.19.5_@tanstack+react-query@5.90.20_@types+react@18.3.28_react@18.3.1_typescript@5.9.3_viem@2.45.2/node_modules/wagmi/dist/esm/exports/connectors.js
+../../node_modules/.pnpm/@rainbow-me+rainbowkit@2.2.10_@tanstack+react-query@5.90.20_@types+react@18.3.28_react-dom@18_jkdnbsezrzpisp6cv6tsghofmu/node_modules/@rainbow-me/rainbowkit/dist/index.js
+__barrel_optimize__?names=ConnectButton!=!../../node_modules/.pnpm/@rainbow-me+rainbowkit@2.2.10_@tanstack+react-query@5.90.20_@types+react@18.3.28_react-dom@18_jkdnbsezrzpisp6cv6tsghofmu/node_modules/@rainbow-me/rainbowkit/dist/index.js
+./src/components/wallet/ConnectWallet.tsx
+./src/app/my-bets/page.tsx
+
+   Linting and checking validity of types ...
+   Collecting page data ...
+ ⚠ Using edge runtime on a page currently disables static generation for that page
+   Generating static pages (0/55) ...
+Recent bets API error: B [Error]: Dynamic server usage: Route /api/betting/recent couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at V (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:21778)
+    at Object.get (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:29465)
+    at p (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/app/api/betting/recent/route.js:1:968)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:122:103 {
+  description: "Route /api/betting/recent couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Leaderboard API error: B [Error]: Dynamic server usage: Route /api/leaderboards couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at V (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:21778)
+    at Object.get (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:29465)
+    at m (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/app/api/leaderboards/route.js:1:956)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:122:103 {
+  description: "Route /api/leaderboards couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+OG image generation error: B [Error]: Dynamic server usage: Route /api/share/og-image couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at V (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:21778)
+    at Object.get (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:29465)
+    at c (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/app/api/share/og-image/route.js:1:1002)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:122:103 {
+  description: "Route /api/share/og-image couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Platform stats API error: B [Error]: Dynamic server usage: Route /api/betting/platform-stats couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at V (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:21778)
+    at Object.get (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:29465)
+    at c (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/app/api/betting/platform-stats/route.js:1:968)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:122:103 {
+  description: "Route /api/betting/platform-stats couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Stats API error: B [Error]: Dynamic server usage: Route /api/analytics/stats couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at V (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:21778)
+    at Object.get (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:29465)
+    at m (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/app/api/analytics/stats/route.js:1:968)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:122:103 {
+  description: "Route /api/analytics/stats couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Failed to fetch notification preferences: B [Error]: Dynamic server usage: Route /api/notifications/preferences couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at V (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:21778)
+    at Object.get (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:29465)
+    at l (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/app/api/notifications/preferences/route.js:1:920)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/node_modules/.pnpm/next@14.2.35_react-dom@18.3.1_react@18.3.1/node_modules/next/dist/server/lib/trace/tracer.js:122:103 {
+  description: "Route /api/notifications/preferences couldn't be rendered statically because it used `request.url`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+   Generating static pages (13/55) 
+Error fetching protocols: B [Error]: Dynamic server usage: no-store fetch http://localhost:3000/api/lore/protocols /lore/protocols-dynamic
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:10767
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:18388
+    at a.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:8885)
+    at u.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:3085)
+    at u.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:18140)
+    at a.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:18674)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:17921
+    at a.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:8885)
+    at u.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:3085)
+    at b.trace (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:17875) {
+  description: 'no-store fetch http://localhost:3000/api/lore/protocols /lore/protocols-dynamic',
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Error fetching protocols: B [Error]: Dynamic server usage: no-store fetch http://localhost:3000/api/lore/protocols /lore/protocols-dynamic
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:10767
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:18388
+    at a.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:8885)
+    at u.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:3085)
+    at u.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:18140)
+    at a.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:18674)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:17921
+    at a.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:8885)
+    at u.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:3085)
+    at b.trace (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:17875) {
+  description: 'no-store fetch http://localhost:3000/api/lore/protocols /lore/protocols-dynamic',
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Error fetching houses: B [Error]: Dynamic server usage: no-store fetch http://localhost:3000/api/lore/houses /lore/houses-dynamic
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:10767
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:18388
+    at a.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:8885)
+    at u.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:3085)
+    at u.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:18140)
+    at a.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:18674)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:17921
+    at a.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:8885)
+    at u.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:3085)
+    at b.trace (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:17875) {
+  description: 'no-store fetch http://localhost:3000/api/lore/houses /lore/houses-dynamic',
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+Error fetching houses: B [Error]: Dynamic server usage: no-store fetch http://localhost:3000/api/lore/houses /lore/houses-dynamic
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:10767
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:18388
+    at a.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:8885)
+    at u.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:3085)
+    at u.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:18140)
+    at a.startActiveSpan (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:18674)
+    at /Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:17921
+    at a.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:8885)
+    at u.with (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:1:3085)
+    at b.trace (/Users/eli5defi/.openclaw/workspace/StoryEngine/apps/web/.next/server/chunks/1540.js:2:17875) {
+  description: 'no-store fetch http://localhost:3000/api/lore/houses /lore/houses-dynamic',
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+   Generating static pages (27/55) 
+   Generating static pages (41/55) 
+ ✓ Generating static pages (55/55)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                       Size     First Load JS
+┌ ○ /                                             6.92 kB         717 kB
+├ ○ /_not-found                                   877 B          89.5 kB
+├ ○ /about                                        138 B          88.8 kB
+├ ○ /analytics                                    4.11 kB         280 kB
+├ ƒ /api/analytics/leaderboard                    0 B                0 B
+├ ƒ /api/analytics/stats                          0 B                0 B
+├ ƒ /api/badges                                   0 B                0 B
+├ ƒ /api/badges/[userId]                          0 B                0 B
+├ ƒ /api/betting/consensus/[poolId]               0 B                0 B
+├ ƒ /api/betting/odds-history/[poolId]            0 B                0 B
+├ ƒ /api/betting/place                            0 B                0 B
+├ ƒ /api/betting/platform-stats                   0 B                0 B
+├ ƒ /api/betting/pools/[poolId]                   0 B                0 B
+├ ƒ /api/betting/recent                           0 B                0 B
+├ ƒ /api/betting/resolve-pool                     0 B                0 B
+├ ○ /api/betting/trending                         0 B                0 B
+├ ƒ /api/chapters/[chapterId]/what-if/[choiceId]  0 B                0 B
+├ ƒ /api/characters/extract                       0 B                0 B
+├ ƒ /api/cron/capture-odds                        0 B                0 B
+├ ƒ /api/cron/extract-characters                  0 B                0 B
+├ ƒ /api/leaderboards                             0 B                0 B
+├ ƒ /api/lore/houses                              0 B                0 B
+├ ƒ /api/lore/houses/[slug]                       0 B                0 B
+├ ƒ /api/lore/houses/[slug]/join                  0 B                0 B
+├ ƒ /api/lore/protocols                           0 B                0 B
+├ ƒ /api/lore/protocols/[slug]                    0 B                0 B
+├ ƒ /api/notifications                            0 B                0 B
+├ ƒ /api/notifications/preferences                0 B                0 B
+├ ƒ /api/notifications/send                       0 B                0 B
+├ ƒ /api/pools/[poolId]/odds                      0 B                0 B
+├ ƒ /api/share                                    0 B                0 B
+├ ƒ /api/share/og                                 0 B                0 B
+├ ƒ /api/share/og-image                           0 B                0 B
+├ ƒ /api/share/referral                           0 B                0 B
+├ ƒ /api/stories                                  0 B                0 B
+├ ƒ /api/stories/[storyId]                        0 B                0 B
+├ ƒ /api/stories/[storyId]/characters             0 B                0 B
+├ ƒ /api/users/[walletAddress]                    0 B                0 B
+├ ƒ /api/users/[walletAddress]/bets               0 B                0 B
+├ ƒ /api/users/[walletAddress]/performance        0 B                0 B
+├ ƒ /api/users/[walletAddress]/streaks            0 B                0 B
+├ ○ /dashboard                                    3.3 kB          279 kB
+├ ○ /faq                                          4.17 kB        92.8 kB
+├ ○ /leaderboards                                 3.27 kB         713 kB
+├ ○ /lore                                         136 B           236 kB
+├ ○ /lore/characters                              136 B           236 kB
+├ ● /lore/characters/[characterId]                135 B           236 kB
+├   ├ /lore/characters/sera-valdris
+├   ├ /lore/characters/rael-thorn
+├   ├ /lore/characters/lienne-sol-ashura
+├   └ [+2 more paths]
+├ ○ /lore/houses                                  136 B           236 kB
+├ ƒ /lore/houses-dynamic                          136 B           236 kB
+├ ƒ /lore/houses-dynamic/[slug]                   136 B           236 kB
+├ ● /lore/houses/[houseId]                        136 B           236 kB
+├   ├ /lore/houses/valdris
+├   ├ /lore/houses/meridian
+├   ├ /lore/houses/solvane
+├   └ [+4 more paths]
+├ ○ /lore/protocols                               136 B           236 kB
+├ ƒ /lore/protocols-dynamic                       136 B           236 kB
+├ ƒ /lore/protocols-dynamic/[slug]                136 B           236 kB
+├ ● /lore/protocols/[protocolId]                  136 B           236 kB
+├   ├ /lore/protocols/geodesist
+├   ├ /lore/protocols/tensor
+├   ├ /lore/protocols/fracturer
+├   └ [+11 more paths]
+├ ○ /my-bets                                      2.41 kB         712 kB
+└ ƒ /story/[storyId]                              12.7 kB         722 kB
++ First Load JS shared by all                     88.6 kB
+  ├ chunks/7686-69f891aa81717031.js               84.8 kB
+  └ other shared chunks (total)                   3.8 kB
+
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses getStaticProps)
+ƒ  (Dynamic)  server-rendered on demand
+
